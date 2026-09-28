@@ -1,0 +1,173 @@
+/* ==========================================================================
+   CSS EXCLUSIVO PARA: Solicitud de Despacho de Descongestión
+   Archivo: css/main_registro_despacho_permanante.css
+   ========================================================================== */
+
+:root {
+    --primary-green: #16a34a;
+    --primary-green-hover: #15803d;
+    --input-bg: #f8fafc;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+.admin-body-view {
+    background-color: #f1f5f9;
+    margin: 0;
+    padding: 2rem 0;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow-y: auto !important;
+}
+
+.admin-main-container {
+    width: 100%;
+    max-width: 950px;
+    margin: 0 auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+}
+
+/* ==========================================
+   TÍTULOS Y SECCIONES
+   ========================================== */
+
+.admin-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+/* ==========================================
+   GRILLA Y FORMULARIO
+   ========================================== */
+
+.admin-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem 1.5rem;
+    margin-top: 1.25rem;
+}
+
+.admin-form-grid .form-group {
+    grid-column: span 1;
+    margin-bottom: 0 !important;
+}
+
+.admin-form-grid .admin-form-full {
+    grid-column: span 2;
+}
+
+.admin-form-grid label {
+    display: block;
+    margin-bottom: 0.4rem;
+    font-weight: 500;
+    font-size: 0.825rem;
+    color: #4a5568;
+}
+
+.admin-form-grid .form-control {
+    width: 100%;
+    padding: 0.65rem 0.85rem;
+    font-size: 0.9rem;
+    background-color: var(--input-bg);
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    color: var(--text-main);
+    outline: none;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+.admin-form-grid .form-control:focus {
+    background-color: #ffffff;
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+}
+
+.admin-form-grid select.form-control {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27292.4%27%20height%3D%27292.4%27%3E%3Cpath%20fill%3D%27%2364748b%27%20d%3D%27M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%27%2F%3E%3C%2Fsvg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.85rem center;
+    background-size: 0.65rem auto;
+    padding-right: 2.5rem;
+    cursor: pointer;
+}
+
+/* ==========================================
+   BOTONES Y ACCIONES
+   ========================================== */
+
+.admin-actions-group {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1rem;
+}
+
+.admin-btn-cancel {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.6rem 1rem;
+    transition: color 0.2s;
+}
+
+.admin-btn-cancel:hover {
+    color: var(--text-main);
+}
+
+.admin-btn-submit {
+    background-color: var(--primary-green);
+    color: white;
+    border: none;
+    padding: 0.7rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.1s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
+}
+
+.admin-btn-submit:hover {
+    background-color: var(--primary-green-hover);
+}
+
+.admin-btn-submit:active {
+    transform: translateY(1px);
+}
+
+/* ==========================================
+   RESPONSIVO (Dispositivos móviles)
+   ========================================== */
+
+@media (max-width: 768px) {
+    .admin-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .admin-form-grid .admin-form-full {
+        grid-column: span 1;
+    }
+}

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEYGI - Sistema de Planeación Estratégica y Gestión Institucional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="app-body">
+
+    <!-- Barra Superior con Indicador de Rol Integrado y Más Visual -->
+    <header class="app-header">
+        <div class="navbar-brand">
+            <button class="menu-toggle">☰</button>
+            <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
+        </div>
+        
+        <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
+            <!-- Indicador de Rol Más Visual -->
+            <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
+                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
+                <span style="font-weight: 600;">Administrador Central (UDAE)</span>
+            </div>
+
+            <div class="navbar-user">
+                <span>👤 ▾</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal con Sidebar -->
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="app-sidebar">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+    <div class="sidebar-icon active" title="Inicio">🏠</div>
+</a>
+            <div class="sidebar-icon" title="Menú">☰</div>
+            <div class="sidebar-icon" title="Opciones">⚙️</div>
+        </aside>
+
+        <!-- Contenido -->
+        <main class="app-main">
+            <!-- Ruta de Navegación (Breadcrumbs) -->
+            <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
+                    <li><a href="modulo.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li><a href="funcionalidades_admin_udae.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Validación de Despachos Permanentes</li>
+                </ol>
+            </nav>
+
+            <!-- Título de la Sección -->
+            <div style="margin-bottom: 1.5rem;">
+                <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem;">Validación de Postulaciones de Despachos Permanentes</h1>
+                <p style="font-size: 0.85rem; color: var(--text-muted);">Revise y gestione las solicitudes enviadas para autorizar la habilitación de despachos permanentes en el sistema PEYGI.</p>
+            </div>
+
+            <!-- Tabla de Solicitudes Dinámica -->
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Administrador</th>
+                            <th>Correo Institucional</th>
+                            <th>Despacho Propuesto</th>
+                            <th>Código</th>
+                            <th>Estado</th>
+                            <th style="text-align: center;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-permanente">
+                        <!-- Se llena dinámicamente con JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+        </main>
+    </div>
+
+    <!-- Scripts de Datos y Lógica -->
+    <script src="js/data.js"></script>
+    <script src="js/main_permanente.js"></script>
+</body>
+</html>

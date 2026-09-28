@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de Despacho de Descongestión - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main_registro_despacho_permanante.css">
+</head>
+
+<body class="admin-body-view">
+
+    <!-- Contenedor Externo Principal Centrado -->
+    <main class="admin-main-container">
+
+        <!-- Tarjeta del Formulario -->
+        <div
+            style="background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); overflow: hidden; border: 1px solid #e2e8f0;">
+
+            <!-- Encabezado Institucional del Formulario -->
+            <div style="background-color: #16a34a; padding: 2rem 2.5rem; color: white; text-align: left;">
+                <div
+                    style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem;">
+                    Registro Único Nacional de Procesos de Descongestión — PEYGI
+                </div>
+                <h1 style="margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 700;">Solicitud de Postulación del
+                    Despacho Permanente</h1>
+                <p style="margin: 0; font-size: 0.95rem; opacity: 0.95; line-height: 1.4;">
+                    Formulario para postular su despacho con el fin de ser habilitado y registrar los procesos que
+                    requieren apoyo para mitigar la congestión.
+                </p>
+            </div>
+
+
+            <!-- Cuerpo del Formulario -->
+            <div style="padding: 2.5rem;">
+                <form id="form-despacho" onsubmit="guardarDespacho(event)">
+                    <input type="hidden" id="despacho-id">
+
+                    <!-- SECCIÓN 1: INFORMACIÓN DEL ADMINISTRADOR -->
+                    <div class="admin-section-title">
+                        👤 Información del Administrador del Despacho
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <div class="form-group">
+                            <label for="admin_primer_nombre">Primer Nombre</label>
+                            <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control"
+                                value="Luis" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admin_segundo_nombre">Segundo Nombre</label>
+                            <input type="text" id="admin_segundo_nombre" name="admin_segundo_nombre"
+                                class="form-control" value="Fernando">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admin_primer_apellido">Primer Apellido</label>
+                            <input type="text" id="admin_primer_apellido" name="admin_primer_apellido"
+                                class="form-control" value="Giraldo" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="admin_segundo_apellido">Segundo Apellido</label>
+                            <input type="text" id="admin_segundo_apellido" name="admin_segundo_apellido"
+                                class="form-control" value="Restrepo">
+                        </div>
+
+                        <div class="form-group admin-form-full">
+                            <label for="admin_correo">Correo Electrónico Institucional</label>
+                            <input type="email" id="admin_correo" name="admin_correo" class="form-control"
+                                value="lgiraldo@cendoj.ramajudicial.gov.co" required>
+                        </div>
+                    </div>
+
+                    <!-- SECCIÓN 2: INFORMACIÓN DEL DESPACHO -->
+                    <div class="admin-section-title" style="margin-top: 2rem;">
+                        🏢 Información del Despacho Propuesto
+                    </div>
+
+                    <div class="admin-form-grid">
+                        <!-- Jurisdicción -->
+                        <div class="form-group">
+                            <label for="jurisdiccion">Jurisdicción</label>
+                            <select id="jurisdiccion" name="jurisdiccion" class="form-control" required></select>
+                        </div>
+
+                        <!-- Tipo de Despacho -->
+                        <div class="form-group">
+                            <label for="tipodespacho">Tipo de Despacho</label>
+                            <select id="tipodespacho" name="tipodespacho" class="form-control" required></select>
+                        </div>
+
+                        <!-- Municipio -->
+                        <div class="form-group">
+                            <label for="deptomunicipio">Municipio</label>
+                            <select id="deptomunicipio" name="deptomunicipio" class="form-control" required></select>
+                        </div>
+
+                        <!-- Consejo Seccional -->
+                        <div class="form-group">
+                            <label for="consejoseccional">Consejo Seccional</label>
+                            <select id="consejoseccional" name="consejoseccional" class="form-control"
+                                required></select>
+                        </div>
+
+                        <!-- Distrito -->
+                        <div class="form-group">
+                            <label for="distrito">Distrito</label>
+                            <select id="distrito" name="distrito" class="form-control" required></select>
+                        </div>
+
+                        <!-- Circuito -->
+                        <div class="form-group">
+                            <label for="circuito">Circuito</label>
+                            <select id="circuito" name="circuito" class="form-control" required></select>
+                        </div>
+
+                        <!-- Especialidad / Subespecialidad -->
+                        <div class="form-group">
+                            <label for="especialidad">Especialidad / Subespecialidad</label>
+                            <select id="especialidad" name="especialidad" class="form-control" required></select>
+                        </div>
+
+                        <!-- Tipo -->
+                        <div class="form-group">
+                            <label for="tipo">Tipo</label>
+                            <select id="tipo" name="tipo" class="form-control" required></select>
+                        </div>
+
+                        <!-- Código Despacho -->
+                        <div class="form-group admin-form-full">
+                            <label for="codigo_despacho">Código Despacho Propuesto (20 dígitos)</label>
+                            <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control"
+                                placeholder="Ej: 050014003801" required>
+                        </div>
+
+                        <!-- Nombre Despacho -->
+                        <div class="form-group admin-form-full">
+                            <label for="nombre_despacho">Nombre del Despacho Transitorio</label>
+                            <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control"
+                                placeholder="Ej: JUZGADO 801 CIVIL MUNICIPAL TRANSITORIO DE MEDELLÍN" required>
+                        </div>
+                    </div>
+
+                    <!-- Botones de Acción -->
+                    <div class="admin-actions-group"
+                        style="margin-top: 2.5rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
+                        <button type="button" id="btn-guardar" class="admin-btn-submit" onclick="window.open('email_crear_admin_permanente.html', '_blank'); window.location.href='index_admin_p.html';">
+                            📤 Enviar Solicitud
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="js/data.js"></script>
+    <script src="js/main_permanente.js"></script>
+</body>
+
+</html>

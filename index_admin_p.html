@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEYGI - Sistema de Planeación Estratégica y Gestión Institucional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+
+    <!-- Indicador de la Interfaz orientada al Rol -->
+    <div class="role-top-banner">
+        <div class="role-info">
+            <span class="role-badge">Perfil de Vista</span>
+            <span class="role-title">Administrador del despacho permanente</span>
+        </div>
+        <div class="role-system">
+            Registro Único Nacional de Procesos de Descongestión — PEYGI
+        </div>
+    </div>
+
+    <div class="login-container">
+        <!-- Panel Izquierdo -->
+        <div class="login-banner">
+            <h1>¡BIENVENIDO!</h1>
+            <h3>Sistema de Planeación Estratégica y Gestión Institucional (PEYGI)</h3>
+            <p>Ingrese sus credenciales para iniciar sesión</p>
+        </div>
+
+        <!-- Panel Derecho (Formulario) -->
+        <div class="login-form-side">
+            <div class="logo-container">
+                <img src="img/layout_set_logo.jpeg" alt="Consejo Superior de la Judicatura - Unidad de Desarrollo y Análisis Estadístico (UDAE)">
+            </div>
+
+            <form action="#" method="POST" onsubmit="event.preventDefault(); window.location.href='modulo_p.html';">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" class="form-control" value="lgiraldo@cendoj.ramajudicial.gov.co" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" name="password" class="form-control" value="••••••••" required>
+                        <span class="toggle-password">👁️</span>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <a href="#">¿Olvidó la contraseña? Hacer clic <span>aquí!</span></a>
+                </div>
+
+                <button type="submit" class="btn-entrar">ENTRAR</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>

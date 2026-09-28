@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestión de Despachos de Descongestión - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">    
+</head>
+<body class="app-body">
+
+    <!-- Barra Superior -->
+    <header class="app-header">
+        <div class="navbar-brand">
+            <button class="menu-toggle">☰</button>
+            <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
+        </div>
+        
+        <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
+                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
+                <span style="font-weight: 600;">Administrador Central (UDAE)</span>
+            </div>
+
+            <div class="navbar-user">
+                <span>👤 ▾</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal con Sidebar -->
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="app-sidebar">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+    <div class="sidebar-icon active" title="Inicio">🏠</div>
+</a>
+            <div class="sidebar-icon" title="Menú">☰</div>
+            <div class="sidebar-icon" title="Opciones">⚙️</div>
+        </aside>
+        <!-- Contenido -->
+        <main class="app-main">
+            <!-- Ruta de Navegación (Breadcrumbs) -->
+            <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
+                    <li><a href="modulo.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li><a href="funcionalidades_admin_udae.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Gestión de Despachos</li>
+                </ol>
+            </nav>
+            <div class="content-header">
+                <div class="welcome-section" style="margin-bottom: 0;">
+                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
+                        <h1 style="margin: 0;">Gestión de despachos con medida de descongestión</h1>                        
+                    </div>
+                    <p>Registro Único Nacional de Procesos de Descongestión — Validar, habilitar y administrar despachos de descongestión</p>
+                </div>
+                <button class="btn-primary-action" onclick="abrirFormularioNuevo()">
+                    ➕ Habilitar despacho de descongestión
+                </button>
+            </div>
+
+            <!-- Tabla de Despachos Actuales -->
+            <div class="data-table-container">
+                <table class="data-table" id="tabla-despachos">
+                    <thead>
+                        <tr>
+                            <th>Jurisdicción</th>
+                            <th>Tipo Despacho</th>
+                            <th>Código Despacho</th>
+                            <th>Nombre Despacho</th>
+                            <th>Ubicación (Mun)</th>
+                            <th>Especialidad</th>
+                            <th>Vigencia Inicio</th>
+                            <th>Vigencia Fin</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla">
+                        <!-- Creado dinámicamente por JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- LAYER / VENTANA MODAL FLOTANTE PARA CREAR Y EDITAR -->
+    <div id="modal-despacho" class="modal-overlay">
+        <div class="modal-card" style="max-width: 800px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
+                <h2 id="form-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📝 Registrar Despacho de Descongestión y Administrador</h2>
+                <button onclick="ocultarFormulario()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            
+            <form id="form-despacho" onsubmit="guardarDespacho(event)">
+                <input type="hidden" id="despacho-id">
+                
+                <!-- SECCIÓN 1: INFORMACIÓN DEL DESPACHO -->
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    🏢 Información del Despacho
+                </div>
+                <div class="form-grid" style="margin-bottom: 1.5rem;">
+                    
+                    <!-- Jurisdicción -->
+                    <div class="form-group">
+                        <label for="jurisdiccion">Jurisdicción</label>
+                        <select id="jurisdiccion" name="jurisdiccion" class="form-control" required></select>
+                    </div>
+
+                    <!-- Tipo de Despacho -->
+                    <div class="form-group">
+                        <label for="tipodespacho">Tipo de Despacho</label>
+                        <select id="tipodespacho" name="tipodespacho" class="form-control" required></select>
+                    </div>
+
+                    <!-- Municipio -->
+                    <div class="form-group">
+                        <label for="deptomunicipio">Municipio</label>
+                        <select id="deptomunicipio" name="deptomunicipio" class="form-control" required></select>
+                    </div>
+
+                    <!-- Consejo Seccional -->
+                    <div class="form-group">
+                        <label for="consejoseccional">Consejo Seccional</label>
+                        <select id="consejoseccional" name="consejoseccional" class="form-control" required></select>
+                    </div>
+
+
+                    <!-- Distrito -->
+                    <div class="form-group">
+                        <label for="distrito">Distrito</label>
+                        <select id="distrito" name="distrito" class="form-control" required></select>
+                    </div>
+
+                    <!-- Circuito -->
+                    <div class="form-group">
+                        <label for="circuito">Circuito</label>
+                        <select id="circuito" name="circuito" class="form-control" required></select>
+                    </div>
+                    
+
+                    <!-- Especialidad / Subespecialidad -->
+                    <div class="form-group">
+                        <label for="especialidad">Especialidad / Subespecialidad</label>
+                        <select id="especialidad" name="especialidad" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo</label>
+                        <select id="tipo" name="tipo" class="form-control" required></select>
+                    </div>
+
+                    <!-- Código Despacho -->
+                    <div class="form-group">
+                        <label for="codigo_despacho">Código Despacho (20 dígitos)</label>
+                        <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control" placeholder="Ej: 050014003801" required>
+                    </div>
+
+                    <!-- Nombre Despacho -->
+                    <div class="form-group">
+                        <label for="nombre_despacho">Nombre Despacho Transitorio</label>
+                        <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control" placeholder="Ej: JUZGADO 801 CIVIL MUNICIPAL TRANSITORIO DE MEDELLÍN" required>
+                    </div>
+
+                    <!-- Fecha Inicio Vigencia -->
+                    <div class="form-group">
+                        <label for="fecha_inicio">Vigencia Medida (Fecha Inicio)</label>
+                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                    </div>
+
+                    <!-- Fecha Fin Vigencia -->
+                    <div class="form-group">
+                        <label for="fecha_fin">Vigencia Medida (Fecha Fin)</label>
+                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                    </div>
+
+                </div>
+
+                <!-- SECCIÓN 2: INFORMACIÓN DEL ADMINISTRADOR DEL DESPACHO -->
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    👤 Información del Administrador del Despacho
+                </div>
+                <div class="form-grid" style="margin-bottom: 1.5rem;">
+                    
+                    <div class="form-group">
+                        <label for="admin_primer_nombre">Primer Nombre</label>
+                        <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control" placeholder="Ej: Carlos" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_segundo_nombre">Segundo Nombre</label>
+                        <input type="text" id="admin_segundo_nombre" name="admin_segundo_nombre" class="form-control" placeholder="Ej: Andrés">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_primer_apellido">Primer Apellido</label>
+                        <input type="text" id="admin_primer_apellido" name="admin_primer_apellido" class="form-control" placeholder="Ej: Pérez" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_segundo_apellido">Segundo Apellido</label>
+                        <input type="text" id="admin_segundo_apellido" name="admin_segundo_apellido" class="form-control" placeholder="Ej: Gómez">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_correo">Correo Electrónico Institucional</label>
+                        <input type="email" id="admin_correo" name="admin_correo" class="form-control" placeholder="Ej: cperez@cendoj.ramajudicial.gov.co" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_password">Contraseña Temporal</label>
+                        <input type="text" id="admin_password" name="admin_password" class="form-control" placeholder="Ej: Temp2026*" required>
+                    </div>
+
+                </div>
+                
+
+                <!-- Botones de Acción -->
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
+                    <!-- Botón de Guardar (Siempre visible) -->
+                    <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        💾 Guardar
+                    </button>
+
+                    <!-- Botón de Enviar Credenciales como Enlace (Solo visible al editar) -->
+                    <a href="email_credenciales.html" target="_blank" id="btn-enviar-credenciales" class="btn-secondary-action" style="display: none; padding: 0.75rem 1.5rem; text-decoration: none; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                        ✉️ Enviar Credenciales de Acceso
+                    </a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
