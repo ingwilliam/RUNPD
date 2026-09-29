@@ -5,16 +5,11 @@ const dbProcesos = {
     // Catálogos
     opcionesSelects: {
         estadoProceso: [
-            { value: "Admisión de la demanda", label: "Admisión de la demanda" },
-            { value: "Notificación", label: "Notificación" },
-            { value: "Contestación de la demanda", label: "Contestación de la demanda" },
-            { value: "Audiencia inicial", label: "Audiencia inicial" },
-            { value: "Etapa probatoria", label: "Etapa probatoria" },
-            { value: "Audiencia de instrucción y juzgamiento", label: "Audiencia de instrucción y juzgamiento" },
-            { value: "Alegatos de conclusión", label: "Alegatos de conclusión" },
-            { value: "Al despacho para fallo", label: "Al despacho para fallo" },
-            { value: "Recurso en trámite", label: "Recurso en trámite" },
-            { value: "Suspendido", label: "Suspendido" }
+            { value: "Definir 1", label: "Definir 1" },
+            { value: "Definir 2", label: "Definir 2" },
+            { value: "Definir 3", label: "Definir 3" },
+            { value: "Definir 4", label: "Definir 4" },
+            { value: "Definir n....", label: "Definir n...." }
         ],
         tipoPersona: [
             { value: "natural", label: "Persona natural" },
@@ -57,10 +52,10 @@ const dbProcesos = {
         {
             id: 1,
             codigo: "05001400300320240012300",
-            estadoProceso: "Etapa probatoria",
+            estadoProceso: "Definir 2",
             fechaActuacion: "2026-08-14",
             link: "https://procesos.ramajudicial.gov.co/",
-            observaciones: "Pendiente dictamen pericial.",
+            observaciones: "Pendiente dictamen pericial..........",
             demandantes: [
                 { tipo: "natural", primerNombre: "Juan", segundoNombre: "Pablo", primerApellido: "Restrepo", segundoApellido: "Ochoa", nombre: "", correo: "jprestrepo@correo.com" }
             ],
@@ -73,7 +68,7 @@ const dbProcesos = {
         {
             id: 2,
             codigo: "05001400300320250007800",
-            estadoProceso: "Admisión de la demanda",
+            estadoProceso: "Definir 1",
             fechaActuacion: "2026-09-10",
             link: "",
             observaciones: "",
@@ -89,7 +84,7 @@ const dbProcesos = {
         {
             id: 3,
             codigo: "05001400300320230045600",
-            estadoProceso: "Al despacho para fallo",
+            estadoProceso: "Definir 3",
             fechaActuacion: "2026-03-02",
             link: "",
             observaciones: "",

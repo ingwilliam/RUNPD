@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEYGI - Sistema de Planeación Estratégica y Gestión Institucional</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="app-body">
+
+    <!-- Barra Superior con Indicador de Rol Integrado y Más Visual -->
+    <header class="app-header">
+        <div class="navbar-brand">
+            <button class="menu-toggle">☰</button>
+            <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
+        </div>
+        
+        <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
+            <!-- Indicador de Rol Más Visual -->
+            <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
+                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
+                <span style="font-weight: 600;">Administrador del Consejo Seccional</span>
+            </div>
+
+            <div class="navbar-user">
+                <span>👤 ▾</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal con Sidebar -->
+    <div class="app-layout">
+        <!-- Barra Lateral -->
+        <aside class="app-sidebar">
+            <a href="index.html" style="text-decoration: none; color: inherit;">
+    <div class="sidebar-icon active" title="Inicio">🏠</div>
+</a>
+            <div class="sidebar-icon" title="Menú">☰</div>
+            <div class="sidebar-icon" title="Opciones">⚙️</div>
+        </aside>
+
+        <!-- Contenido -->
+        <main class="app-main">
+            <div class="welcome-section">
+                <h1>Bienvenido/a</h1>
+                <h2>Consejo Seccional de CALDAS</h2>                
+            </div>
+
+            <!-- Registro Único Nacional de Procesos de Descongestión -->
+            <div class="modules-grid">
+                <a href="funcionalidades_c.html" class="module-card">
+                    <div class="module-img-container">
+                        <img src="img/runpd.png" alt="Registro Único Nacional de Procesos de Descongestión">
+                    </div>
+                    <div class="module-footer">
+                        Registro Único Nacional de Procesos de Descongestión
+                    </div>
+                </a>
+            </div>
+            
+        </main>
+    </div>
+
+</body>
+</html>
