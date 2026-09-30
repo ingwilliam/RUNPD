@@ -1,0 +1,347 @@
+/* ==========================================================================
+   REGISTRO_PERMANENTE.CSS — Solo para la postulación del despacho permanente
+   Se apoya en las variables y componentes de main.css
+   ========================================================================== */
+
+/* main.css centra el body (login); aquí se permite el scroll normal */
+body.rp-body {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: #f8fafc;
+}
+
+/* ---------------- BARRA SUPERIOR ---------------- */
+.rp-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 78px;
+    padding: 0.5rem 2rem;
+    color: #ffffff;
+    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    border-bottom: 4px solid #ffc107;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.rp-volver {
+    position: absolute;
+    left: 1.5rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+}
+
+.rp-volver:hover { background: rgba(255, 255, 255, 0.25); }
+
+.rp-brand { display: flex; align-items: center; gap: 1rem; }
+
+.rp-logo {
+    height: 52px;
+    width: auto;
+    background: #ffffff;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.rp-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.rp-brand-text strong { font-size: 1.25rem; font-weight: 700; }
+.rp-brand-text span { font-size: 0.85rem; opacity: 0.92; }
+
+/* ---------------- ESTRUCTURA ---------------- */
+.rp-main {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+    display: grid;
+    grid-template-columns: 290px 1fr;
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.rp-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.05);
+}
+
+/* ---------------- COLUMNA LATERAL ---------------- */
+.rp-aside {
+    position: sticky;
+    top: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.rp-aside .rp-card { padding: 1.25rem; }
+
+.rp-aside-titulo {
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 1rem;
+}
+
+.rp-pasos { list-style: none; }
+
+.rp-pasos li {
+    position: relative;
+    display: flex;
+    gap: 0.75rem;
+    padding-bottom: 1.1rem;
+}
+
+.rp-pasos li:not(:last-child)::before {
+    content: "";
+    position: absolute;
+    left: 0.85rem;
+    top: 1.9rem;
+    bottom: 0.2rem;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.rp-pasos li > span {
+    flex-shrink: 0;
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: #edf2f7;
+    color: var(--text-muted);
+}
+
+.rp-pasos li.activo > span {
+    background: var(--primary-green);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px #e6f4ea;
+}
+
+.rp-pasos strong { display: block; font-size: 0.85rem; color: var(--text-main); }
+.rp-pasos small { display: block; font-size: 0.75rem; color: var(--text-muted); line-height: 1.4; margin-top: 0.1rem; }
+
+.rp-progreso-barra {
+    height: 8px;
+    background: #edf2f7;
+    border-radius: 999px;
+    overflow: hidden;
+}
+
+.rp-progreso-barra > div {
+    height: 100%;
+    width: 0;
+    background: var(--primary-green);
+    border-radius: 999px;
+    transition: width 0.3s ease;
+}
+
+.rp-progreso-texto { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
+
+/* ---------------- FORMULARIO ---------------- */
+.rp-form-card { padding: 2rem 2.25rem; border-top: 4px solid var(--primary-green); }
+
+.rp-form-head { margin-bottom: 1.75rem; }
+.rp-form-head h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem; }
+.rp-form-head p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+.rp-req { color: #dc2626; font-weight: 700; }
+
+.rp-seccion {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--primary-green);
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 0.5rem;
+    margin: 0.5rem 0 1.25rem;
+}
+
+.rp-seccion > span {
+    width: 1.6rem;
+    height: 1.6rem;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #ffffff;
+    font-size: 0.8rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Evita el espacio doble (gap de la grilla + margen de cada campo) */
+.rp-form-card .admin-form-grid {
+    gap: 0 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.rp-buscador {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.8rem;
+    margin-bottom: 0.35rem;
+}
+
+.rp-ayuda {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.35rem;
+}
+
+.rp-ayuda.ok { color: var(--primary-green); font-weight: 600; }
+.rp-ayuda.alerta { color: #b45309; font-weight: 600; }
+.rp-ayuda.error { color: #dc2626; font-weight: 600; }
+
+.rp-check {
+    display: flex;
+    gap: 0.65rem;
+    align-items: flex-start;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    line-height: 1.5;
+    cursor: pointer;
+}
+
+.rp-check input { width: 18px; height: 18px; margin-top: 0.15rem; accent-color: var(--primary-green); flex-shrink: 0; }
+
+.rp-acciones {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    margin-top: 2rem;
+    padding-top: 1.25rem;
+    border-top: 1px solid var(--border-color);
+}
+
+.rp-acciones-centro { justify-content: center; }
+
+.rp-btn { padding: 0.8rem 1.6rem; font-size: 0.95rem; justify-content: center; }
+.rp-btn-sec { padding: 0.8rem 1.4rem; font-size: 0.9rem; text-decoration: none; display: inline-flex; align-items: center; }
+
+/* Resumen en el modal de revisión */
+.rp-resumen {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.rp-resumen-titulo { font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem; }
+
+.rp-resumen-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem 1rem;
+    font-size: 0.82rem;
+}
+
+.rp-resumen-grid div span { display: block; font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px; }
+.rp-resumen-grid div strong { color: var(--text-main); font-weight: 600; word-break: break-word; }
+.rp-resumen-grid .completo { grid-column: 1 / -1; }
+
+/* ---------------- ÉXITO ---------------- */
+.rp-exito {
+    grid-column: 2;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    border-top: 4px solid var(--primary-green);
+}
+
+.rp-exito-icono { font-size: 3rem; margin-bottom: 0.5rem; }
+.rp-exito h2 { font-size: 1.5rem; color: var(--text-main); margin-bottom: 0.5rem; }
+.rp-exito p { font-size: 0.9rem; color: var(--text-muted); }
+
+.rp-radicado {
+    display: inline-block;
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    background: #e6f4ea;
+    padding: 0.4rem 1rem;
+    border-radius: 8px;
+    margin: 0.5rem 0 1rem;
+}
+
+.rp-exito-texto { max-width: 520px; margin: 0 auto 1.25rem; line-height: 1.5; }
+
+.rp-exito-pasos {
+    display: inline-flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    text-align: left;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+}
+
+/* ---------------- PIE ---------------- */
+.rp-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background: #ffffff;
+}
+
+.rp-footer strong { color: var(--text-main); font-weight: 600; }
+
+/* ---------------- RESPONSIVO ---------------- */
+@media (max-width: 900px) {
+    .rp-main { grid-template-columns: 1fr; }
+    .rp-aside { position: static; }
+    .rp-exito { grid-column: 1; }
+}
+
+@media (max-width: 640px) {
+    .rp-volver { position: static; margin-right: auto; }
+    .rp-header { justify-content: space-between; flex-wrap: wrap; gap: 0.75rem; }
+    .rp-logo { height: 40px; }
+    .rp-brand-text strong { font-size: 1rem; }
+    .rp-brand-text span { font-size: 0.7rem; }
+    .rp-form-card { padding: 1.5rem 1.25rem; }
+    .admin-form-grid { grid-template-columns: 1fr; }
+    .admin-form-full { grid-column: auto; }
+    .rp-resumen-grid { grid-template-columns: 1fr; }
+    .rp-acciones { flex-direction: column-reverse; }
+}

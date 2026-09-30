@@ -4,164 +4,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Solicitud de Despacho de Descongestión - PEYGI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main_registro_despacho_permanante.css">
+    <title>Solicitud de Postulación del Despacho Permanente - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/registro_permanente.css">
 </head>
 
-<body class="admin-body-view">
+<body class="rp-body">
 
-    <!-- Contenedor Externo Principal Centrado -->
-    <main class="admin-main-container">
-
-        <!-- Tarjeta del Formulario -->
-        <div
-            style="background: #ffffff; border-radius: 12px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); overflow: hidden; border: 1px solid #e2e8f0;">
-
-            <!-- Encabezado Institucional del Formulario -->
-            <div style="background-color: #16a34a; padding: 2rem 2.5rem; color: white; text-align: left;">
-                <div
-                    style="font-size: 0.75rem; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; opacity: 0.9; margin-bottom: 0.5rem;">
-                    Registro Único Nacional de Procesos de Descongestión
-                </div>
-                <h1 style="margin: 0 0 0.5rem 0; font-size: 1.75rem; font-weight: 700;">Solicitud de Postulación del
-                    Despacho Permanente</h1>
-                <p style="margin: 0; font-size: 0.95rem; opacity: 0.95; line-height: 1.4;">
-                    Formulario para postular su despacho con el fin de ser habilitado y registrar los procesos que
-                    requieren apoyo para mitigar la congestión.
-                </p>
+    <!-- Barra superior pública -->
+    <header class="rp-header">        
+        <div class="rp-brand">
+            <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo PEYGI" class="rp-logo">
+            <div class="rp-brand-text">
+                <strong>Postulación de Despacho Permanente</strong>
+                <span>Registro Único Nacional de Procesos de Descongestión</span>
             </div>
-
-
-            <!-- Cuerpo del Formulario -->
-            <div style="padding: 2.5rem;">
-                <form id="form-despacho" onsubmit="guardarDespacho(event)">
-                    <input type="hidden" id="despacho-id">
-
-                    <!-- SECCIÓN 1: INFORMACIÓN DEL ADMINISTRADOR -->
-                    <div class="admin-section-title">
-                        👤 Información del Administrador del Despacho
-                    </div>
-
-                    <div class="admin-form-grid">
-                        <div class="form-group">
-                            <label for="admin_primer_nombre">Primer Nombre</label>
-                            <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control"
-                                value="Luis" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="admin_segundo_nombre">Segundo Nombre</label>
-                            <input type="text" id="admin_segundo_nombre" name="admin_segundo_nombre"
-                                class="form-control" value="Fernando">
-                        </div>
-
-                        <div class="form-group">
-                            <label for="admin_primer_apellido">Primer Apellido</label>
-                            <input type="text" id="admin_primer_apellido" name="admin_primer_apellido"
-                                class="form-control" value="Giraldo" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="admin_segundo_apellido">Segundo Apellido</label>
-                            <input type="text" id="admin_segundo_apellido" name="admin_segundo_apellido"
-                                class="form-control" value="Restrepo">
-                        </div>
-
-                        <div class="form-group admin-form-full">
-                            <label for="admin_correo">Correo Electrónico Institucional</label>
-                            <input type="email" id="admin_correo" name="admin_correo" class="form-control"
-                                value="lgiraldo@cendoj.ramajudicial.gov.co" required>
-                        </div>
-                    </div>
-
-                    <!-- SECCIÓN 2: INFORMACIÓN DEL DESPACHO -->
-                    <div class="admin-section-title" style="margin-top: 2rem;">
-                        🏢 Información del Despacho Propuesto
-                    </div>
-
-                    <div class="admin-form-grid">
-                        <!-- Jurisdicción -->
-                        <div class="form-group">
-                            <label for="jurisdiccion">Jurisdicción</label>
-                            <select id="jurisdiccion" name="jurisdiccion" class="form-control" required></select>
-                        </div>
-
-                        <!-- Tipo de Despacho -->
-                        <div class="form-group">
-                            <label for="tipodespacho">Tipo de Despacho</label>
-                            <select id="tipodespacho" name="tipodespacho" class="form-control" required></select>
-                        </div>
-
-                        <!-- Municipio -->
-                        <div class="form-group">
-                            <label for="deptomunicipio">Municipio</label>
-                            <select id="deptomunicipio" name="deptomunicipio" class="form-control" required></select>
-                        </div>
-
-                        <!-- Consejo Seccional -->
-                        <div class="form-group">
-                            <label for="consejoseccional">Consejo Seccional</label>
-                            <select id="consejoseccional" name="consejoseccional" class="form-control"
-                                required></select>
-                        </div>
-
-                        <!-- Distrito -->
-                        <div class="form-group">
-                            <label for="distrito">Distrito</label>
-                            <select id="distrito" name="distrito" class="form-control" required></select>
-                        </div>
-
-                        <!-- Circuito -->
-                        <div class="form-group">
-                            <label for="circuito">Circuito</label>
-                            <select id="circuito" name="circuito" class="form-control" required></select>
-                        </div>
-
-                        <!-- Especialidad / Subespecialidad -->
-                        <div class="form-group">
-                            <label for="especialidad">Especialidad / Subespecialidad</label>
-                            <select id="especialidad" name="especialidad" class="form-control" required></select>
-                        </div>
-
-                        <!-- Tipo -->
-                        <div class="form-group">
-                            <label for="tipo">Tipo</label>
-                            <select id="tipo" name="tipo" class="form-control" required></select>
-                        </div>
-
-                        <!-- Código Despacho -->
-                        <div class="form-group admin-form-full">
-                            <label for="codigo_despacho">Código Despacho Propuesto (20 dígitos)</label>
-                            <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control"
-                                placeholder="Ej: 050014003801" required>
-                        </div>
-
-                        <!-- Nombre Despacho -->
-                        <div class="form-group admin-form-full">
-                            <label for="nombre_despacho">Nombre del Despacho Transitorio</label>
-                            <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control"
-                                placeholder="Ej: JUZGADO 801 CIVIL MUNICIPAL TRANSITORIO DE MEDELLÍN" required>
-                        </div>
-                    </div>
-
-                    <!-- Botones de Acción -->
-                    <div class="admin-actions-group"
-                        style="margin-top: 2.5rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem;">
-                        <button type="button" id="btn-guardar" class="admin-btn-submit" onclick="window.open('email_crear_admin_permanente.html', '_blank'); window.location.href='index_admin_p.html';">
-                            📤 Enviar Solicitud
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
         </div>
+    </header>
 
+    <main class="rp-main">
+
+        <!-- Columna lateral: cómo funciona -->
+        <aside class="rp-aside">
+            <div class="rp-card">
+                <div class="rp-aside-titulo">¿Cómo funciona?</div>
+                <ol class="rp-pasos">
+                    <li class="activo"><span>1</span><div><strong>Diligencie la solicitud</strong><small>Datos del administrador y del despacho.</small></div></li>
+                    <li><span>2</span><div><strong>La UDAE la valida</strong><small>Revisa la información y aprueba o rechaza.</small></div></li>
+                    <li><span>3</span><div><strong>Recibe sus credenciales</strong><small>Llegan al correo institucional registrado.</small></div></li>
+                    <li><span>4</span><div><strong>Registre sus procesos</strong><small>Y envíelos al Consejo Seccional.</small></div></li>
+                </ol>
+            </div>
+
+            <div class="rp-card rp-progreso-card">
+                <div class="rp-aside-titulo">Avance del formulario</div>
+                <div class="rp-progreso-barra"><div id="progreso-barra"></div></div>
+                <div id="progreso-texto" class="rp-progreso-texto">0 de 0 campos obligatorios</div>
+            </div>
+        </aside>
+
+        <!-- Formulario -->
+        <section class="rp-card rp-form-card" id="seccion-formulario">
+            <div class="rp-form-head">
+                <h1>Solicitud de Postulación del Despacho Permanente</h1>
+                <p>Postule su despacho para ser habilitado y registrar los procesos que requieren apoyo para mitigar la congestión. Los campos con <span class="rp-req">*</span> son obligatorios.</p>
+            </div>
+
+            <form id="form-despacho" onsubmit="guardarDespacho(event)" oninput="actualizarProgreso()" onchange="actualizarProgreso()">
+                <input type="hidden" id="despacho-id">
+
+                <!-- SECCIÓN 1: INFORMACIÓN DEL ADMINISTRADOR -->
+                <div class="rp-seccion"><span>1</span> 👤 Información del Administrador del Despacho</div>
+
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="admin_primer_nombre">Primer Nombre <span class="rp-req">*</span></label>
+                        <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control" value="Luis" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_segundo_nombre">Segundo Nombre</label>
+                        <input type="text" id="admin_segundo_nombre" name="admin_segundo_nombre" class="form-control" value="Fernando">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_primer_apellido">Primer Apellido <span class="rp-req">*</span></label>
+                        <input type="text" id="admin_primer_apellido" name="admin_primer_apellido" class="form-control" value="Giraldo" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="admin_segundo_apellido">Segundo Apellido</label>
+                        <input type="text" id="admin_segundo_apellido" name="admin_segundo_apellido" class="form-control" value="Restrepo">
+                    </div>
+
+                    <div class="form-group admin-form-full">
+                        <label for="admin_correo">Correo Electrónico Institucional <span class="rp-req">*</span></label>
+                        <input type="email" id="admin_correo" name="admin_correo" class="form-control" value="lgiraldo@cendoj.ramajudicial.gov.co" required oninput="validarCorreo()">
+                        <div id="ayuda-correo" class="rp-ayuda">A este correo llegarán las credenciales de acceso.</div>
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 2: INFORMACIÓN DEL DESPACHO -->
+                <div class="rp-seccion"><span>2</span> 🏢 Información del Despacho Propuesto</div>
+
+                <div class="admin-form-grid">
+                    <div class="form-group">
+                        <label for="jurisdiccion">Jurisdicción <span class="rp-req">*</span></label>
+                        <select id="jurisdiccion" name="jurisdiccion" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipodespacho">Tipo de Despacho <span class="rp-req">*</span></label>
+                        <select id="tipodespacho" name="tipodespacho" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="deptomunicipio">Municipio <span class="rp-req">*</span></label>
+                        <input type="search" class="form-control rp-buscador" placeholder="🔍 Escriba para buscar el municipio" oninput="filtrarOpciones('deptomunicipio', this.value)">
+                        <select id="deptomunicipio" name="deptomunicipio" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="consejoseccional">Consejo Seccional <span class="rp-req">*</span></label>
+                        <select id="consejoseccional" name="consejoseccional" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="distrito">Distrito <span class="rp-req">*</span></label>
+                        <select id="distrito" name="distrito" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="circuito">Circuito <span class="rp-req">*</span></label>
+                        <input type="search" class="form-control rp-buscador" placeholder="🔍 Escriba para buscar el circuito" oninput="filtrarOpciones('circuito', this.value)">
+                        <select id="circuito" name="circuito" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group admin-form-full">
+                        <label for="especialidad">Especialidad / Subespecialidad <span class="rp-req">*</span></label>
+                        <select id="especialidad" name="especialidad" class="form-control" required></select>
+                    </div>
+
+                    <div class="form-group admin-form-full">
+                        <label for="codigo_despacho">Código del Despacho <span class="rp-req">*</span></label>
+                        <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control" inputmode="numeric" maxlength="20"
+                               pattern="\d+" title="Solo números" placeholder="Ej: 050014003003" required oninput="this.value = this.value.replace(/\D/g, ''); validarCodigo()">
+                        <div id="ayuda-codigo" class="rp-ayuda">Solo números.</div>
+                    </div>
+
+                    <div class="form-group admin-form-full">
+                        <label for="nombre_despacho">Nombre del Despacho <span class="rp-req">*</span></label>
+                        <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control"
+                               placeholder="Ej: JUZGADO 003 CIVIL MUNICIPAL DE MEDELLÍN" required oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                </div>
+
+                <!-- SECCIÓN 3: CONFIRMACIÓN -->
+                <div class="rp-seccion"><span>3</span> ✅ Confirmación</div>
+                <label class="rp-check">
+                    <input type="checkbox" id="acepta" required>
+                    <span>Declaro que la información suministrada es veraz y que el correo registrado es institucional y de uso del administrador del despacho.</span>
+                </label>
+
+                <!-- Botones de Acción -->
+                <div class="rp-acciones">
+                    <a href="index.html" class="btn btn-secondary rp-btn-sec">Cancelar</a>
+                    <button type="submit" id="btn-guardar" class="btn-primary-action rp-btn">📤 Revisar y enviar solicitud</button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Pantalla de éxito (se muestra al enviar) -->
+        <section class="rp-card rp-exito" id="seccion-exito" hidden>
+            <div class="rp-exito-icono">✅</div>
+            <h2>¡Solicitud enviada!</h2>
+            <p>Su postulación fue radicada con el número</p>
+            <div id="exito-radicado" class="rp-radicado">—</div>
+            <p id="exito-texto" class="rp-exito-texto"></p>
+            <div class="rp-exito-pasos">
+                <div><strong>¿Qué sigue?</strong></div>
+                <div>🔎 La UDAE revisará su solicitud.</div>
+                <div>✉️ Recibirá la respuesta y sus credenciales en <strong id="exito-correo">—</strong>.</div>
+                <div>📋 Con sus credenciales podrá registrar los procesos del despacho.</div>
+            </div>
+            <div class="rp-acciones rp-acciones-centro">
+                <a href="index.html" class="btn btn-secondary rp-btn-sec">Volver al inicio</a>
+                <a href="index_admin_p.html" class="btn-primary-action rp-btn" style="text-decoration: none;">Ir al módulo del despacho →</a>
+            </div>
+        </section>
     </main>
 
+    <footer class="rp-footer">
+        <strong>Unidad de Desarrollo y Análisis Estadístico (UDAE) — Rama Judicial</strong>
+        <span>Sus datos serán usados únicamente para la gestión de la medida de descongestión.</span>
+    </footer>
+
+    <!-- MODAL: REVISIÓN ANTES DE ENVIAR -->
+    <div id="modal-revision" class="modal-overlay">
+        <div class="modal-card" style="max-width: 640px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📋 Revise su solicitud</h2>
+                <button type="button" onclick="cerrarModal('modal-revision')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 1rem;">Verifique que los datos estén correctos antes de enviarlos a la UDAE.</p>
+            <div id="revision-contenido"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-revision')">✏️ Corregir</button>
+                <button type="button" class="btn-primary-action" onclick="confirmarEnvio()">📤 Confirmar y enviar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIÁLOGO DE AVISO -->
+    <div id="modal-dialogo-alerta" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px; width: 90%; text-align: center; padding: 2rem;">
+            <div id="dialogo-icono" style="font-size: 2.5rem; margin-bottom: 0.75rem;">⚠️</div>
+            <h3 id="dialogo-titulo" style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Atención</h3>
+            <p id="dialogo-mensaje" style="font-size: 0.85rem; color: #475569; margin-bottom: 1.5rem; line-height: 1.4;"></p>
+            <button type="button" class="btn-primary-action" onclick="cerrarModal('modal-dialogo-alerta')" style="width: 100%; justify-content: center;">Entendido</button>
+        </div>
+    </div>
+
     <script src="js/data.js"></script>
-    <script src="js/main_permanente.js"></script>
+    <script src="js/main_registro_permanente.js"></script>
 </body>
 
 </html>

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Radicación de Postulación Exitosa — PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
 
@@ -12,7 +13,7 @@
         <tr>
             <td align="center">
                 <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-                    
+
                     <!-- ENCABEZADO CON LOS DOS LOGOS -->
                     <tr>
                         <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
@@ -31,31 +32,51 @@
                         </td>
                     </tr>
 
+                    <!-- DESTINATARIO -->
+                    <tr>
+                        <td style="background-color: #f8fafc; padding: 12px 30px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                            <strong style="color: #334155;">Para:</strong> <span id="lbl-para">lgiraldo@cendoj.ramajudicial.gov.co</span>
+                        </td>
+                    </tr>
+
                     <!-- CONTENIDO PRINCIPAL -->
                     <tr>
-                        <td style="padding: 40px 30px;">
+                        <td style="padding: 35px 30px;">
                             <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
                                 ✉️ Postulación de Despacho Registrada Correctamente
                             </h1>
                             <p style="font-size: 15px; line-height: 1.5; color: #475569; margin-bottom: 20px;">
-                                Estimado/a <strong>Luis Fernando Giraldo Restrepo</strong>, le informamos que la postulación de su despacho permanente para ser habilitado y registrar los procesos que requieren apoyo para mitigar la congestión en el sistema <strong>PEYGI (RUNPD)</strong> ha sido radicada exitosamente y se encuentra en trámite de revisión.
+                                Estimado/a <strong id="lbl-saludo">Luis Fernando Giraldo Restrepo</strong>, le informamos que la postulación del despacho
+                                <strong id="lbl-despacho-texto" style="color: #0f172a;">permanente</strong> para ser habilitado y registrar los procesos que requieren apoyo para mitigar la congestión en el sistema
+                                <strong>PEYGI (RUNPD)</strong> ha sido radicada exitosamente y se encuentra en trámite de revisión.
                             </p>
 
-                            <!-- SECCIÓN 1: DETALLES DEL REGISTRO -->
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                            <!-- NÚMERO DE RADICADO -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td align="center" style="background-color: #e6f4ea; border: 1px solid #bbf7d0; border-radius: 6px; padding: 15px;">
+                                        <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Número de radicado</div>
+                                        <div id="lbl-radicado" style="font-family: monospace; font-size: 22px; font-weight: 700; color: #166534;">—</div>
+                                        <div style="font-size: 12px; color: #64748b; margin-top: 4px;">Fecha de radicación: <strong id="lbl-fecha">—</strong></div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- SECCIÓN 1: DATOS DEL ADMINISTRADOR -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 20px;">
                                 <tr>
                                     <td style="padding: 20px;">
                                         <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                            📋 Información de la Postulación
+                                            👤 Información del Administrador
                                         </h3>
                                         <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
                                             <tr>
                                                 <td width="38%" style="font-weight: 600; color: #64748b;">Administrador:</td>
-                                                <td>Luis Fernando Giraldo Restrepo</td>
+                                                <td id="lbl-admin">Luis Fernando Giraldo Restrepo</td>
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Correo Institucional:</td>
-                                                <td><strong>lgiraldo@cendoj.ramajudicial.gov.co</strong></td>
+                                                <td><strong id="lbl-correo">lgiraldo@cendoj.ramajudicial.gov.co</strong></td>
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Módulo Asignado:</td>
@@ -63,26 +84,82 @@
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Estado del Trámite:</td>
-                                                <td><span style="color: #d97706; font-weight: 600;">En Proceso de Validación</span></td>
+                                                <td><span style="background-color: #fef3c7; color: #b45309; font-weight: 600; font-size: 12px; padding: 3px 8px; border-radius: 4px;">En Proceso de Validación</span></td>
                                             </tr>
                                         </table>
                                     </td>
                                 </tr>
                             </table>
 
-                            <!-- SECCIÓN 2: PRÓXIMOS PASOS -->
+                            <!-- SECCIÓN 2: DATOS DEL DESPACHO POSTULADO -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            🏢 Información del Despacho Postulado
+                                        </h3>
+                                        <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
+                                            <tr>
+                                                <td width="38%" style="font-weight: 600; color: #64748b;">Nombre:</td>
+                                                <td id="lbl-nombre-despacho">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Código:</td>
+                                                <td><span id="lbl-codigo" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">—</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Jurisdicción / Tipo de despacho:</td>
+                                                <td id="lbl-jurisdiccion">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Especialidad:</td>
+                                                <td id="lbl-especialidad">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Consejo Seccional:</td>
+                                                <td id="lbl-consejo">—</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Ubicación:</td>
+                                                <td id="lbl-ubicacion">—</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- SECCIÓN 3: PRÓXIMOS PASOS (los mismos 4 pasos del formulario) -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f0fdf4; border-radius: 6px; border: 1px solid #bbf7d0; margin-bottom: 25px;">
                                 <tr>
                                     <td style="padding: 20px;">
                                         <h3 style="font-size: 14px; font-weight: 600; color: #166534; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
                                             ℹ️ Siguientes Pasos
                                         </h3>
-                                        <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0;">
-                                            Su solicitud será analizada por el área competente. Una vez sea aprobada, recibirá una notificación en su correo electrónico institucional informándole la habilitación del despacho, lo que le permitirá ingresar a PEYGI con sus credenciales y proceder con el registro de los procesos objeto de descongestión.
-                                        </p>
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
+                                            <tr>
+                                                <td width="34" style="vertical-align: top; padding: 0 0 10px 0;"><span style="display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background-color: #359946; color: #ffffff; font-size: 12px; font-weight: 700;">✓</span></td>
+                                                <td style="padding: 0 0 10px 0;"><strong>Solicitud radicada.</strong> <span style="color: #64748b;">Su postulación fue recibida.</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: top; padding: 0 0 10px 0;"><span style="display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background-color: #ffffff; border: 2px solid #359946; color: #166534; font-size: 12px; font-weight: 700;">2</span></td>
+                                                <td style="padding: 0 0 10px 0;"><strong>Validación por la UDAE.</strong> <span style="color: #64748b;">Se revisará la información y se aprobará o rechazará la postulación.</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: top; padding: 0 0 10px 0;"><span style="display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background-color: #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700;">3</span></td>
+                                                <td style="padding: 0 0 10px 0;"><strong>Credenciales de acceso.</strong> <span style="color: #64748b;">Si es aprobada, las recibirá en este correo institucional.</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="vertical-align: top;"><span style="display: inline-block; width: 22px; height: 22px; line-height: 22px; text-align: center; border-radius: 50%; background-color: #e2e8f0; color: #64748b; font-size: 12px; font-weight: 700;">4</span></td>
+                                                <td><strong>Registro de procesos.</strong> <span style="color: #64748b;">Ingrese a PEYGI y registre los procesos objeto de descongestión.</span></td>
+                                            </tr>
+                                        </table>
                                     </td>
                                 </tr>
                             </table>
+
+                            <p style="font-size: 13px; color: #64748b; line-height: 1.5; margin: 0;">
+                                Conserve el número de radicado para cualquier consulta sobre el estado de su postulación. Si algún dato es incorrecto, comuníquese con la UDAE indicando el número de radicado.
+                            </p>
 
                         </td>
                     </tr>
@@ -100,5 +177,39 @@
         </tr>
     </table>
 
+    <script>
+        // Llena el correo con los datos enviados desde el formulario de postulación (?data=...)
+        // Si se abre sin datos, se conservan los valores de ejemplo.
+        document.addEventListener("DOMContentLoaded", () => {
+            const dataParam = new URLSearchParams(window.location.search).get("data");
+
+            const hoy = new Date();
+            const fechaHoy = `${String(hoy.getDate()).padStart(2, "0")}/${String(hoy.getMonth() + 1).padStart(2, "0")}/${hoy.getFullYear()}`;
+            document.getElementById("lbl-fecha").textContent = fechaHoy;
+
+            if (!dataParam) return;
+
+            try {
+                const d = JSON.parse(dataParam);
+                const poner = (id, valor) => { if (valor) document.getElementById(id).textContent = valor; };
+                const nombreAdmin = [d.adminPrimerNombre, d.adminSegundoNombre, d.adminPrimerApellido, d.adminSegundoApellido].filter(Boolean).join(" ");
+
+                poner("lbl-para", d.adminCorreo);
+                poner("lbl-saludo", nombreAdmin);
+                poner("lbl-admin", nombreAdmin);
+                poner("lbl-correo", d.adminCorreo);
+                poner("lbl-radicado", d.radicado);
+                poner("lbl-despacho-texto", d.nombreDespacho);
+                poner("lbl-nombre-despacho", d.nombreDespacho);
+                poner("lbl-codigo", d.codigoDespacho);                
+                poner("lbl-jurisdiccion", [d.jurisdiccion, d.tipodespacho].filter(Boolean).join(" / "));
+                poner("lbl-especialidad", d.especialidad);
+                poner("lbl-consejo", d.consejoseccional);
+                poner("lbl-ubicacion", [d.deptomunicipio, d.distrito ? `Distrito ${d.distrito}` : "", d.circuito ? `Circuito ${d.circuito}` : ""].filter(Boolean).join(" · "));
+            } catch (error) {
+                console.error("Error al procesar los datos de la postulación:", error);
+            }
+        });
+    </script>
 </body>
 </html>

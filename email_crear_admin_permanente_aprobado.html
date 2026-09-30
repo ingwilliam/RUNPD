@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Postulación Aprobada — PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
 
@@ -11,8 +12,8 @@
     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #f4f6f8; padding: 20px 0;">
         <tr>
             <td align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-                    
+                <table border="0" cellpadding="0" cellspacing="0" width="640" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+
                     <!-- ENCABEZADO CON LOS DOS LOGOS -->
                     <tr>
                         <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
@@ -29,14 +30,29 @@
                         </td>
                     </tr>
 
+                    <!-- DESTINATARIO Y RADICADO -->
+                    <tr>
+                        <td style="background-color: #f8fafc; padding: 12px 30px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="left"><strong style="color: #334155;">Para:</strong> <span id="lbl-para">lgiraldo@cendoj.ramajudicial.gov.co</span></td>
+                                    <td align="right"><strong style="color: #334155;">Radicado:</strong> <span id="lbl-radicado-top" style="font-family: monospace; font-weight: 700; color: #166534;">SOL-2026-2879</span></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
                     <!-- CONTENIDO PRINCIPAL -->
                     <tr>
-                        <td style="padding: 40px 30px;">
+                        <td style="padding: 35px 30px;">
                             <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
-                                ✅ Postulación de Despacho Aprobada e Habilitada
+                                ✅ Postulación de Despacho Aprobada y Habilitada
                             </h1>
-                            <p style="font-size: 15px; line-height: 1.5; color: #475569; margin-bottom: 20px;">
-                                Estimado/a <strong>Luis Fernando Giraldo Restrepo</strong>, nos complace informarle que su despacho permanente ha sido <strong>aprobado y habilitado</strong> en el sistema <strong>PEYGI (RUNPD)</strong>. Ya cuenta con autorización para ingresar al sistema y registrar los procesos objeto de descongestión.
+                            <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+                                Estimado/a <strong id="lbl-admin-saludo" style="color: #0f172a;">Luis Fernando Giraldo Restrepo</strong>, nos complace informarle que la postulación
+                                <span id="lbl-radicado" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">SOL-2026-2879</span>
+                                fue <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">aprobada</strong>
+                                el <strong id="lbl-fecha">—</strong>. Su despacho permanente quedó <strong>habilitado</strong> en el sistema <strong>PEYGI (RUNPD)</strong> y ya puede registrar los procesos que requieren apoyo por medida de descongestión.
                             </p>
 
                             <!-- SECCIÓN 1: DETALLES DEL DESPACHO -->
@@ -48,24 +64,28 @@
                                         </h3>
                                         <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
                                             <tr>
-                                                <td width="38%" style="font-weight: 600; color: #64748b;">Despacho:</td>
-                                                <td>JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES</td>
+                                                <td width="38%" style="font-weight: 600; color: #64748b; vertical-align: top;">Despacho:</td>
+                                                <td id="lbl-despacho" style="font-weight: 600; color: #0f172a;">JUZGADO 003 CIVIL MUNICIPAL DE MEDELLÍN</td>
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Código de Despacho:</td>
-                                                <td><span style="font-family: monospace; font-weight: 600; color: #166534;">170014005801</span></td>
+                                                <td><span id="lbl-codigo" style="font-family: monospace; font-weight: 600; color: #166534;">050014003003</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Tipo:</td>
+                                                <td>Despacho Permanente</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Consejo Seccional:</td>
+                                                <td id="lbl-consejo">ANTIOQUIA</td>
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Administrador:</td>
-                                                <td>Luis Fernando Giraldo Restrepo</td>
-                                            </tr>
-                                            <tr>
-                                                <td style="font-weight: 600; color: #64748b;">Correo Institucional:</td>
-                                                <td><strong>lgiraldo@cendoj.ramajudicial.gov.co</strong></td>
+                                                <td id="lbl-admin">Luis Fernando Giraldo Restrepo</td>
                                             </tr>
                                             <tr>
                                                 <td style="font-weight: 600; color: #64748b;">Estado:</td>
-                                                <td><span style="color: #166534; font-weight: 600;">Habilitado para Procesos</span></td>
+                                                <td><span style="background-color: #dcfce7; color: #166534; font-weight: 600; padding: 2px 8px; border-radius: 10px; font-size: 12px;">Habilitado para Procesos</span></td>
                                             </tr>
                                         </table>
                                     </td>
@@ -79,22 +99,50 @@
                                         <h3 style="font-size: 14px; font-weight: 600; color: #166534; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
                                             🔑 Credenciales de Acceso
                                         </h3>
-                                        <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0 0 10px 0;">
-                                            Puede acceder a la plataforma utilizando su correo institucional y su contraseña temporal asignada:
+                                        <p style="font-size: 14px; color: #334155; line-height: 1.5; margin: 0 0 12px 0;">
+                                            Ingrese a la plataforma con su correo institucional y la contraseña temporal asignada:
                                         </p>
-                                        <ul style="font-size: 14px; color: #334155; margin: 0; padding-left: 20px; line-height: 1.5;">
-                                            <li><strong>Usuario:</strong> lgiraldo@cendoj.ramajudicial.gov.co</li>
-                                            <li><strong>Contraseña Temporal:</strong> Temp2026*</li>
-                                        </ul>
+                                        <table border="0" cellpadding="8" cellspacing="0" width="100%" style="font-size: 14px; background-color: #ffffff; border: 1px solid #bbf7d0; border-radius: 6px;">
+                                            <tr>
+                                                <td width="38%" style="font-weight: 600; color: #64748b; border-bottom: 1px solid #dcfce7;">Usuario:</td>
+                                                <td id="lbl-usuario" style="font-weight: 600; color: #0f172a; border-bottom: 1px solid #dcfce7;">lgiraldo@cendoj.ramajudicial.gov.co</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Contraseña temporal:</td>
+                                                <td><span id="lbl-password" style="font-family: monospace; font-size: 15px; font-weight: 700; color: #0f172a; background-color: #f1f5f9; padding: 3px 8px; border-radius: 4px; border: 1px dashed #94a3b8;">Temp2026*</span></td>
+                                            </tr>
+                                        </table>
+                                        <p style="font-size: 12px; color: #92400e; background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 4px; padding: 8px 10px; margin: 12px 0 0 0; line-height: 1.5;">
+                                            🔒 Por seguridad, el sistema le pedirá <strong>cambiar la contraseña en el primer ingreso</strong>. No comparta estas credenciales.
+                                        </p>
                                     </td>
+                                </tr>
+                            </table>
+
+                            <!-- SECCIÓN 3: PRÓXIMOS PASOS -->
+                            <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                🚀 Próximos Pasos
+                            </h3>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; color: #334155; margin-bottom: 25px;">
+                                <tr>
+                                    <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">1</span></td>
+                                    <td style="padding: 3px 0 12px 0;"><strong>Ingrese a PEYGI</strong> con las credenciales anteriores y cambie su contraseña.</td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">2</span></td>
+                                    <td style="padding: 3px 0 12px 0;"><strong>Registre los procesos</strong> que requieren apoyo, con sus demandantes, demandados y estado actual.</td>
+                                </tr>
+                                <tr>
+                                    <td style="vertical-align: top; padding: 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">3</span></td>
+                                    <td style="padding: 3px 0 0 0;"><strong>Envíelos al Consejo Seccional de <span id="lbl-consejo-paso">ANTIOQUIA</span></strong>, que los distribuirá entre los despachos de descongestión.</td>
                                 </tr>
                             </table>
 
                             <!-- BOTÓN DE ACCESO -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
-                                    <td align="center" style="padding: 10px 0 20px 0;">
-                                        <a href="#" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar a PEYGI</a>
+                                    <td align="center" style="padding: 5px 0 15px 0;">
+                                        <a href="index_admin_p.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar a PEYGI</a>
                                     </td>
                                 </tr>
                             </table>
@@ -115,5 +163,42 @@
         </tr>
     </table>
 
+    <script>
+        // Llena el correo con los datos enviados desde la validación de la UDAE (?data=...).
+        // Si se abre sin datos, se muestran los valores de ejemplo.
+        document.addEventListener("DOMContentLoaded", () => {
+            const dataParam = new URLSearchParams(window.location.search).get("data");
+            const fecha = iso => { if (!iso) return "—"; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+            const poner = (id, valor) => { if (valor) document.getElementById(id).textContent = valor; };
+
+            // Fecha por defecto: hoy
+            const hoy = new Date();
+            document.getElementById("lbl-fecha").textContent =
+                `${String(hoy.getDate()).padStart(2, "0")}/${String(hoy.getMonth() + 1).padStart(2, "0")}/${hoy.getFullYear()}`;
+
+            if (!dataParam) return;
+
+            try {
+                const datos = JSON.parse(dataParam);
+
+                poner("lbl-para", datos.correo);
+                poner("lbl-radicado-top", datos.radicado);
+                poner("lbl-radicado", datos.radicado);
+                if (datos.fechaRespuesta) poner("lbl-fecha", fecha(datos.fechaRespuesta));
+
+                poner("lbl-admin-saludo", datos.administrador);
+                poner("lbl-admin", datos.administrador);
+                poner("lbl-despacho", datos.nombreDespacho);
+                poner("lbl-codigo", datos.codigoDespacho);
+                poner("lbl-consejo", datos.consejoSeccional);
+                poner("lbl-consejo-paso", datos.consejoSeccional);
+
+                poner("lbl-usuario", datos.correo);
+                poner("lbl-password", datos.password);
+            } catch (error) {
+                console.error("Error al procesar los datos de la notificación:", error);
+            }
+        });
+    </script>
 </body>
 </html>

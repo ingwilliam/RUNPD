@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificación de Terminación del Proceso — PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
+
+    <!-- Contenedor Principal del Correo -->
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #f4f6f8; padding: 20px 0;">
+        <tr>
+            <td align="center">
+                <table border="0" cellpadding="0" cellspacing="0" width="680" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+
+                    <!-- ENCABEZADO CON LOGOS INSTITUCIONALES -->
+                    <tr>
+                        <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="left" style="vertical-align: middle;">
+                                        <img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;">
+                                    </td>
+                                    <td align="right" style="vertical-align: middle;">
+                                        <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;">
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <!-- DESTINATARIOS -->
+                    
+
+                    <!-- CONTENIDO PRINCIPAL -->
+                    <tr>
+                        <td style="padding: 35px 30px;">
+                            <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
+                                🏁 Notificación de Terminación del Proceso Judicial
+                            </h1>
+
+                            <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 20px;">
+                                Cordial saludo, señores <strong style="color: #0f172a;">demandantes y demandados</strong> del proceso con radicado
+                                <span id="lbl-codigo" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">—</span>.
+                                Se les informa que el <strong id="lbl-despacho" style="color: #0f172a;">—</strong>, despacho que conoce del proceso en virtud de la
+                                <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">medida de descongestión</strong>
+                                dispuesta por el Consejo Seccional de <span id="lbl-consejo">—</span>, registró la <strong>terminación</strong> del proceso.
+                            </p>
+
+                            <!-- DATOS DE LA TERMINACIÓN -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 5px solid #16a34a; border-radius: 6px; padding: 15px 18px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                            <tr>
+                                                <td style="vertical-align: top; padding-right: 10px;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Forma de terminación</div>
+                                                    <div id="lbl-forma" style="font-size: 16px; font-weight: 700; color: #166534;">—</div>
+                                                </td>
+                                                <td align="right" style="vertical-align: top;">
+                                                    <div style="font-size: 12px; font-weight: 600; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px;">Fecha de terminación</div>
+                                                    <div id="lbl-fecha" style="font-size: 16px; font-weight: 700; color: #0f172a;">—</div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        <div id="caja-observacion" style="display: none; font-size: 13px; color: #334155; background-color: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px; padding: 10px 12px; margin-top: 12px; font-style: italic;">
+                                            <strong style="font-style: normal;">Observación del despacho:</strong> <span id="lbl-observacion"></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- PARTES NOTIFICADAS -->
+                            <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                👥 Partes del Proceso
+                            </h3>
+
+                            <table border="0" cellpadding="8" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #e2e8f0; font-size: 13px; margin-bottom: 25px;">
+                                <thead>
+                                    <tr style="background-color: #f8fafc; color: #475569; text-align: left; border-bottom: 2px solid #e2e8f0; font-size: 12px;">
+                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Calidad</th>
+                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Nombre / Razón social</th>
+                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Correo de notificación</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tabla-partes">
+                                    <!-- Dinámico por JS -->
+                                </tbody>
+                            </table>
+
+                            <!-- DATOS DEL PROCESO -->
+                            <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                📋 Datos del Proceso
+                            </h3>
+
+                            <table border="0" cellpadding="8" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #e2e8f0; font-size: 12px; margin-bottom: 25px;">
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 10px; width: 45%; background-color: #f8fafc; font-weight: 600; color: #475569;">Radicado</td>
+                                    <td id="dato-codigo" style="padding: 10px; font-family: monospace; font-weight: 700; color: #166534;">—</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 10px; background-color: #f8fafc; font-weight: 600; color: #475569;">Despacho que terminó el proceso</td>
+                                    <td id="dato-despacho" style="padding: 10px; color: #0f172a;">—</td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e2e8f0;">
+                                    <td style="padding: 10px; background-color: #f8fafc; font-weight: 600; color: #475569;">Despacho de origen</td>
+                                    <td id="dato-origen" style="padding: 10px; color: #0f172a;">—</td>
+                                </tr>
+                                <tr id="fila-link" style="display: none;">
+                                    <td style="padding: 10px; background-color: #f8fafc; font-weight: 600; color: #475569;">Expediente</td>
+                                    <td style="padding: 10px;"><a id="dato-link" href="#" target="_blank" style="color: #0284c7; text-decoration: underline;">🔗 Expediente Rama Judicial</a></td>
+                                </tr>
+                            </table>
+
+                            <!-- NOTA INFORMATIVA -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
+                                <tr>
+                                    <td style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 12px 15px; font-size: 13px; color: #0c4a6e; line-height: 1.5;">
+                                        ℹ️ Esta comunicación es de carácter <strong>informativo</strong>. Puede consultar el estado y la trazabilidad del proceso en la opción <em>Consulta Ciudadana</em> del sistema, con el número de radicado. Para cualquier inquietud, comuníquese con el despacho al correo <a id="lbl-correo-despacho" href="#" style="color: #0284c7;">—</a>.
+                                    </td>
+                                </tr>
+                            </table>
+
+                            <!-- BOTÓN DE CONSULTA -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+                                    <td align="center" style="padding: 5px 0 15px 0;">
+                                        <a id="btn-consulta" href="consulta_ciudadano.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Consultar mi proceso en PEYGI</a>
+                                    </td>
+                                </tr>
+                            </table>
+
+                        </td>
+                    </tr>
+
+                    <!-- PIE DE PÁGINA -->
+                    <tr>
+                        <td align="center" style="background-color: #f8fafc; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                            <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Sistema PEYGI</p>
+                            <p style="margin: 0;">Este es un mensaje automático de notificación institucional generado por el <span id="lbl-despacho-pie">despacho de descongestión</span>. Por favor no responda a este correo.</p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const dataParam = new URLSearchParams(window.location.search).get("data");
+            if (!dataParam) return;
+
+            const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+            const fecha = iso => { if (!iso) return "N/A"; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+            const nombreParte = d => {
+                if (d.nombre && d.nombre.trim() !== "") return d.nombre;
+                const filtradas = [d.primerNombre, d.segundoNombre, d.primerApellido, d.segundoApellido].filter(Boolean);
+                return filtradas.length > 0 ? filtradas.join(" ") : "No especificado";
+            };
+
+            try {
+                const datos = JSON.parse(dataParam);
+                const p = datos.proceso || {};
+                const despacho = datos.despacho || {};
+
+                // Partes con su calidad dentro del proceso
+                const partes = [
+                    ...(p.demandantes || []).map(x => ({ ...x, calidad: "Demandante" })),
+                    ...(p.demandados || []).map(x => ({ ...x, calidad: "Demandado" }))
+                ];
+
+                // Destinatarios: todos los correos de las partes
+                const correos = partes.map(x => x.correo).filter(Boolean);                
+
+                // Datos generales
+                document.getElementById("lbl-codigo").textContent = p.codigo || "—";
+                document.getElementById("lbl-despacho").textContent = despacho.nombre || "—";
+                document.getElementById("lbl-despacho-pie").textContent = despacho.nombre || "despacho de descongestión";
+                document.getElementById("lbl-consejo").textContent = datos.consejoSeccional || "—";
+                document.getElementById("lbl-forma").textContent = datos.formaTerminacion || "—";
+                document.getElementById("lbl-fecha").textContent = fecha(datos.fechaTerminacion);
+
+                if (datos.observacion) {
+                    document.getElementById("lbl-observacion").textContent = datos.observacion;
+                    document.getElementById("caja-observacion").style.display = "block";
+                }
+
+                const correoDespacho = document.getElementById("lbl-correo-despacho");
+                correoDespacho.textContent = despacho.correo || "—";
+                if (despacho.correo) correoDespacho.href = `mailto:${despacho.correo}`;
+
+                // Tabla de partes
+                document.getElementById("tabla-partes").innerHTML = partes.length
+                    ? partes.map(x => `
+                        <tr style="border-bottom: 1px solid #e2e8f0;">
+                            <td style="padding: 10px; vertical-align: top;">
+                                <span style="background-color: ${x.calidad === "Demandante" ? "#dcfce7" : "#e0f2fe"}; color: ${x.calidad === "Demandante" ? "#166534" : "#0369a1"}; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600;">${x.calidad}</span>
+                            </td>
+                            <td style="padding: 10px; vertical-align: top; color: #0f172a; font-size: 12px;">
+                                ${x.tipo === "juridica" ? "🏢" : "👤"} ${esc(nombreParte(x))}
+                                <div style="font-size: 11px; color: #64748b;">${x.tipo === "juridica" ? "Persona jurídica" : "Persona natural"}</div>
+                            </td>
+                            <td style="padding: 10px; vertical-align: top; font-size: 12px; color: #475569;">${esc(x.correo || "No registrado")}</td>
+                        </tr>`).join("")
+                    : `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #64748b;">No se registran partes en este proceso.</td></tr>`;
+
+                // Datos del proceso
+                document.getElementById("dato-codigo").textContent = p.codigo || "—";
+                document.getElementById("dato-despacho").textContent = `${despacho.nombre || "—"} (Código: ${despacho.codigo || "—"})`;
+                document.getElementById("dato-origen").textContent = p.despachoOrigen || "—";
+                if (p.link) {
+                    document.getElementById("dato-link").href = p.link;
+                    document.getElementById("fila-link").style.display = "";
+                }
+
+                // El botón lleva el radicado a la consulta ciudadana
+                document.getElementById("btn-consulta").href = `consulta_ciudadano.html?radicado=${encodeURIComponent(p.codigo || "")}`;
+            } catch (error) {
+                console.error("Error al procesar los datos de la notificación:", error);
+            }
+        });
+    </script>
+</body>
+</html>

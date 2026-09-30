@@ -1,0 +1,464 @@
+/* ==========================================================================
+   CONSULTA.CSS — Solo para la consulta ciudadana (consulta_ciudadano.html)
+   Se apoya en las variables y componentes de main.css
+   ========================================================================== */
+
+/* main.css centra el body (login); aquí se permite el scroll normal */
+body.cq-body {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: #f8fafc;
+}
+
+/* ---------------- BARRA SUPERIOR ---------------- */
+.cq-header {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 78px;
+    padding: 0.5rem 2rem;
+    color: #ffffff;
+    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    border-bottom: 4px solid #ffc107;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.cq-volver {
+    position: absolute;
+    left: 1.5rem;
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.15);
+    padding: 0.4rem 0.8rem;
+    border-radius: 4px;
+}
+
+.cq-volver:hover { background: rgba(255, 255, 255, 0.25); }
+
+.cq-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.cq-logo {
+    height: 52px;
+    width: auto;
+    background: #ffffff;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.cq-brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.cq-brand-text strong { font-size: 1.3rem; font-weight: 700; }
+.cq-brand-text span { font-size: 0.85rem; opacity: 0.92; }
+
+/* ---------------- CONTENIDO ---------------- */
+.cq-main {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 3rem;
+}
+
+/* ---------------- BUSCADOR ---------------- */
+.cq-search {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-top: 4px solid var(--primary-green);
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(15, 23, 42, 0.06);
+}
+
+.cq-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.35rem;
+}
+
+.cq-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+}
+
+.cq-form {
+    display: flex;
+    gap: 0.75rem;
+    max-width: 680px;
+    margin: 0 auto;
+}
+
+.cq-input-wrap {
+    position: relative;
+    flex: 1;
+}
+
+.cq-input {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 1.15rem;
+    letter-spacing: 1px;
+    padding: 0.9rem 4.5rem 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+}
+
+.cq-counter {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--text-muted);
+}
+
+.cq-counter.completo { color: var(--primary-green); }
+
+.cq-btn {
+    padding: 0.9rem 1.6rem;
+    font-size: 1rem;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.cq-error {
+    min-height: 1.25rem;
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #dc2626;
+}
+
+.cq-ejemplos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.cq-ejemplos > div { display: flex; flex-wrap: wrap; gap: 0.4rem; justify-content: center; }
+
+.cq-chip-ejemplo {
+    font-family: ui-monospace, Consolas, monospace;
+    font-size: 0.75rem;
+    background: #f1f5f9;
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    cursor: pointer;
+}
+
+.cq-chip-ejemplo:hover { background: #e6f4ea; border-color: var(--primary-green); color: var(--primary-green); }
+
+/* ---------------- RESULTADO ---------------- */
+.cq-resultado { margin-top: 1.75rem; }
+
+.cq-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+    box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+}
+
+.cq-card-titulo {
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--primary-green);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 1rem;
+}
+
+/* Resumen */
+.cq-resumen-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.cq-radicado-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
+.cq-radicado { font-family: ui-monospace, Consolas, monospace; font-size: 1.35rem; font-weight: 700; color: var(--primary-green); letter-spacing: 0.5px; }
+.cq-partes { font-size: 0.95rem; color: var(--text-main); margin-top: 0.3rem; }
+.cq-partes em { color: var(--text-muted); }
+
+.cq-estado {
+    text-align: right;
+}
+
+.cq-estado-badge {
+    display: inline-block;
+    font-size: 0.95rem;
+    font-weight: 700;
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+}
+
+.cq-estado-texto { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.35rem; max-width: 320px; }
+
+.cq-datos {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.cq-dato-label { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 0.2rem; }
+.cq-dato-valor { font-size: 0.9rem; color: var(--text-main); font-weight: 600; line-height: 1.35; }
+
+/* Etapas (stepper) */
+.cq-etapas {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    position: relative;
+}
+
+.cq-etapa {
+    position: relative;
+    text-align: center;
+    padding: 0 0.4rem;
+}
+
+/* Línea entre etapas */
+.cq-etapa::before {
+    content: "";
+    position: absolute;
+    top: 1.2rem;
+    left: -50%;
+    width: 100%;
+    height: 4px;
+    background: var(--border-color);
+    z-index: 0;
+}
+
+.cq-etapa:first-child::before { display: none; }
+.cq-etapa.hecha::before,
+.cq-etapa.actual::before { background: var(--primary-green); }
+
+.cq-etapa-circulo {
+    position: relative;
+    z-index: 1;
+    width: 2.4rem;
+    height: 2.4rem;
+    margin: 0 auto 0.5rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.05rem;
+    background: #ffffff;
+    border: 3px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.cq-etapa.hecha .cq-etapa-circulo { background: var(--primary-green); border-color: var(--primary-green); color: #ffffff; }
+.cq-etapa.actual .cq-etapa-circulo { border-color: var(--primary-green); box-shadow: 0 0 0 5px #e6f4ea; }
+.cq-etapa.alerta .cq-etapa-circulo { border-color: #f59e0b; box-shadow: 0 0 0 5px #fef3c7; }
+
+.cq-etapa-nombre { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+.cq-etapa.pendiente .cq-etapa-nombre { color: var(--text-muted); font-weight: 500; }
+.cq-etapa-fecha { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem; }
+.cq-etapa-nota { display: inline-block; font-size: 0.68rem; font-weight: 700; margin-top: 0.3rem; padding: 0.1rem 0.45rem; border-radius: 999px; background: #fef3c7; color: #92400e; }
+
+/* Ruta origen → destino */
+.cq-ruta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 0.5rem;
+}
+
+.cq-ruta-nodo {
+    flex: 1 1 180px;
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.7rem 0.85rem;
+}
+
+.cq-ruta-nodo.actual { background: #f0fdf4; border-color: #86efac; box-shadow: 0 0 0 3px #e6f4ea; }
+.cq-ruta-nodo.devuelto { background: #fffbeb; border-color: #fcd34d; }
+.cq-ruta-nodo.devuelto .cq-ruta-nombre { text-decoration: line-through; color: var(--text-muted); }
+
+.cq-ruta-rol { font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 0.2rem; }
+.cq-ruta-nombre { font-size: 0.8rem; font-weight: 600; color: var(--text-main); line-height: 1.3; }
+.cq-ruta-tag { display: inline-block; margin-top: 0.35rem; font-size: 0.68rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 999px; }
+
+.cq-ruta-flecha {
+    display: flex;
+    align-items: center;
+    color: var(--primary-green);
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+/* Línea de tiempo */
+.cq-timeline-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.cq-timeline-head .cq-card-titulo { margin-bottom: 0; }
+
+.cq-orden {
+    background: none;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    padding: 0.3rem 0.6rem;
+    font-size: 0.78rem;
+    color: var(--text-main);
+    cursor: pointer;
+}
+
+.cq-orden:hover { border-color: var(--primary-green); color: var(--primary-green); }
+
+.cq-timeline {
+    list-style: none;
+    position: relative;
+    padding-left: 0.25rem;
+}
+
+.cq-evento {
+    position: relative;
+    display: flex;
+    gap: 1rem;
+    padding-bottom: 1.25rem;
+}
+
+/* Línea vertical */
+.cq-evento::before {
+    content: "";
+    position: absolute;
+    left: 1.2rem;
+    top: 2.5rem;
+    bottom: 0;
+    width: 2px;
+    background: var(--border-color);
+}
+
+.cq-evento:last-child::before { display: none; }
+
+.cq-evento-icono {
+    flex-shrink: 0;
+    width: 2.4rem;
+    height: 2.4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+    border: 3px solid #ffffff;
+    box-shadow: 0 0 0 1px var(--border-color);
+}
+
+.cq-evento-cuerpo {
+    flex: 1;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+}
+
+.cq-evento-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.cq-evento-titulo { font-size: 0.92rem; font-weight: 700; color: var(--text-main); }
+.cq-evento-fecha { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+.cq-evento-actor { font-size: 0.78rem; color: var(--text-muted); margin-top: 0.15rem; }
+.cq-evento-detalle { font-size: 0.83rem; color: var(--text-main); margin-top: 0.4rem; line-height: 1.45; }
+
+/* Acciones del resultado */
+.cq-acciones {
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+/* Sin resultados */
+.cq-vacio {
+    text-align: center;
+    padding: 2.5rem 1.5rem;
+}
+
+.cq-vacio-icono { font-size: 2.5rem; margin-bottom: 0.5rem; }
+.cq-vacio h2 { font-size: 1.15rem; color: var(--text-main); margin-bottom: 0.4rem; }
+.cq-vacio p { font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; }
+
+/* ---------------- PIE ---------------- */
+.cq-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background: #ffffff;
+}
+
+.cq-footer strong { color: var(--text-main); font-weight: 600; }
+
+/* ---------------- RESPONSIVO ---------------- */
+@media (max-width: 760px) {
+    .cq-volver { position: static; margin-right: auto; }
+    .cq-header { justify-content: space-between; gap: 0.75rem; flex-wrap: wrap; }
+    .cq-logo { height: 40px; }
+    .cq-brand-text strong { font-size: 1.05rem; }
+    .cq-brand-text span { font-size: 0.7rem; }
+    .cq-form { flex-direction: column; }
+    .cq-estado { text-align: left; }
+    .cq-etapas { grid-template-columns: 1fr; gap: 0.75rem; }
+    .cq-etapa { display: flex; align-items: center; gap: 0.75rem; text-align: left; }
+    .cq-etapa::before { display: none; }
+    .cq-etapa-circulo { margin: 0; flex-shrink: 0; }
+    .cq-ruta-flecha { transform: rotate(90deg); width: 100%; justify-content: center; }
+}
+
+/* ---------------- IMPRESIÓN ---------------- */
+@media print {
+    .cq-search, .cq-acciones, .cq-volver, .cq-orden { display: none !important; }
+    .cq-header { box-shadow: none; }
+    .cq-card { box-shadow: none; break-inside: avoid; }
+}

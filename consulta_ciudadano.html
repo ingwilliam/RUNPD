@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Ciudadana de Procesos de Descongestión - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/consulta.css">
+</head>
+<body class="cq-body">
+
+    <!-- Barra superior pública -->
+    <header class="cq-header">
+        <a href="index.html" class="cq-volver">← Inicio</a>
+        <div class="cq-brand">
+            <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo PEYGI" class="cq-logo">
+            <div class="cq-brand-text">
+                <strong>Consulta Ciudadana</strong>
+                <span>Registro Único Nacional de Procesos de Descongestión</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="cq-main">
+
+        <!-- BUSCADOR -->
+        <section class="cq-search">
+            <h1 class="cq-title">Consulte el estado de su proceso</h1>
+            <p class="cq-subtitle">Ingrese el número de radicación de 23 dígitos. No necesita usuario ni contraseña.</p>
+
+            <form class="cq-form" onsubmit="consultar(event)">
+                <div class="cq-input-wrap">
+                    <input type="text" id="radicado" class="form-control cq-input" inputmode="numeric" maxlength="23"
+                           placeholder="Ej: 05001400300320240012300" autocomplete="off" aria-label="Número de radicación"
+                           oninput="limpiarRadicado(this)">
+                    <span id="radicado-contador" class="cq-counter">0/23</span>
+                </div>
+                <button type="submit" class="btn-primary-action cq-btn">🔍 Consultar</button>
+            </form>
+            <div id="error-radicado" class="cq-error" role="alert"></div>
+
+            <div class="cq-ejemplos">
+                <span>Radicados de prueba:</span>
+                <div id="lista-ejemplos"></div>
+            </div>
+        </section>
+
+        <!-- RESULTADO -->
+        <section id="resultado" class="cq-resultado" aria-live="polite"></section>
+    </main>
+
+    <footer class="cq-footer">
+        <strong>Unidad de Desarrollo y Análisis Estadístico (UDAE) — Rama Judicial</strong>
+        <span>La información de esta consulta es de carácter informativo y no reemplaza las notificaciones oficiales del despacho.</span>
+    </footer>
+
+    <script src="js/data_consulta.js"></script>
+    <script src="js/main_consulta.js"></script>
+</body>
+</html>

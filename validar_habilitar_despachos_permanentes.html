@@ -3,44 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PEYGI - Sistema de Planeación Estratégica y Gestión Institucional</title>
+    <title>Validación de Despachos Permanentes - PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="app-body">
 
-    <!-- Barra Superior con Indicador de Rol Integrado y Más Visual -->
+    <!-- Barra Superior -->
     <header class="app-header">
         <div class="navbar-brand">
             <button class="menu-toggle">☰</button>
             <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
         </div>
-        
+
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
-            <!-- Indicador de Rol Más Visual -->
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
                 <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
                 <span style="font-weight: 600;">Administrador Central (UDAE)</span>
             </div>
-
-            <div class="navbar-user">
-                <span>👤 ▾</span>
-            </div>
+            <div class="navbar-user"><span>👤 ▾</span></div>
         </div>
     </header>
 
     <!-- Contenedor Principal con Sidebar -->
     <div class="app-layout">
-        <!-- Barra Lateral -->
         <aside class="app-sidebar">
             <a href="index.html" style="text-decoration: none; color: inherit;">
-    <div class="sidebar-icon active" title="Inicio">🏠</div>
-</a>
+                <div class="sidebar-icon active" title="Inicio">🏠</div>
+            </a>
             <div class="sidebar-icon" title="Menú">☰</div>
             <div class="sidebar-icon" title="Opciones">⚙️</div>
         </aside>
 
-        <!-- Contenido -->
         <main class="app-main">
             <!-- Ruta de Navegación (Breadcrumbs) -->
             <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
@@ -53,36 +47,202 @@
                 </ol>
             </nav>
 
-            <!-- Título de la Sección -->
-            <div style="margin-bottom: 1.5rem;">
-                <h1 style="font-size: 1.5rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.3rem;">Validación de Postulaciones de Despachos Permanentes</h1>
-                <p style="font-size: 0.85rem; color: var(--text-muted);">Revise y gestione las solicitudes enviadas para autorizar la habilitación de despachos permanentes en el sistema PEYGI.</p>
+            <div class="content-header">
+                <div class="welcome-section" style="margin-bottom: 0;">
+                    <h1>Validación de Postulaciones de Despachos Permanentes</h1>
+                    <p>Revise las solicitudes enviadas por los despachos permanentes y apruebe o rechace su habilitación en el sistema PEYGI.</p>
+                </div>
             </div>
 
-            <!-- Tabla de Solicitudes Dinámica -->
+            <!-- Aviso de pendientes -->
+            <div id="aviso-pendientes" style="display: none; background: #fef9c3; border: 1px solid #fde047; border-left: 5px solid #eab308; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 1.25rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"></div>
+
+            <!-- Indicadores (clic para filtrar) -->
+            <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;"></div>
+
+            <!-- Filtros -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 0.75rem; align-items: end;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-busqueda">Buscar</label>
+                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Radicado, despacho, código o administrador" oninput="renderizarTablaPermanentes()">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-consejo">Consejo Seccional</label>
+                        <select id="filtro-consejo" class="form-control" onchange="renderizarTablaPermanentes()"></select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-estado">Estado</label>
+                        <select id="filtro-estado" class="form-control" onchange="renderizarTablaPermanentes()">
+                            <option value="">Todos</option>
+                            <option value="Pendiente">Pendientes</option>
+                            <option value="Aprobado">Aprobadas</option>
+                            <option value="Rechazado">Rechazadas</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1rem;" onclick="limpiarFiltros()">✕ Limpiar</button>
+                </div>
+                <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem;"></div>
+            </div>
+
+            <!-- Tabla de Solicitudes -->
             <div class="data-table-container">
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Administrador</th>
-                            <th>Correo Institucional</th>
+                            <th>Radicado</th>
                             <th>Despacho Propuesto</th>
-                            <th>Código</th>
+                            <th>Ubicación / Especialidad</th>
+                            <th>Administrador</th>
                             <th>Estado</th>
-                            <th style="text-align: center;">Acciones</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
-                    <tbody id="cuerpo-tabla-permanente">
-                        <!-- Se llena dinámicamente con JavaScript -->
-                    </tbody>
+                    <tbody id="cuerpo-tabla-permanente"></tbody>
                 </table>
             </div>
-            
         </main>
+    </div>
+
+    <!-- MODAL: REVISAR / VER DETALLE -->
+    <div id="modal-detalle" class="modal-overlay">
+        <div class="modal-card" style="max-width: 820px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <div>
+                    <h2 id="detalle-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📋 Revisión de la postulación</h2>
+                    <div id="detalle-subtitulo" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;"></div>
+                </div>
+                <button type="button" onclick="cerrarModal('modal-detalle')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <div id="detalle-contenido"></div>
+            <div id="detalle-acciones" style="display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;"></div>
+        </div>
+    </div>
+
+    <!-- MODAL: EDITAR / CORREGIR DATOS -->
+    <div id="modal-edicion" class="modal-overlay">
+        <div class="modal-card" style="max-width: 760px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                <h2 id="edicion-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">✏️ Corregir postulación</h2>
+                <button type="button" onclick="cerrarModal('modal-edicion')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+
+            <form id="form-editar-despacho" onsubmit="guardarEdicionDespacho(event)">
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    👤 Información del Administrador
+                </div>
+                <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="edit-admin-pnombre">Primer Nombre</label>
+                        <input type="text" id="edit-admin-pnombre" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-admin-snombre">Segundo Nombre</label>
+                        <input type="text" id="edit-admin-snombre" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-admin-papellido">Primer Apellido</label>
+                        <input type="text" id="edit-admin-papellido" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-admin-sapellido">Segundo Apellido</label>
+                        <input type="text" id="edit-admin-sapellido" class="form-control">
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="edit-admin-correo">Correo Electrónico Institucional</label>
+                        <input type="email" id="edit-admin-correo" class="form-control" required>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    🏢 Información del Despacho
+                </div>
+                <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
+                    <div class="form-group">
+                        <label for="edit-jurisdiccion">Jurisdicción</label>
+                        <select id="edit-jurisdiccion" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-tipodespacho">Tipo de Despacho</label>
+                        <select id="edit-tipodespacho" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-deptomunicipio">Municipio</label>
+                        <input type="search" class="form-control" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; margin-bottom: 0.35rem;" placeholder="🔍 Buscar municipio" oninput="filtrarOpciones('edit-deptomunicipio', 'deptomunicipio', this.value)">
+                        <select id="edit-deptomunicipio" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-consejoseccional">Consejo Seccional</label>
+                        <select id="edit-consejoseccional" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-distrito">Distrito</label>
+                        <select id="edit-distrito" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-circuito">Circuito</label>
+                        <input type="search" class="form-control" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; margin-bottom: 0.35rem;" placeholder="🔍 Buscar circuito" oninput="filtrarOpciones('edit-circuito', 'circuito', this.value)">
+                        <select id="edit-circuito" class="form-control" required></select>
+                    </div>
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="edit-especialidad">Especialidad / Subespecialidad</label>
+                        <select id="edit-especialidad" class="form-control" required></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-codigo-despacho">Código del Despacho</label>
+                        <input type="text" id="edit-codigo-despacho" class="form-control" inputmode="numeric" maxlength="20" pattern="\d+" title="Solo números" required oninput="this.value = this.value.replace(/\D/g, '')">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-nombre-despacho">Nombre del Despacho</label>
+                        <input type="text" id="edit-nombre-despacho" class="form-control" required oninput="this.value = this.value.toUpperCase()">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-edicion')">Cancelar</button>
+                    <button type="submit" class="btn-primary-action">💾 Guardar y volver a la revisión</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: RECHAZAR -->
+    <div id="modal-rechazo" class="modal-overlay">
+        <div class="modal-card" style="max-width: 600px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.15rem; color: #dc2626; font-weight: 600; margin: 0;">✖ Rechazar Postulación</h2>
+                <button type="button" onclick="cerrarModal('modal-rechazo')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <div id="rechazo-resumen" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem;"></div>
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.5rem;">Motivos frecuentes (clic para agregar):</div>
+            <div id="rechazo-motivos" style="display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem;"></div>
+            <div class="form-group">
+                <label for="input-motivo-rechazo">Motivo del rechazo (se enviará al solicitante)</label>
+                <textarea id="input-motivo-rechazo" class="form-control" rows="4" maxlength="600" placeholder="Explique el motivo y, si aplica, qué debe corregir para postularse de nuevo" style="resize: vertical;"></textarea>
+            </div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-rechazo')">Cancelar</button>
+                <button type="button" class="btn" style="background-color: #dc2626; color: white;" onclick="confirmarRechazo()">✖ Confirmar rechazo</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- DIÁLOGO DE RESULTADO / CONFIRMACIÓN (último para quedar siempre encima) -->
+    <div id="modal-dialogo-alerta" class="modal-overlay">
+        <div class="modal-card" style="max-width: 460px; width: 90%; text-align: center; padding: 2rem;">
+            <div id="dialogo-icono" style="font-size: 2.5rem; margin-bottom: 0.75rem;">✅</div>
+            <h3 id="dialogo-titulo" style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Operación Exitosa</h3>
+            <p id="dialogo-mensaje" style="font-size: 0.85rem; color: #475569; margin-bottom: 1.5rem; line-height: 1.4;"></p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button type="button" id="dialogo-btn-cancelar" class="btn btn-secondary" onclick="cerrarModal('modal-dialogo-alerta')" style="flex: 1; display: none;">Cancelar</button>
+                <button type="button" id="dialogo-btn-aceptar" class="btn-primary-action" onclick="aceptarDialogo()" style="flex: 1; justify-content: center;">Entendido</button>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts de Datos y Lógica -->
     <script src="js/data.js"></script>
+    <script src="js/data_postulaciones.js"></script>
     <script src="js/main_permanente.js"></script>
 </body>
 </html>

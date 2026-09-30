@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gestión de Despachos de Descongestión - PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/main.css">    
+    <link rel="stylesheet" href="css/main.css">
 </head>
 <body class="app-body">
 
@@ -15,7 +15,7 @@
             <button class="menu-toggle">☰</button>
             <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
         </div>
-        
+
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
                 <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
@@ -33,8 +33,8 @@
         <!-- Barra Lateral -->
         <aside class="app-sidebar">
             <a href="index.html" style="text-decoration: none; color: inherit;">
-    <div class="sidebar-icon active" title="Inicio">🏠</div>
-</a>
+                <div class="sidebar-icon active" title="Inicio">🏠</div>
+            </a>
             <div class="sidebar-icon" title="Menú">☰</div>
             <div class="sidebar-icon" title="Opciones">⚙️</div>
         </aside>
@@ -52,9 +52,7 @@
             </nav>
             <div class="content-header">
                 <div class="welcome-section" style="margin-bottom: 0;">
-                    <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 0.25rem;">
-                        <h1 style="margin: 0;">Gestión de despachos con medida de descongestión</h1>                        
-                    </div>
+                    <h1 style="margin: 0 0 0.25rem 0;">Gestión de despachos con medida de descongestión</h1>
                     <p>Registro Único Nacional de Procesos de Descongestión — Validar, habilitar y administrar despachos de descongestión</p>
                 </div>
                 <button class="btn-primary-action" onclick="abrirFormularioNuevo()">
@@ -62,19 +60,50 @@
                 </button>
             </div>
 
+            <!-- Indicadores (clic para filtrar) -->
+            <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+                <!-- Dinámico vía JS -->
+            </div>
+
+            <!-- Filtros -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="display: grid; grid-template-columns: 2fr repeat(3, 1fr) auto; gap: 0.75rem; align-items: end;">
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-busqueda">Buscar</label>
+                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Nombre, código, municipio o administrador" oninput="renderizarTabla()">
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-consejo">Consejo Seccional</label>
+                        <select id="filtro-consejo" class="form-control" onchange="renderizarTabla()"></select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-especialidad">Especialidad</label>
+                        <select id="filtro-especialidad" class="form-control" onchange="renderizarTabla()"></select>
+                    </div>
+                    <div class="form-group" style="margin: 0;">
+                        <label for="filtro-estado">Estado</label>
+                        <select id="filtro-estado" class="form-control" onchange="renderizarTabla()">
+                            <option value="">Todos</option>
+                            <option value="Activo">Activos</option>
+                            <option value="Inactivo">Inactivos</option>
+                        </select>
+                    </div>
+                    <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1rem;" onclick="limpiarFiltros()">✕ Limpiar</button>
+                </div>
+                <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.6rem;"></div>
+            </div>
+
             <!-- Tabla de Despachos Actuales -->
             <div class="data-table-container">
                 <table class="data-table" id="tabla-despachos">
                     <thead>
                         <tr>
-                            <th>Jurisdicción</th>
-                            <th>Tipo Despacho</th>
-                            <th>Código Despacho</th>
-                            <th>Nombre Despacho</th>
-                            <th>Ubicación (Mun)</th>
+                            <th>Despacho</th>
+                            <th>Tipo / Jurisdicción</th>
+                            <th>Ubicación</th>
                             <th>Especialidad</th>
-                            <th>Vigencia Inicio</th>
-                            <th>Vigencia Fin</th>
+                            <th>Administrador</th>
+                            <th>Vigencia de la Medida</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -90,21 +119,21 @@
 
     <!-- LAYER / VENTANA MODAL FLOTANTE PARA CREAR Y EDITAR -->
     <div id="modal-despacho" class="modal-overlay">
-        <div class="modal-card" style="max-width: 800px;">
+        <div class="modal-card" style="max-width: 760px; width: 95%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
                 <h2 id="form-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📝 Registrar Despacho de Descongestión y Administrador</h2>
-                <button onclick="ocultarFormulario()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+                <button type="button" onclick="ocultarFormulario()" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
             </div>
-            
+
             <form id="form-despacho" onsubmit="guardarDespacho(event)">
                 <input type="hidden" id="despacho-id">
-                
+
                 <!-- SECCIÓN 1: INFORMACIÓN DEL DESPACHO -->
                 <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
                     🏢 Información del Despacho
                 </div>
-                <div class="form-grid" style="margin-bottom: 1.5rem;">
-                    
+                <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
+
                     <!-- Jurisdicción -->
                     <div class="form-group">
                         <label for="jurisdiccion">Jurisdicción</label>
@@ -117,9 +146,10 @@
                         <select id="tipodespacho" name="tipodespacho" class="form-control" required></select>
                     </div>
 
-                    <!-- Municipio -->
+                    <!-- Municipio (con buscador porque la lista es muy larga) -->
                     <div class="form-group">
                         <label for="deptomunicipio">Municipio</label>
+                        <input type="search" class="form-control" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; margin-bottom: 0.35rem;" placeholder="🔍 Escriba para buscar el municipio" oninput="filtrarOpciones('deptomunicipio', this.value)">
                         <select id="deptomunicipio" name="deptomunicipio" class="form-control" required></select>
                     </div>
 
@@ -129,19 +159,18 @@
                         <select id="consejoseccional" name="consejoseccional" class="form-control" required></select>
                     </div>
 
-
                     <!-- Distrito -->
                     <div class="form-group">
                         <label for="distrito">Distrito</label>
                         <select id="distrito" name="distrito" class="form-control" required></select>
                     </div>
 
-                    <!-- Circuito -->
+                    <!-- Circuito (con buscador porque la lista es muy larga) -->
                     <div class="form-group">
                         <label for="circuito">Circuito</label>
+                        <input type="search" class="form-control" style="padding: 0.45rem 0.75rem; font-size: 0.8rem; margin-bottom: 0.35rem;" placeholder="🔍 Escriba para buscar el circuito" oninput="filtrarOpciones('circuito', this.value)">
                         <select id="circuito" name="circuito" class="form-control" required></select>
                     </div>
-                    
 
                     <!-- Especialidad / Subespecialidad -->
                     <div class="form-group">
@@ -156,36 +185,40 @@
 
                     <!-- Código Despacho -->
                     <div class="form-group">
-                        <label for="codigo_despacho">Código Despacho (20 dígitos)</label>
-                        <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control" placeholder="Ej: 050014003801" required>
+                        <label for="codigo_despacho">Código Despacho</label>
+                        <input type="text" id="codigo_despacho" name="codigo_despacho" class="form-control" inputmode="numeric" maxlength="20"
+                               pattern="\d+" title="Solo números" placeholder="Ej: 050014003801" required oninput="this.value = this.value.replace(/\D/g, '')">
                     </div>
 
                     <!-- Nombre Despacho -->
                     <div class="form-group">
                         <label for="nombre_despacho">Nombre Despacho Transitorio</label>
-                        <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control" placeholder="Ej: JUZGADO 801 CIVIL MUNICIPAL TRANSITORIO DE MEDELLÍN" required>
+                        <input type="text" id="nombre_despacho" name="nombre_despacho" class="form-control" placeholder="Ej: JUZGADO 801 CIVIL MUNICIPAL TRANSITORIO DE MEDELLÍN" required oninput="this.value = this.value.toUpperCase()">
                     </div>
 
                     <!-- Fecha Inicio Vigencia -->
                     <div class="form-group">
                         <label for="fecha_inicio">Vigencia Medida (Fecha Inicio)</label>
-                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required>
+                        <input type="date" id="fecha_inicio" name="fecha_inicio" class="form-control" required onchange="actualizarVigencia()">
                     </div>
 
                     <!-- Fecha Fin Vigencia -->
                     <div class="form-group">
                         <label for="fecha_fin">Vigencia Medida (Fecha Fin)</label>
-                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required>
+                        <input type="date" id="fecha_fin" name="fecha_fin" class="form-control" required onchange="actualizarVigencia()">
                     </div>
 
                 </div>
+
+                <!-- Resumen de la vigencia elegida -->
+                <div id="resumen-vigencia" style="display: none; background: #f0f9ff; border: 1px solid #bae6fd; color: #0c4a6e; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin: -0.25rem 0 1.5rem 0;"></div>
 
                 <!-- SECCIÓN 2: INFORMACIÓN DEL ADMINISTRADOR DEL DESPACHO -->
                 <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
                     👤 Información del Administrador del Despacho
                 </div>
-                <div class="form-grid" style="margin-bottom: 1.5rem;">
-                    
+                <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
+
                     <div class="form-group">
                         <label for="admin_primer_nombre">Primer Nombre</label>
                         <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control" placeholder="Ej: Carlos" required>
@@ -213,28 +246,46 @@
 
                     <div class="form-group">
                         <label for="admin_password">Contraseña Temporal</label>
-                        <input type="text" id="admin_password" name="admin_password" class="form-control" placeholder="Ej: Temp2026*" required>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <input type="text" id="admin_password" name="admin_password" class="form-control" placeholder="Ej: Temp2026*" required>
+                            <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="generarPassword()" title="Generar una contraseña temporal">🎲 Generar</button>
+                        </div>
                     </div>
 
                 </div>
-                
 
                 <!-- Botones de Acción -->
-                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem;">
-                    <!-- Botón de Guardar (Siempre visible) -->
-                    <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-                        💾 Guardar
-                    </button>
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
+                    <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;" onclick="ocultarFormulario()">Cancelar</button>
 
-                    <!-- Botón de Enviar Credenciales como Enlace (Solo visible al editar) -->
-                    <a href="email_credenciales.html" target="_blank" id="btn-enviar-credenciales" class="btn-secondary-action" style="display: none; padding: 0.75rem 1.5rem; text-decoration: none; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                    <!-- Botón de Enviar Credenciales (solo visible al editar) -->
+                    <a href="email_credenciales.html" target="_blank" id="btn-enviar-credenciales" class="btn btn-secondary" style="display: none; padding: 0.75rem 1.5rem; text-decoration: none; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
                         ✉️ Enviar Credenciales de Acceso
                     </a>
+
+                    <!-- Botón de Guardar -->
+                    <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; font-size: 0.95rem;">
+                        💾 Guardar
+                    </button>
                 </div>
 
             </form>
         </div>
     </div>
+
+    <!-- DIÁLOGO DE RESULTADO / CONFIRMACIÓN (último para quedar siempre encima) -->
+    <div id="modal-dialogo-alerta" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px; width: 90%; text-align: center; padding: 2rem;">
+            <div id="dialogo-icono" style="font-size: 2.5rem; margin-bottom: 0.75rem;">✅</div>
+            <h3 id="dialogo-titulo" style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Operación Exitosa</h3>
+            <p id="dialogo-mensaje" style="font-size: 0.85rem; color: #475569; margin-bottom: 1.5rem; line-height: 1.4;"></p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button type="button" id="dialogo-btn-cancelar" class="btn btn-secondary" onclick="cerrarModal('modal-dialogo-alerta')" style="flex: 1; display: none;">Cancelar</button>
+                <button type="button" id="dialogo-btn-aceptar" class="btn-primary-action" onclick="aceptarDialogo()" style="flex: 1; justify-content: center;">Entendido</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/data.js"></script>
     <script src="js/main.js"></script>
 </body>

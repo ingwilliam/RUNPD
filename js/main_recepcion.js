@@ -480,7 +480,14 @@ function guardarActuacion(event) {
                 p.formaTerminacion = forma;
                 cerrarModal("modal-actuacion");
                 renderizarTodo();
-                mostrarDialogoAlerta("Proceso finalizado", `El proceso ${p.codigo} quedó registrado como terminado.`, "🏁");
+
+                // Abrir el correo que informa a demandantes y demandados
+                const ventana = abrirCorreoFinalizacion(p, { fecha, forma, observacion });
+                const totalPartes = p.demandantes.length + p.demandados.length;
+
+                let mensaje = `El proceso ${p.codigo} quedó registrado como terminado y se generó la notificación a ${totalPartes} parte(s) del proceso.`;
+                if (!ventana) mensaje += " El navegador bloqueó la ventana del correo: permita las ventanas emergentes para este sitio.";
+                mostrarDialogoAlerta("Proceso finalizado", mensaje, "🏁");
             },
             "🏁",
             "Sí, finalizar"
@@ -493,6 +500,29 @@ function guardarActuacion(event) {
     cerrarModal("modal-actuacion");
     renderizarTodo();
     mostrarDialogoAlerta("Actuación registrada", `Proceso ${p.codigo}: "${estado}". Próxima actuación estimada: ${formatoFecha(proxima)}.`);
+}
+
+// Arma los datos del correo y abre correo_finalizacion.html en una pestaña nueva
+function abrirCorreoFinalizacion(p, { fecha, forma, observacion }) {
+    const d = dbRecepcion.despachoActual;
+
+    const payloadCorreo = {
+        consejoSeccional: d.consejoSeccional,
+        despacho: { nombre: d.nombre, codigo: d.codigo, correo: d.correo },
+        fechaTerminacion: fecha,
+        formaTerminacion: forma,
+        observacion,
+        proceso: {
+            codigo: p.codigo,
+            despachoOrigen: p.despachoOrigen,
+            link: p.link,
+            demandantes: p.demandantes,
+            demandados: p.demandados
+        }
+    };
+
+    const url = `email_finalizacion_despacho_descongestion.html?data=${encodeURIComponent(JSON.stringify(payloadCorreo))}`;
+    return window.open(url, "_blank");
 }
 
 // ---------------------------------------------------------------------
@@ -525,16 +555,58 @@ function guardarDevolucion(event) {
         `El proceso ${p.codigo} será devuelto al Consejo Seccional de ${dbRecepcion.despachoActual.consejoSeccional} por: ${motivo}.`,
         () => {
             const fecha = hoy();
+            // Datos del estado procesal ANTES de marcarlo como devuelto
+            const estadoProcesal = estadoProcesalActual(p);
+            const ultima = ultimaActuacion(p);
+
             p.estado = "devuelto";
             p.devolucion = { fecha, motivo, observacion };
             p.actuaciones.push({ tipo: "devolucion", fecha, estadoProceso: `Devuelto al Consejo Seccional – ${motivo}`, proximaActuacion: "", observacion });
             cerrarModal("modal-devolver");
             renderizarTodo();
-            mostrarDialogoAlerta("Proceso devuelto", `El proceso ${p.codigo} fue devuelto al Consejo Seccional para su redistribución.`, "↩");
+
+            // Abrir el correo de notificación al Consejo Seccional
+            const ventana = abrirCorreoDevolucion(p, { fecha, motivo, observacion, estadoProcesal, ultima });
+
+            let mensaje = `El proceso ${p.codigo} fue devuelto al Consejo Seccional para su redistribución y se generó el correo de notificación.`;
+            if (!ventana) mensaje += " El navegador bloqueó la ventana del correo: permita las ventanas emergentes para este sitio.";
+            mostrarDialogoAlerta("Proceso devuelto", mensaje, "↩");
         },
         "↩",
         "Sí, devolver"
     );
+}
+
+// Arma los datos del correo y abre correo_devolucion.html en una pestaña nueva
+function abrirCorreoDevolucion(p, { fecha, motivo, observacion, estadoProcesal, ultima }) {
+    const d = dbRecepcion.despachoActual;
+    const infoMotivo = dbRecepcion.catalogos.motivosDevolucion.find(m => m.label === motivo);
+
+    const payloadCorreo = {
+        consejoSeccional: d.consejoSeccional,
+        despacho: { nombre: d.nombre, codigo: d.codigo, correo: d.correo },
+        fechaDevolucion: fecha,
+        motivo,
+        motivoDescripcion: infoMotivo ? infoMotivo.descripcion : "",
+        observacion,
+        proceso: {
+            codigo: p.codigo,
+            despachoOrigen: p.despachoOrigen,
+            fechaRecepcion: p.fechaRecepcion,
+            estadoProcesal,
+            fechaUltimaActuacion: ultima ? ultima.fecha : p.fechaActuacion,
+            link: p.link,
+            demandantes: p.demandantes,
+            demandados: p.demandados,
+            // Solo las actuaciones registradas en este despacho (sin la devolución)
+            actuaciones: p.actuaciones
+                .filter(a => a.tipo === "actuacion")
+                .map(a => ({ fecha: a.fecha, estadoProceso: a.estadoProceso, observacion: a.observacion }))
+        }
+    };
+
+    const url = `correo_devolucion.html?data=${encodeURIComponent(JSON.stringify(payloadCorreo))}`;
+    return window.open(url, "_blank");
 }
 
 // ---------------------------------------------------------------------

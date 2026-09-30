@@ -18,6 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     llenarFiltros();
     renderizarTablaSolicitudes(dbTraslados.solicitudes);
+    renderizarIndicadores();
 });
 
 document.addEventListener("keydown", e => {
@@ -160,6 +161,45 @@ function filtrarSolicitudes() {
         (!especialidad || sol.especialidad === especialidad));
 
     renderizarTablaSolicitudes(filtradas);
+    renderizarIndicadores();
+}
+
+// ---------------------------------------------------------------------
+// Totales generales (solicitudes y procesos)
+// ---------------------------------------------------------------------
+function renderizarIndicadores() {
+    const contenedor = document.getElementById("indicadores");
+    if (!contenedor) return;
+
+    const totales = { pendiente: 0, predistribuido: 0, asignado: 0 };
+    let solicitudesPorDistribuir = 0;
+
+    dbTraslados.solicitudes.forEach(sol => {
+        let abiertos = 0;
+        sol.procesos.forEach(p => {
+            const estado = estadoDeProceso(sol.id, p);
+            totales[estado]++;
+            if (estado !== "asignado") abiertos++;
+        });
+        if (abiertos) solicitudesPorDistribuir++;
+    });
+
+    const tarjetas = [
+        { icono: "📥", valor: solicitudesPorDistribuir,              texto: "Solicitudes por distribuir",    color: "#64748b" },
+        { icono: "⏳", valor: totales.pendiente,                     texto: "Procesos pendientes",           color: "#f59e0b" },
+        { icono: "📝", valor: totales.predistribuido,                texto: "Predistribuidos sin confirmar", color: "#0369a1" },
+        { icono: "✔",  valor: totales.asignado,                      texto: "Procesos trasladados",          color: "var(--primary-green)" },
+        { icono: "⚖️", valor: dbTraslados.despachosDescongestion.length, texto: "Despachos de descongestión", color: "#1e3a8a" }
+    ];
+
+    contenedor.innerHTML = tarjetas.map(t => `
+        <div style="background: #ffffff; border: 1px solid #e2e8f0; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
+                <span style="font-size: 1.3rem;">${t.icono}</span>
+            </div>
+            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">${t.texto}</div>
+        </div>`).join("");
 }
 
 function renderizarTablaSolicitudes(lista) {
@@ -587,7 +627,7 @@ function confirmarYEjecutarTransferenciaFinal() {
                 despachoOrigen: sol.nombreDespacho
             });
 
-            // 🛠️ AQUÍ INCLUIMOS TODA LA INFORMACIÓN PARA EL CORREO HTML
+            // Toda la información del proceso va al correo HTML
             procesosSeleccionadosParaCorreo.push({
                 codigo: p.codigo,
                 estadoProceso: p.estadoProceso,
@@ -606,7 +646,7 @@ function confirmarYEjecutarTransferenciaFinal() {
     // La predistribución de esta solicitud ya se consolidó
     predistribuciones[sol.id] = {};
 
-    // Datos para la plantilla HTML del correo
+    // Datos para la plantilla HTML del correo (se conservan los campos originales)
     const payloadCorreo = {
         nombreDespacho: sol.nombreDespacho,
         codigoDespacho: sol.codigoDespacho,
@@ -616,6 +656,7 @@ function confirmarYEjecutarTransferenciaFinal() {
         destinos: grupos.map(g => ({
             nombre: g.destino.nombre,
             correo: g.destino.correo,
+            cargaTotal: g.destino.cargaActual,
             procesos: g.procesos.map(p => p.codigo)
         }))
     };

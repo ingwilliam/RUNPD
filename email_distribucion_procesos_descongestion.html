@@ -8,144 +8,235 @@
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
 
-    <!-- Contenedor Principal del Correo -->
-    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #f4f6f8; padding: 20px 0;">
-        <tr>
-            <td align="center">
-                <table border="0" cellpadding="0" cellspacing="0" width="680" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
-                    
-                    <!-- ENCABEZADO CON LOGOS INSTITUCIONALES -->
-                    <tr>
-                        <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td align="left" style="vertical-align: middle;">
-                                        <img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;">
-                                    </td>
-                                    <td align="right" style="vertical-align: middle;">
-                                        <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;">
-                                    </td>
-                                </tr>
-                            </table>
-                        </td>
-                    </tr>
+    <!-- Aviso cuando la distribución generó varios correos (uno por despacho de destino) -->
+    <div id="aviso-varios" style="display: none; max-width: 680px; margin: 20px auto 0; background-color: #e0f2fe; border: 1px solid #bae6fd; color: #0c4a6e; border-radius: 6px; padding: 10px 14px; font-size: 13px; text-align: center;"></div>
 
-                    <!-- CONTENIDO PRINCIPAL -->
-                    <tr>
-                        <td style="padding: 35px 30px;">
-                            <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
-                                ⚖️ Asignación de Procesos por Medida de Descongestión
-                            </h1>
-                            
-                            <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
-                                Cordial saludo, señor(a) Juez y equipo de trabajo del <strong id="lbl-nombre-destino" style="color: #0f172a;">Juzgado 01 de Descongestión Laboral de Manizales</strong> (Código: <span style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">170014005888</span>). 
-                                Se le informa que el <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">Consejo Seccional de Caldas</strong>, en ejercicio de sus funciones de distribución y descongestión, le ha asignado un nuevo lote de expedientes provenientes del despacho permanente <strong id="lbl-origen" style="color: #0f172a;">—</strong> (Código: <span id="lbl-codigo-origen" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">—</span>).
-                            </p>
-
-                            <!-- DETALLE DE LOS PROCESOS ASIGNADOS -->
-                            <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
-                                📋 Relación de Procesos Asignados
-                            </h3>
-                            
-                            <table border="0" cellpadding="8" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #e2e8f0; font-size: 13px; margin-bottom: 25px;">
-                                <thead>
-                                    <tr style="background-color: #f8fafc; color: #475569; text-align: left; border-bottom: 2px solid #e2e8f0; font-size: 12px;">
-                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Código / Actuación</th>
-                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Partes (Demandante c/ Demandado)</th>
-                                        <th style="padding: 10px; border-bottom: 1px solid #e2e8f0;">Estado y Observaciones</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="tabla-procesos-asignados">
-                                    <!-- Dinámico por JS -->
-                                </tbody>
-                            </table>
-
-                            <!-- BOTÓN DE ACCESO AL SISTEMA -->
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td align="center" style="padding: 5px 0 15px 0;">
-                                        <a href="#" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema PEYGI</a>
-                                    </td>
-                                </tr>
-                            </table>
-
-                        </td>
-                    </tr>
-
-                    <!-- PIE DE PÁGINA -->
-                    <tr>
-                        <td align="center" style="background-color: #f8fafc; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
-                            <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Sistema PEYGI</p>
-                            <p style="margin: 0;">Este es un mensaje automático de notificación institucional generado por el Consejo Seccional de Caldas.</p>
-                        </td>
-                    </tr>
-
-                </table>
-            </td>
-        </tr>
-    </table>
+    <!-- Aquí se genera un correo por cada despacho de descongestión que recibió procesos -->
+    <div id="correos"></div>
 
     <script>
+        // Ejemplo que se muestra si la página se abre sin datos
+        const EJEMPLO = {
+            nombreDespacho: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
+            codigoDespacho: "170014005801",
+            consejoSeccional: "CALDAS",
+            fechaTraslado: null,
+            procesos: [{
+                codigo: "05001400300320240012300",
+                estadoProceso: "Definir 2",
+                fechaActuacion: "2026-08-14",
+                observaciones: "Pendiente dictamen pericial.",
+                link: "https://procesos.ramajudicial.gov.co/",
+                demandantes: [{ tipo: "natural", primerNombre: "Juan", segundoNombre: "Pablo", primerApellido: "Restrepo", segundoApellido: "Ochoa" }],
+                demandados: [{ tipo: "juridica", nombre: "INVERSIONES EL POBLADO S.A.S." }],
+                despachoDestino: "Juzgado 02 de Descongestión Laboral de Manizales",
+                correoDestino: "j02labdescongestsion@cendoj.ramajudicial.gov.co"
+            }]
+        };
+
+        const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const fecha = iso => { if (!iso) return "N/A"; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+        const hoyISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+
+        // Función segura para extraer texto de demandantes o demandados
+        const formatearPartes = lista => {
+            if (!Array.isArray(lista) || lista.length === 0) return "No especificado";
+            return lista.map(d => {
+                if (d.nombre && d.nombre.trim() !== "") return d.nombre;
+                const nombre = [d.primerNombre, d.segundoNombre, d.primerApellido, d.segundoApellido].filter(Boolean).join(" ");
+                return nombre || "No especificado";
+            }).join(", ");
+        };
+
+        const paso = (numero, texto) => `
+            <tr>
+                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">${numero}</span></td>
+                <td style="padding: 3px 0 12px 0;">${texto}</td>
+            </tr>`;
+
+        // Construye el correo para un despacho de descongestión con SOLO sus procesos
+        function construirCorreo(datos, destino) {
+            const consejo = datos.consejoSeccional || "CALDAS";
+            const fechaTraslado = fecha(datos.fechaTraslado || hoyISO());
+            const procesos = destino.procesos;
+
+            const filas = procesos.map((p, i) => `
+                <tr>
+                    <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">${i + 1}</td>
+                    <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
+                        <div style="font-family: monospace; font-weight: 700; color: #166534; font-size: 12px;">${esc(p.codigo)}</div>
+                        <div style="font-size: 11px; color: #64748b; margin-top: 3px;">Últ. actuación: ${fecha(p.fechaActuacion)}</div>
+                    </td>
+                    <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; color: #334155; font-size: 12px;">
+                        <div style="margin-bottom: 4px;"><strong>Demandante:</strong> ${esc(formatearPartes(p.demandantes))}</div>
+                        <div><strong>Demandado:</strong> ${esc(formatearPartes(p.demandados))}</div>
+                    </td>
+                    <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
+                        <span style="background-color: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600;">${esc(p.estadoProceso || "Sin estado")}</span>
+                        ${p.observaciones ? `<div style="font-size: 11px; color: #475569; font-style: italic; margin-top: 5px;">Obs: ${esc(p.observaciones)}</div>` : ""}
+                        ${p.link ? `<div style="margin-top: 5px;"><a href="${esc(p.link)}" target="_blank" style="font-size: 11px; color: #0284c7; text-decoration: underline;">🔗 Expediente Rama Judicial</a></div>` : ""}
+                    </td>
+                </tr>`).join("");
+
+            return `
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #f4f6f8; padding: 20px 0;">
+                <tr>
+                    <td align="center">
+                        <table border="0" cellpadding="0" cellspacing="0" width="680" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+
+                            <!-- ENCABEZADO CON LOGOS INSTITUCIONALES -->
+                            <tr>
+                                <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td align="left" style="vertical-align: middle;">
+                                                <img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;">
+                                            </td>
+                                            <td align="right" style="vertical-align: middle;">
+                                                <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;">
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- DESTINATARIO Y FECHA -->
+                            <tr>
+                                <td style="background-color: #f8fafc; padding: 12px 30px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td align="left"><strong style="color: #334155;">Para:</strong> ${esc(destino.correo || destino.nombre)}</td>
+                                            <td align="right"><strong style="color: #334155;">Fecha de traslado:</strong> ${fechaTraslado}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <!-- CONTENIDO PRINCIPAL -->
+                            <tr>
+                                <td style="padding: 35px 30px;">
+                                    <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
+                                        ⚖️ Asignación de Procesos por Medida de Descongestión
+                                    </h1>
+
+                                    <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+                                        Cordial saludo, señor(a) Juez y equipo de trabajo del <strong style="color: #0f172a;">${esc(destino.nombre)}</strong>.
+                                        Se le informa que el <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">Consejo Seccional de ${esc(consejo)}</strong>,
+                                        en ejercicio de sus funciones de distribución y descongestión, le ha asignado <strong>${procesos.length} proceso(s)</strong>
+                                        provenientes del despacho permanente <strong style="color: #0f172a;">${esc(datos.nombreDespacho || "—")}</strong>
+                                        (Código: <span style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(datos.codigoDespacho || "—")}</span>).
+                                    </p>
+
+                                    <!-- RESUMEN -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
+                                        <tr>
+                                            <td width="50%" style="padding-right: 6px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;">
+                                                    <tr><td align="center" style="padding: 14px;">
+                                                        <div style="font-size: 26px; font-weight: 800; color: #166534; line-height: 1;">${procesos.length}</div>
+                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Proceso(s) asignado(s)</div>
+                                                    </td></tr>
+                                                </table>
+                                            </td>
+                                            <td width="50%" style="padding-left: 6px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
+                                                    <tr><td align="center" style="padding: 14px;">
+                                                        <div style="font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.2;">${fechaTraslado}</div>
+                                                        <div style="font-size: 12px; color: #475569; margin-top: 4px;">Fecha de traslado</div>
+                                                    </td></tr>
+                                                </table>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                    <!-- DETALLE DE LOS PROCESOS ASIGNADOS -->
+                                    <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        📋 Relación de Procesos Asignados
+                                    </h3>
+
+                                    <table border="0" cellpadding="8" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #e2e8f0; font-size: 13px; margin-bottom: 25px;">
+                                        <thead>
+                                            <tr style="background-color: #f8fafc; color: #475569; text-align: left; font-size: 12px;">
+                                                <th style="padding: 10px; border-bottom: 2px solid #e2e8f0;">#</th>
+                                                <th style="padding: 10px; border-bottom: 2px solid #e2e8f0;">Código / Actuación</th>
+                                                <th style="padding: 10px; border-bottom: 2px solid #e2e8f0;">Partes (Demandante c/ Demandado)</th>
+                                                <th style="padding: 10px; border-bottom: 2px solid #e2e8f0;">Estado y Observaciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${filas || `<tr><td colspan="4" style="padding: 15px; text-align: center; color: #64748b;">No se registran procesos en este reporte.</td></tr>`}
+                                        </tbody>
+                                    </table>
+
+                                    <!-- PRÓXIMOS PASOS -->
+                                    <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                        🚀 Próximos Pasos
+                                    </h3>
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; color: #334155; margin-bottom: 20px;">
+                                        ${paso(1, "<strong>Ingrese a PEYGI</strong> y consulte los procesos recibidos en <em>Recepción y Seguimiento de Procesos</em>.")}
+                                        ${paso(2, "<strong>Registre la primera actuación</strong> de cada proceso y la fecha estimada de la próxima.")}
+                                        ${paso(3, `Si algún proceso <strong>no corresponde a su despacho</strong>, devuélvalo al Consejo Seccional de ${esc(consejo)} indicando <em>error de traslado</em>.`)}
+                                    </table>
+
+                                    <!-- BOTÓN DE ACCESO AL SISTEMA -->
+                                    <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                        <tr>
+                                            <td align="center" style="padding: 5px 0 15px 0;">
+                                                <a href="index_admin_d.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema PEYGI</a>
+                                            </td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+
+                            <!-- PIE DE PÁGINA -->
+                            <tr>
+                                <td align="center" style="background-color: #f8fafc; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                                    <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Sistema PEYGI</p>
+                                    <p style="margin: 0;">Este es un mensaje automático de notificación institucional generado por el Consejo Seccional de ${esc(consejo)}.</p>
+                                </td>
+                            </tr>
+
+                        </table>
+                    </td>
+                </tr>
+            </table>`;
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const dataParam = urlParams.get("data");
+            let datos = EJEMPLO;
+            const dataParam = new URLSearchParams(window.location.search).get("data");
 
             if (dataParam) {
                 try {
-                    const datos = JSON.parse(decodeURIComponent(dataParam));
-                    
-                    // Rellenar datos generales si los tienes en la cabecera del correo
-                    document.getElementById("lbl-origen").textContent = datos.nombreDespacho || "—";
-                    document.getElementById("lbl-codigo-origen").textContent = datos.codigoDespacho || "—";
-
-                    const listaProcesos = datos.procesos || [];
-
-                    // Renderizar tabla de procesos asignados
-                    const tbody = document.getElementById("tabla-procesos-asignados");
-                    if (listaProcesos.length > 0) {
-                        tbody.innerHTML = listaProcesos.map(p => {
-                            
-                            // Función segura para extraer texto de demandantes o demandados
-                            const formatearPartes = (lista) => {
-                                if (!lista || !Array.isArray(lista) || lista.length === 0) return "No especificado";
-                                return lista.map(d => {
-                                    if (d.nombre && d.nombre.trim() !== "") return d.nombre;
-                                    let partesNombre = [d.primerNombre, d.segundoNombre, d.primerApellido, d.segundoApellido];
-                                    let filtradas = partesNombre.filter(Boolean);
-                                    return filtradas.length > 0 ? filtradas.join(" ") : "No especificado";
-                                }).join(", ");
-                            };
-
-                            const demandantesTxt = formatearPartes(p.demandantes);
-                            const demandadosTxt = formatearPartes(p.demandados);
-
-                            return `
-                                <tr style="border-bottom: 1px solid #e2e8f0;">
-                                    <td style="padding: 10px; vertical-align: top;">
-                                        <div style="font-family: monospace; font-weight: 700; color: #166534; font-size: 12px;">${p.codigo}</div>
-                                        <div style="font-size: 11px; color: #64748b; margin-top: 3px;">Act: ${p.fechaActuacion || 'N/A'}</div>
-                                    </td>
-                                    <td style="padding: 10px; vertical-align: top; color: #334155; font-size: 12px;">
-                                        <div style="margin-bottom: 4px;"><strong>Demandante:</strong> ${demandantesTxt}</div>
-                                        <div><strong>Demandado:</strong> ${demandadosTxt}</div>
-                                        <div style="font-size: 11px; color: #1e3a8a; margin-top: 4px;"><strong>Destino:</strong> ${p.despachoDestino || 'N/A'}</div>
-                                    </td>
-                                    <td style="padding: 10px; vertical-align: top;">
-                                        <div style="margin-bottom: 4px;">
-                                            <span style="background-color: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600;">${p.estadoProceso || 'Definir'}</span>
-                                        </div>
-                                        <div style="font-size: 11px; color: #475569; font-style: italic; margin-top: 4px;">${p.observaciones ? 'Obs: ' + p.observaciones : ''}</div>
-                                        ${p.link ? `<div style="margin-top: 4px;"><a href="${p.link}" target="_blank" style="font-size: 11px; color: #0284c7; text-decoration: underline;">🔗 Expediente Rama Judicial</a></div>` : ''}
-                                    </td>
-                                </tr>
-                            `;
-                        }).join("");
-                    } else {
-                        tbody.innerHTML = `<tr><td colspan="3" style="padding: 15px; text-align: center; color: #64748b;">No se registran procesos en este reporte.</td></tr>`;
-                    }
+                    // URLSearchParams ya entrega el texto decodificado (no se usa decodeURIComponent otra vez)
+                    datos = JSON.parse(dataParam);
                 } catch (error) {
                     console.error("Error al procesar los datos de la notificación:", error);
                 }
+            }
+
+            // Agrupar los procesos por despacho de destino: cada despacho recibe solo los suyos
+            const grupos = [];
+            (datos.procesos || []).forEach(p => {
+                const nombre = p.despachoDestino || "Despacho de descongestión";
+                let grupo = grupos.find(g => g.nombre === nombre);
+                if (!grupo) {
+                    const info = (datos.destinos || []).find(d => d.nombre === nombre);
+                    grupo = { nombre, correo: p.correoDestino || (info && info.correo) || "", procesos: [] };
+                    grupos.push(grupo);
+                }
+                grupo.procesos.push(p);
+            });
+            if (!grupos.length) grupos.push({ nombre: "Despacho de descongestión", correo: "", procesos: [] });
+
+            document.getElementById("correos").innerHTML = grupos.map(g => construirCorreo(datos, g)).join("");
+
+            if (grupos.length > 1) {
+                const aviso = document.getElementById("aviso-varios");
+                aviso.innerHTML = `✉️ Se generaron <strong>${grupos.length} notificaciones</strong>, una para cada despacho de descongestión: ${grupos.map(g => `${esc(g.nombre)} (${g.procesos.length})`).join(" · ")}.`;
+                aviso.style.display = "block";
             }
         });
     </script>
