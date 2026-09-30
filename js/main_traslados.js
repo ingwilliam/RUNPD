@@ -587,10 +587,15 @@ function confirmarYEjecutarTransferenciaFinal() {
                 despachoOrigen: sol.nombreDespacho
             });
 
+            // 🛠️ AQUÍ INCLUIMOS TODA LA INFORMACIÓN PARA EL CORREO HTML
             procesosSeleccionadosParaCorreo.push({
                 codigo: p.codigo,
                 estadoProceso: p.estadoProceso,
                 fechaActuacion: p.fechaActuacion,
+                observaciones: p.observaciones,
+                link: p.link,
+                demandantes: p.demandantes,
+                demandados: p.demandados,
                 despachoDestino: destino.nombre,
                 correoDestino: destino.correo
             });
@@ -601,7 +606,7 @@ function confirmarYEjecutarTransferenciaFinal() {
     // La predistribución de esta solicitud ya se consolidó
     predistribuciones[sol.id] = {};
 
-    // Datos para la plantilla HTML del correo (se conservan los campos originales)
+    // Datos para la plantilla HTML del correo
     const payloadCorreo = {
         nombreDespacho: sol.nombreDespacho,
         codigoDespacho: sol.codigoDespacho,

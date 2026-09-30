@@ -1,76 +1,464 @@
+/* ==========================================================================
+   INDEX.CSS — Solo para la portada (index.html)
+   Se apoya en las variables y componentes de main.css
+   ========================================================================== */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* main.css centra el body (login); en la portada se permite el scroll normal */
+body.index-body {
+    height: auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    background-color: #f8fafc;
+}
+
+/* ---------------- BARRA SUPERIOR (solo en la portada) ---------------- */
+.index-body header.app-header {
+    height: 78px;
+    padding: 0 2rem;
+    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    border-bottom: 4px solid #ffc107;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    justify-content: center;
+}
+
+.index-body .navbar-brand {
+    gap: 1rem;
+}
+
+.brand-logo {
+    height: 52px;
+    width: auto;
+    background: #ffffff;
+    padding: 0.35rem 0.6rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+    padding-left: 1rem;
+    border-left: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.brand-text strong {
+    font-size: 1.35rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-text span {
+    font-size: 0.85rem;
+    font-weight: 400;
+    opacity: 0.92;
+}
+
+/* ---------------- CONTENEDOR ---------------- */
+.index-main {
+    flex: 1 0 auto;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 3rem;
+}
+
+.index-section {
+    padding-top: 3rem;
+    scroll-margin-top: 1rem;
+}
+
+/* ---------------- PRESENTACIÓN ---------------- */
+.index-intro {
+    text-align: center;
+    margin: 0 auto 1.5rem;
+}
+
+.index-title {
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--text-main);
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.4rem;
+}
+
+.index-subtitle {
+    font-size: 0.95rem;
+    color: var(--text-muted);
+}
+
+/* El flujo va inmediatamente debajo del título */
+#flujo {
+    padding-top: 0;
+}
+
+.section-head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 2rem;
+}
+
+.section-kicker {
+    display: inline-block;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--primary-green);
+    background: #e6f4ea;
+    padding: 0.3rem 0.75rem;
+    border-radius: 999px;
+    margin-bottom: 0.85rem;
+}
+
+.section-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-main);
+    margin-bottom: 0.5rem;
+}
+
+.section-text {
+    font-size: 0.98rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+}
+
+/* ---------------- FLUJO ---------------- */
+.flow {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    position: relative;
+}
+
+/* Línea que conecta las etapas */
+.flow::before {
+    content: "";
+    position: absolute;
+    top: 2.25rem;
+    left: 10%;
+    right: 10%;
+    height: 3px;
+    background: var(--primary-green);
+    opacity: 0.3;
+}
+
+.flow-step {
+    position: relative;
+    z-index: 1;
+}
+
+.flow-link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.25rem 1rem 1.35rem;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.flow-link:hover,
+.flow-link:focus-visible {
+    transform: translateY(-4px);
+    border-color: var(--primary-green);
+    box-shadow: 0 12px 24px rgba(53, 153, 70, 0.15);
+    outline: none;
+}
+
+.flow-num {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 50%;
+    background: var(--primary-green);
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 5px #e6f4ea;
+    margin-bottom: 0.85rem;
+}
+
+.flow-icon {
+    font-size: 1.75rem;
+    margin-bottom: 0.4rem;
+}
+
+.flow-title {
+    font-size: 1rem;
+    color: var(--text-main);
+    margin-bottom: 0.15rem;
+}
+
+.flow-actor {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+.flow-desc {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* Etapa pública (Ciudadano) */
+.flow-link-public .flow-num { background: #3b82f6; box-shadow: 0 0 0 5px #dbeafe; }
+.flow-link-public .flow-actor { color: #3b82f6; }
+.flow-link-public:hover,
+.flow-link-public:focus-visible { border-color: #3b82f6; box-shadow: 0 12px 24px rgba(59, 130, 246, 0.15); }
+
+/* ---------------- TARJETAS DE ROL ---------------- */
+.role-grid {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 1.5rem;
+}
+
 .role-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-            border: 1px solid #e2e8f0;
-            transition: all 0.3s ease;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            position: relative;
-            overflow: hidden;
-        }
+    grid-column: span 2;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.75rem;
+    overflow: hidden;
+    scroll-margin-top: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
 
-        .role-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--primary-green, #10b981);
-            transition: height 0.2s ease;
-        }
+/* Las dos últimas tarjetas quedan centradas en la segunda fila */
+.role-card:nth-child(4) {
+    grid-column: 2 / span 2;
+}
 
-        .role-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.1);
-            border-color: #cbd5e1;
-        }
+.role-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: var(--primary-green);
+    transition: height 0.2s ease;
+}
 
-        .role-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
+.role-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 20px -3px rgba(0, 0, 0, 0.1);
+    border-color: #cbd5e1;
+}
 
-        .role-icon {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-        }
+.role-card:hover::before {
+    height: 6px;
+}
 
-        .role-title {
-            font-size: 1.15rem;
-            font-weight: 600;
-            color: var(--text-main, #1e293b);
-            margin-bottom: 0.5rem;
-        }
+/* Resaltado al llegar desde una etapa del flujo */
+.role-card:target {
+    border-color: var(--primary-green);
+    box-shadow: 0 0 0 4px #e6f4ea, 0 12px 20px -3px rgba(0, 0, 0, 0.1);
+}
 
-        .role-desc {
-            font-size: 0.9rem;
-            color: var(--text-muted, #64748b);
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
+.role-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
 
-        .role-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            background: #f1f5f9;
-            color: var(--text-main, #1e293b);
-            padding: 0.65rem 1rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: background 0.2s, color 0.2s;
-        }
+.role-icon {
+    width: 3.25rem;
+    height: 3.25rem;
+    border-radius: 12px;
+    background: #e6f4ea;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.6rem;
+}
 
-        .role-card:hover .role-btn {
-            background: var(--primary-green, #10b981);
-            color: #ffffff;
-        }
+.role-step {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    color: var(--primary-green);
+    background: #f0f9f2;
+    border: 1px solid #cfe9d5;
+    padding: 0.25rem 0.55rem;
+    border-radius: 999px;
+    white-space: nowrap;
+}
+
+/* Más específico que .role-title de main.css (banner de rol) */
+.role-card .role-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text-main);
+    line-height: 1.3;
+    margin-bottom: 0.5rem;
+}
+
+.role-desc {
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 1rem;
+}
+
+.role-features {
+    list-style: none;
+    margin-bottom: 1.5rem;
+    flex: 1;
+}
+
+.role-features li {
+    position: relative;
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-main);
+    line-height: 1.45;
+    margin-bottom: 0.5rem;
+}
+
+.role-features li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: #e6f4ea;
+    color: var(--primary-green);
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.role-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.role-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    color: var(--text-main);
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.role-btn span {
+    transition: transform 0.2s ease;
+}
+
+.role-card:hover .role-btn,
+.role-btn:focus-visible {
+    background: var(--primary-green);
+    color: #ffffff;
+    outline: none;
+}
+
+.role-card:hover .role-btn span {
+    transform: translateX(4px);
+}
+
+.role-link {
+    text-align: center;
+    font-size: 0.83rem;
+    color: var(--primary-green);
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.role-link:hover {
+    text-decoration: underline;
+}
+
+/* Variante pública (Ciudadano) */
+.role-card-public::before { background: #3b82f6; }
+.role-card-public .role-icon { background: #dbeafe; }
+.role-card-public .role-step { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+.role-card-public .role-features li::before { background: #dbeafe; color: #1d4ed8; }
+.role-card-public:hover .role-btn,
+.role-card-public .role-btn:focus-visible { background: #3b82f6; }
+.role-card-public:target { border-color: #3b82f6; box-shadow: 0 0 0 4px #dbeafe, 0 12px 20px -3px rgba(0, 0, 0, 0.1); }
+
+/* ---------------- PIE ---------------- */
+.index-footer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+    text-align: center;
+    padding: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    border-top: 1px solid var(--border-color);
+    background: #ffffff;
+}
+
+.index-footer strong {
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+/* ---------------- RESPONSIVO ---------------- */
+@media (max-width: 1024px) {
+    .flow { grid-template-columns: repeat(3, 1fr); }
+    .flow::before { display: none; }
+    .role-grid { grid-template-columns: repeat(2, 1fr); }
+    .role-card,
+    .role-card:nth-child(4) { grid-column: auto; }
+    .role-card:last-child { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+    .index-body header.app-header { height: 68px; padding: 0 1rem; }
+    .brand-logo { height: 40px; }
+    .brand-text { padding-left: 0.75rem; }
+    .brand-text strong { font-size: 1.1rem; }
+    .brand-text span { font-size: 0.7rem; }
+    .index-title { font-size: 1.75rem; }
+    .flow { grid-template-columns: 1fr; }
+    .role-grid { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .flow-link, .role-card, .role-btn, .role-btn span { transition: none; }
+}

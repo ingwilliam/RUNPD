@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepción y Seguimiento de Procesos - Despacho de Descongestión - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="app-body">
+
+    <!-- Barra Superior -->
+    <header class="app-header">
+        <div class="navbar-brand">
+            <button class="menu-toggle">☰</button>
+            <span>Sistema de Planeación Estratégica y Gestión Institucional - PEYGI</span>
+        </div>
+
+        <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
+                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
+                <span style="font-weight: 600;">Despacho de Descongestión</span>
+            </div>
+            <div class="navbar-user"><span>👤 ▾</span></div>
+        </div>
+    </header>
+
+    <!-- Contenedor Principal con Sidebar -->
+    <div class="app-layout">
+        <aside class="app-sidebar">
+            <a href="index.html" style="text-decoration: none; color: inherit;"><div class="sidebar-icon active" title="Inicio">🏠</div></a>
+            <div class="sidebar-icon" title="Menú">☰</div>
+            <div class="sidebar-icon" title="Opciones">⚙️</div>
+        </aside>
+
+        <main class="app-main">
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
+                    <li><a href="modulo_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li><a href="funcionalidades_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Recepción y Seguimiento de Procesos</li>
+                </ol>
+            </nav>
+
+            <div class="content-header">
+                <div class="welcome-section" style="margin-bottom: 0;">
+                    <h1>Recepción y Seguimiento de Procesos</h1>
+                    <p>Consulte los procesos asignados por el Consejo Seccional, registre cada actuación y controle la fecha de la próxima actuación.</p>
+                </div>
+            </div>
+
+            <!-- Vigencia de la medida de descongestión -->
+            <div id="tarjeta-medida" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <!-- Dinámico vía JS -->
+            </div>
+
+            <!-- Aviso de pendientes -->
+            <div id="aviso-pendientes" style="display: none; background: #fef9c3; border: 1px solid #fde047; border-left: 5px solid #eab308; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 1.25rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                <!-- Dinámico vía JS -->
+            </div>
+
+            <!-- Indicadores (clic para filtrar) -->
+            <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
+                <!-- Dinámico vía JS -->
+            </div>
+
+            <!-- Búsqueda -->
+            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                <input type="search" id="filtro-busqueda" class="form-control" style="max-width: 420px;" placeholder="🔍 Buscar por código, demandante o demandado" oninput="renderizarTabla()">
+                <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+            </div>
+
+            <!-- Tabla de procesos asignados -->
+            <div class="data-table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Código Proceso</th>
+                            <th>Partes</th>
+                            <th>Origen / Recepción</th>
+                            <th>Estado Procesal Actual</th>
+                            <th>Próxima Actuación</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="cuerpo-tabla-procesos">
+                        <!-- Dinámico vía JS -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- MODAL: ACTUALIZAR ESTADO / FINALIZAR -->
+    <div id="modal-actuacion" class="modal-overlay">
+        <div class="modal-card" style="max-width: 760px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <h2 id="act-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">✏️ Actualizar estado del proceso</h2>
+                <button onclick="cerrarModal('modal-actuacion')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+
+            <div id="act-resumen" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem;"></div>
+
+            <form id="form-actuacion" onsubmit="guardarActuacion(event)">
+                <div class="form-grid" style="margin-bottom: 0.5rem;">
+                    <div class="form-group">
+                        <label for="act-estado">Nuevo estado procesal</label>
+                        <select id="act-estado" class="form-control" required onchange="cambiarModoActuacion()"></select>
+                    </div>
+
+                    <div class="form-group" id="grupo-forma" style="display: none;">
+                        <label for="act-forma">Forma de terminación</label>
+                        <select id="act-forma" class="form-control"></select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="act-fecha">Fecha de la actuación</label>
+                        <input type="date" id="act-fecha" class="form-control" required onchange="validarFechas()">
+                    </div>
+
+                    <div class="form-group" id="grupo-proxima">
+                        <label for="act-proxima">Fecha estimada de la próxima actuación</label>
+                        <input type="date" id="act-proxima" class="form-control" required onchange="validarFechas()">
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="act-observacion">Observación (opcional)</label>
+                        <textarea id="act-observacion" class="form-control" rows="3" maxlength="500" placeholder="Describa brevemente la actuación realizada"></textarea>
+                    </div>
+                </div>
+
+                <!-- Avisos -->
+                <div id="act-aviso-medida" style="display: none; background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin-bottom: 0.75rem;"></div>
+                <div id="act-aviso-final" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin-bottom: 0.75rem;">
+                    🏁 Al finalizar, el proceso quedará <strong>cerrado</strong> y no se podrán registrar nuevas actuaciones.
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-actuacion')">Cancelar</button>
+                    <button type="submit" id="act-btn-guardar" class="btn-primary-action">💾 Registrar actuación</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DEVOLVER AL CONSEJO SECCIONAL -->
+    <div id="modal-devolver" class="modal-overlay">
+        <div class="modal-card" style="max-width: 650px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">↩ Devolver proceso al Consejo Seccional</h2>
+                <button onclick="cerrarModal('modal-devolver')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+
+            <div id="dev-resumen" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem;"></div>
+
+            <form id="form-devolver" onsubmit="guardarDevolucion(event)">
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.5rem;">¿Por qué devuelve el proceso?</div>
+                <div id="dev-motivos" style="display: grid; gap: 0.5rem; margin-bottom: 1rem;"></div>
+
+                <div class="form-group">
+                    <label for="dev-observacion">Observación para el Consejo Seccional</label>
+                    <textarea id="dev-observacion" class="form-control" rows="3" maxlength="500" required placeholder="Explique brevemente el motivo de la devolución"></textarea>
+                </div>
+
+                <div id="dev-destino" style="font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.5rem;"></div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                    <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-devolver')">Cancelar</button>
+                    <button type="submit" class="btn-primary-action">↩ Devolver al Consejo</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: DETALLE Y TRAZABILIDAD -->
+    <div id="modal-detalle-proceso" class="modal-overlay">
+        <div class="modal-card" style="max-width: 700px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <h2 style="font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin: 0;">📋 Detalle y Trazabilidad del Proceso</h2>
+                <button onclick="cerrarModal('modal-detalle-proceso')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <div id="contenido-detalle-proceso" style="font-size: 0.85rem; line-height: 1.5; color: var(--text-main);"></div>
+            <div id="detalle-acciones" style="display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.25rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;"></div>
+        </div>
+    </div>
+
+    <!-- DIÁLOGO DE RESULTADO / CONFIRMACIÓN (último para quedar siempre encima) -->
+    <div id="modal-dialogo-alerta" class="modal-overlay">
+        <div class="modal-card" style="max-width: 450px; width: 90%; text-align: center; padding: 2rem;">
+            <div id="dialogo-icono" style="font-size: 2.5rem; margin-bottom: 0.75rem;">✅</div>
+            <h3 id="dialogo-titulo" style="font-size: 1.1rem; font-weight: 700; color: #0f172a; margin-bottom: 0.5rem;">Operación Exitosa</h3>
+            <p id="dialogo-mensaje" style="font-size: 0.85rem; color: #475569; margin-bottom: 1.5rem; line-height: 1.4;"></p>
+            <div style="display: flex; gap: 0.75rem;">
+                <button type="button" id="dialogo-btn-cancelar" class="btn btn-secondary" onclick="cerrarModal('modal-dialogo-alerta')" style="flex: 1; display: none;">Cancelar</button>
+                <button type="button" id="dialogo-btn-aceptar" class="btn-primary-action" onclick="aceptarDialogo()" style="flex: 1; justify-content: center;">Entendido</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/data_recepcion.js"></script>
+    <script src="js/main_recepcion.js"></script>
+</body>
+</html>

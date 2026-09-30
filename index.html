@@ -1,119 +1,188 @@
 <!DOCTYPE html>
-<html lang="es" style="height: 100%;">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro Único Nacional de Procesos de Descongestión - PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
-    <link rel="stylesheet" href="css/index.css">    
+    <link rel="stylesheet" href="css/index.css">
 </head>
-<body class="app-body" style="background-color: #f8fafc; min-height: 100vh; display: flex; flex-direction: column; overflow-y: auto; margin: 0;">
+<body class="index-body">
 
     <!-- Barra Superior -->
-    <header class="app-header" style="flex-shrink: 0;">
+    <header class="app-header">
         <div class="navbar-brand">
-            <span>PEYGI — Sistema de Planeación Estratégica y Gestión Institucional</span>
-        </div>
-        <div class="navbar-right-section" style="display: flex; align-items: center;">
-            <div class="navbar-user">
-                <span>👤 Portal Institucional</span>
+            <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo PEYGI" class="brand-logo">
+            <div class="brand-text">
+                <strong>PEYGI</strong>
+                <span>Sistema de Planeación Estratégica y Gestión Institucional</span>
             </div>
         </div>
     </header>
 
-    <!-- Contenido Principal -->
-    <main style="flex: 1 0 auto; max-width: 1200px; width: 100%; margin: 0 auto; padding: 2.5rem 1.5rem;">
-        
-        <!-- Encabezado de Bienvenida Impactante -->
-        <div style="text-align: center; max-width: 750px; margin: 0 auto 2.5rem auto;">
-            <h1 style="font-size: 2.25rem; font-weight: 700; color: var(--text-main, #1e293b); margin-bottom: 1rem; line-height: 1.2;">
-                Registro Único Nacional de Procesos de Descongestión
-            </h1>            
-        </div>
 
-        <!-- Tarjetas de Roles -->
-        <div class="role-grid">
-            
-            <!-- Rol 1: Administrador Central (UDAE) -->
-            <div class="role-card">
-                <div>
-                    <div class="role-icon">🏢</div>
-                    <div class="role-title">Administrador Central (UDAE)</div>
-                    <div class="role-desc">Coordinación y control general de los despachos a nivel nacional. Se encarga de habilitar los despachos de descongestión, así como de validar y autorizar los despachos permanentes para garantizar la eficiencia institucional.</div>
-                </div>
-                <a href="index_admin.html" class="role-btn">
-                    Ingresar como UDAE →
-                </a>
-            </div>
+    <main class="index-main">
 
-            <!-- Rol 2: Administrador del Despacho Permanente -->
-            <div class="role-card">
-                <div>
-                    <div class="role-icon">🏛️</div>
-                    <div class="role-title">Administrador del Despacho Permanente</div>
-                    <div class="role-desc">Postulación del despacho para su habilitación institucional y posterior registro de procesos que requieren apoyo para mitigar la congestión.</div>
-                </div>
-                
-                <!-- Contenedor de Acciones -->
-                <div style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 0.75rem;">
-                    <!-- Botón Principal de Ingreso -->
-                    <a href="index_admin_p.html" class="role-btn">
-                        Ingresar al Despacho →
+        <!-- PRESENTACIÓN -->
+        <section class="index-intro">
+            <h1 class="index-title">Registro Único Nacional de Procesos de Descongestión</h1>
+            <p class="index-subtitle">Así fluye un proceso de descongestión, de principio a fin:</p>
+        </section>
+
+        <!-- FLUJO DEL PROCESO -->
+        <section id="flujo" class="index-section">
+
+            <ol class="flow">
+                <li class="flow-step">
+                    <a href="#rol-udae" class="flow-link">
+                        <span class="flow-num">1</span>
+                        <span class="flow-icon">🏢</span>
+                        <strong class="flow-title">Habilitar</strong>
+                        <span class="flow-actor">UDAE</span>
+                        <span class="flow-desc">Habilita despachos de descongestión y valida los despachos permanentes.</span>
                     </a>
-                    <!-- Enlace / Botón secundario para Postulación -->
-                    <a href="registro_usuario_despacho_permanente.html" style="text-align: center; font-size: 0.85rem; color: var(--primary-green, #10b981); text-decoration: none; font-weight: 500; transition: opacity 0.2s;">
-                        ✨ ¿Su despacho no está habilitado? Postúle aquí
+                </li>
+                <li class="flow-step">
+                    <a href="#rol-permanente" class="flow-link">
+                        <span class="flow-num">2</span>
+                        <span class="flow-icon">🏛️</span>
+                        <strong class="flow-title">Registrar</strong>
+                        <span class="flow-actor">Despacho Permanente</span>
+                        <span class="flow-desc">Registra los procesos con sus partes y los envía al Consejo Seccional.</span>
                     </a>
-                </div>
+                </li>
+                <li class="flow-step">
+                    <a href="#rol-consejo" class="flow-link">
+                        <span class="flow-num">3</span>
+                        <span class="flow-icon">📋</span>
+                        <strong class="flow-title">Distribuir</strong>
+                        <span class="flow-actor">Consejo Seccional</span>
+                        <span class="flow-desc">Predistribuye según la carga de cada despacho y confirma el traslado.</span>
+                    </a>
+                </li>
+                <li class="flow-step">
+                    <a href="#rol-descongestion" class="flow-link">
+                        <span class="flow-num">4</span>
+                        <span class="flow-icon">⚖️</span>
+                        <strong class="flow-title">Gestionar</strong>
+                        <span class="flow-actor">Despacho de Descongestión</span>
+                        <span class="flow-desc">Recibe los expedientes asignados y registra sus actuaciones.</span>
+                    </a>
+                </li>
+                <li class="flow-step">
+                    <a href="#rol-ciudadano" class="flow-link flow-link-public">
+                        <span class="flow-num">5</span>
+                        <span class="flow-icon">🔍</span>
+                        <strong class="flow-title">Consultar</strong>
+                        <span class="flow-actor">Ciudadano</span>
+                        <span class="flow-desc">Consulta el estado de su proceso y su trazabilidad completa.</span>
+                    </a>
+                </li>
+            </ol>
+        </section>
+
+        <!-- MÓDULOS POR ROL -->
+        <section id="roles" class="index-section">
+            <div class="section-head">
+                <span class="section-kicker">Módulos por rol</span>
+                <h2 class="section-title">Recorra el prototipo</h2>
+                <p class="section-text">Seleccione un rol para conocer las pantallas y funcionalidades que se van a desarrollar.</p>
             </div>
 
-            <!-- Rol 3: Administrador del Consejo Seccional -->
-            <div class="role-card">
-                <div>
-                    <div class="role-icon">📋</div>
-                    <div class="role-title">Administrador del Consejo Seccional</div>
-                    <div class="role-desc">Revisión, distribución y control territorial de los procesos elevados por las diferentes dependencias.</div>
-                </div>
-                <a href="index_admin_c.html" class="role-btn">
-                    Ingresar al Consejo →
-                </a>
+            <div class="role-grid">
+
+                <!-- Rol 1: Administrador Central (UDAE) -->
+                <article class="role-card" id="rol-udae">
+                    <div class="role-card-top">
+                        <span class="role-icon">🏢</span>
+                        <span class="role-step">Etapa 1 · Habilitar</span>
+                    </div>
+                    <h3 class="role-title">Administrador Central (UDAE)</h3>
+                    <p class="role-desc">Coordinación y control general de los despachos a nivel nacional para garantizar la eficiencia institucional.</p>
+                    <ul class="role-features">
+                        <li>Habilitar despachos de descongestión y su vigencia</li>
+                        <li>Validar y autorizar despachos permanentes</li>
+                        <li>Crear administradores y enviar credenciales</li>
+                    </ul>
+                    <a href="index_admin.html" class="role-btn">Ingresar como UDAE <span aria-hidden="true">→</span></a>
+                </article>
+
+                <!-- Rol 2: Administrador del Despacho Permanente -->
+                <article class="role-card" id="rol-permanente">
+                    <div class="role-card-top">
+                        <span class="role-icon">🏛️</span>
+                        <span class="role-step">Etapa 2 · Registrar</span>
+                    </div>
+                    <h3 class="role-title">Administrador del Despacho Permanente</h3>
+                    <p class="role-desc">Postulación del despacho para su habilitación y registro de los procesos que requieren apoyo para mitigar la congestión.</p>
+                    <ul class="role-features">
+                        <li>Postular el despacho para su habilitación</li>
+                        <li>Registrar procesos, demandantes y demandados</li>
+                        <li>Enviar procesos al Consejo Seccional</li>
+                    </ul>
+                    <div class="role-actions">
+                        <a href="index_admin_p.html" class="role-btn">Ingresar al Despacho <span aria-hidden="true">→</span></a>
+                        <a href="registro_usuario_despacho_permanente.html" class="role-link">✨ ¿Su despacho no está habilitado? Postúlese aquí</a>
+                    </div>
+                </article>
+
+                <!-- Rol 3: Administrador del Consejo Seccional -->
+                <article class="role-card" id="rol-consejo">
+                    <div class="role-card-top">
+                        <span class="role-icon">📋</span>
+                        <span class="role-step">Etapa 3 · Distribuir</span>
+                    </div>
+                    <h3 class="role-title">Administrador del Consejo Seccional</h3>
+                    <p class="role-desc">Revisión, distribución y control territorial de los procesos elevados por los despachos de su competencia.</p>
+                    <ul class="role-features">
+                        <li>Filtrar solicitudes por competencia territorial</li>
+                        <li>Predistribuir según la carga de cada despacho</li>
+                        <li>Confirmar el traslado y notificar por correo</li>
+                    </ul>
+                    <a href="index_admin_c.html" class="role-btn">Ingresar al Consejo <span aria-hidden="true">→</span></a>
+                </article>
+
+                <!-- Rol 4: Administrador del Despacho de Descongestión -->
+                <article class="role-card" id="rol-descongestion">
+                    <div class="role-card-top">
+                        <span class="role-icon">⚖️</span>
+                        <span class="role-step">Etapa 4 · Gestionar</span>
+                    </div>
+                    <h3 class="role-title">Administrador del Despacho de Descongestión</h3>
+                    <p class="role-desc">Supervisión específica del flujo de expedientes y actuaciones destinadas a las medidas de descongestión.</p>
+                    <ul class="role-features">
+                        <li>Recibir los procesos asignados</li>
+                        <li>Registrar actuaciones y avances</li>
+                        <li>Reportar el estado de cada expediente</li>
+                    </ul>
+                    <a href="index_admin_d.html" class="role-btn">Ingresar a Descongestión <span aria-hidden="true">→</span></a>
+                </article>
+
+                <!-- Rol 5: Ciudadano -->
+                <article class="role-card role-card-public" id="rol-ciudadano">
+                    <div class="role-card-top">
+                        <span class="role-icon">🔍</span>
+                        <span class="role-step">Etapa 5 · Consulta pública</span>
+                    </div>
+                    <h3 class="role-title">Ciudadano</h3>
+                    <p class="role-desc">Consulta pública de la información de sus procesos, sin necesidad de usuario ni contraseña.</p>
+                    <ul class="role-features">
+                        <li>Consultar por número de radicación</li>
+                        <li>Ver el estado actual del proceso</li>
+                        <li>Seguir su trazabilidad de origen a destino</li>
+                    </ul>
+                    <a href="consulta_ciudadano.html" class="role-btn">Consultar Proceso <span aria-hidden="true">→</span></a>
+                </article>
+
             </div>
-
-            <!-- Rol 4: Administrador del Despacho Descongestión -->
-            <div class="role-card">
-                <div>
-                    <div class="role-icon">⚖️</div>
-                    <div class="role-title">Administrador del Despacho Descongestión</div>
-                    <div class="role-desc">Supervisión específica del flujo de expedientes y actuaciones destinadas a medidas de descongestión.</div>
-                </div>
-                <a href="index_admin_d.html" class="role-btn">
-                    Ingresar a Descongestión →
-                </a>
-            </div>
-
-            
-
-
-            <!-- Rol 5: Ciudadano -->
-            <div class="role-card" style="border-left: 4px solid #3b82f6;">
-                <div>
-                    <div class="role-icon">🔍</div>
-                    <div class="role-title">Ciudadano</div>
-                    <div class="role-desc">Consulta pública de la información de sus procesos, visualización del estado actual y seguimiento detallado de su trazabilidad.</div>
-                </div>
-                <a href="consulta_ciudadano.html" class="role-btn">
-                    Consultar Proceso →
-                </a>
-            </div>
-
-        </div>
-
+        </section>
     </main>
 
-    <!-- Pie de página simple -->
-    <footer style="text-align: center; padding: 1.25rem; font-size: 0.85rem; color: var(--text-muted, #64748b); border-top: 1px solid #e2e8f0; background: #ffffff; flex-shrink: 0;">
-        Unidad de Desarrollo y Análisis Estadístico (UDAE) — Rama Judicial
+    <!-- Pie de página -->
+    <footer class="index-footer">
+        <strong>Unidad de Desarrollo y Análisis Estadístico (UDAE) — Rama Judicial</strong>
+        <span>Prototipo navegable · Versión de presentación</span>
     </footer>
 
 </body>
