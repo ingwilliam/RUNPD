@@ -13,27 +13,38 @@ const dbRecepcion = {
     },
 
     catalogos: {
+        // Estados definidos por el equipo funcional (despacho con medida de descongestión)
         estadosProceso: [
-            "Admisión de la demanda",
-            "Notificación",
-            "Contestación de la demanda",
-            "Audiencia inicial",
-            "Etapa probatoria",
-            "Audiencia de instrucción y juzgamiento",
-            "Alegatos de conclusión",
-            "Al despacho para fallo",
-            "Recurso en trámite",
-            "Suspendido"
+            "Auto que asume el conocimiento",
+            "Fija fecha para audiencia inicial, de instrucción y juzgamiento",
+            "Solicitud de nulidad pendiente de resolver",
+            "Pruebas decretadas pendientes de práctica",
+            "Se concedió apelación de un auto en efecto suspensivo y el expediente se encuentra en el superior",
+            "Corre el término para que las partes presenten alegatos de conclusión",
+            "Aprueba conciliación",
+            "Auto que decreta terminación",
+            "Sentencia",
+            "Se concedió apelación contra la sentencia y el expediente se remite al superior",
+            "Liquidación de costas, entrega de títulos, levantamiento de medidas cautelares u oficios"
         ],
         // Estado especial que cierra el proceso
         estadoFinal: "TERMINADO",
         formasTerminacion: [
             "Sentencia ejecutoriada",
-            "Conciliación",
+            "Conciliación aprobada",
             "Transacción",
             "Desistimiento",
+            "Desistimiento tácito",
+            "Pago total de la obligación",
             "Otra forma de terminación"
         ],
+        // Forma de terminación que se preselecciona según el último estado registrado
+        // ("Auto que decreta terminación" no tiene sugerencia: el usuario elige la causa)
+        formaSugeridaPorEstado: {
+            "Sentencia": "Sentencia ejecutoriada",
+            "Liquidación de costas, entrega de títulos, levantamiento de medidas cautelares u oficios": "Sentencia ejecutoriada",
+            "Aprueba conciliación": "Conciliación aprobada"
+        },
         motivosDevolucion: [
             { value: "error_traslado", label: "Error de traslado", descripcion: "El proceso no corresponde a este despacho (competencia, especialidad o datos incorrectos)." },
             { value: "fin_medida", label: "Finalizó la medida de descongestión", descripcion: "La medida terminó y el proceso no alcanzó a finalizarse en este despacho." }
@@ -45,7 +56,7 @@ const dbRecepcion = {
         {
             id: 901,
             codigo: "05001400300320220011100",
-            estadoProceso: "Etapa probatoria",
+            estadoProceso: "Decreta pruebas y señala fecha de audiencia",
             fechaActuacion: "2026-07-20",
             link: "",
             observaciones: "Asignado en ciclo anterior de descongestión.",
@@ -56,13 +67,14 @@ const dbRecepcion = {
             visto: true,
             estado: "tramite",
             actuaciones: [
-                { tipo: "actuacion", fecha: "2026-08-20", estadoProceso: "Etapa probatoria", proximaActuacion: "2026-09-25", observacion: "Se decretaron pruebas testimoniales." }
+                { tipo: "actuacion", fecha: "2026-08-02", estadoProceso: "Auto que asume el conocimiento", proximaActuacion: "2026-08-20", observacion: "Se avocó conocimiento del proceso." },
+                { tipo: "actuacion", fecha: "2026-08-20", estadoProceso: "Pruebas decretadas pendientes de práctica", proximaActuacion: "2026-09-25", observacion: "Se decretaron pruebas testimoniales." }
             ]
         },
         {
             id: 902,
             codigo: "05001400300320220022200",
-            estadoProceso: "Alegatos de conclusión",
+            estadoProceso: "Con fecha para audiencia inicial, de instrucción y juzgamiento",
             fechaActuacion: "2026-08-05",
             link: "",
             observaciones: "Pendiente fallo de segunda instancia.",
@@ -73,13 +85,14 @@ const dbRecepcion = {
             visto: true,
             estado: "tramite",
             actuaciones: [
-                { tipo: "actuacion", fecha: "2026-09-15", estadoProceso: "Alegatos de conclusión", proximaActuacion: "2026-10-05", observacion: "Se corrió traslado para alegar." }
+                { tipo: "actuacion", fecha: "2026-08-12", estadoProceso: "Auto que asume el conocimiento", proximaActuacion: "2026-08-30", observacion: "" },
+                { tipo: "actuacion", fecha: "2026-09-15", estadoProceso: "Corre el término para que las partes presenten alegatos de conclusión", proximaActuacion: "2026-10-05", observacion: "Se corrió traslado para alegar." }
             ]
         },
         {
             id: 1,
             codigo: "05001400300320240012300",
-            estadoProceso: "Definir 2",
+            estadoProceso: "Decreta pruebas y señala fecha de audiencia",
             fechaActuacion: "2026-08-14",
             link: "https://procesos.ramajudicial.gov.co/",
             observaciones: "Pendiente dictamen pericial.",
@@ -94,7 +107,7 @@ const dbRecepcion = {
         {
             id: 3,
             codigo: "05001400300320230045600",
-            estadoProceso: "Definir 3",
+            estadoProceso: "En estado de fallo",
             fechaActuacion: "2026-03-02",
             link: "",
             observaciones: "Proceso priorizado por antigüedad.",
@@ -109,7 +122,7 @@ const dbRecepcion = {
         {
             id: 903,
             codigo: "17001310500120210033300",
-            estadoProceso: "Al despacho para fallo",
+            estadoProceso: "En estado de fallo",
             fechaActuacion: "2026-02-10",
             link: "",
             observaciones: "",
@@ -122,14 +135,16 @@ const dbRecepcion = {
             fechaFinalizacion: "2026-06-18",
             formaTerminacion: "Sentencia ejecutoriada",
             actuaciones: [
-                { tipo: "actuacion", fecha: "2026-04-12", estadoProceso: "Al despacho para fallo", proximaActuacion: "2026-06-10", observacion: "" },
+                { tipo: "actuacion", fecha: "2026-03-03", estadoProceso: "Auto que asume el conocimiento", proximaActuacion: "2026-04-12", observacion: "" },
+                { tipo: "actuacion", fecha: "2026-04-12", estadoProceso: "Sentencia", proximaActuacion: "2026-06-10", observacion: "Sentencia favorable al demandante, pendiente de ejecutoria." },
+                { tipo: "actuacion", fecha: "2026-06-10", estadoProceso: "Liquidación de costas, entrega de títulos, levantamiento de medidas cautelares u oficios", proximaActuacion: "2026-06-18", observacion: "Liquidación de costas aprobada." },
                 { tipo: "finalizacion", fecha: "2026-06-18", estadoProceso: "TERMINADO – Sentencia ejecutoriada", proximaActuacion: "", observacion: "Sentencia favorable al demandante." }
             ]
         },
         {
             id: 904,
             codigo: "17001410500220250004400",
-            estadoProceso: "Admisión de la demanda",
+            estadoProceso: "Admitida o libra mandamiento",
             fechaActuacion: "2026-05-02",
             link: "",
             observaciones: "",

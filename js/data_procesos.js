@@ -5,11 +5,13 @@ const dbProcesos = {
     // Catálogos
     opcionesSelects: {
         estadoProceso: [
-            { value: "Definir 1", label: "Definir 1" },
-            { value: "Definir 2", label: "Definir 2" },
-            { value: "Definir 3", label: "Definir 3" },
-            { value: "Definir 4", label: "Definir 4" },
-            { value: "Definir n....", label: "Definir n...." }
+            { value: "Admitida o libra mandamiento", label: "Admitida o libra mandamiento" },
+            { value: "Integrada la litis", label: "Integrada la litis" },
+            { value: "Para señalar fecha de audiencia", label: "Para señalar fecha de audiencia" },
+            { value: "Con fecha para audiencia inicial, de instrucción y juzgamiento", label: "Con fecha para audiencia inicial, de instrucción y juzgamiento" },
+            { value: "Decreta pruebas y señala fecha de audiencia", label: "Decreta pruebas y señala fecha de audiencia" },
+            { value: "En estado de fallo", label: "En estado de fallo" },
+            { value: "Para trámite de apelación", label: "Para trámite de apelación" }
         ],
         tipoPersona: [
             { value: "natural", label: "Persona natural" },
@@ -52,10 +54,10 @@ const dbProcesos = {
         {
             id: 1,
             codigo: "05001400300320240012300",
-            estadoProceso: "Definir 2",
+            estadoProceso: "Decreta pruebas y señala fecha de audiencia",
             fechaActuacion: "2026-08-14",
             link: "https://procesos.ramajudicial.gov.co/",
-            observaciones: "Pendiente dictamen pericial..........",
+            observaciones: "Pruebas decretadas. Pendiente dictamen pericial para la audiencia.",
             demandantes: [
                 { tipo: "natural", primerNombre: "Juan", segundoNombre: "Pablo", primerApellido: "Restrepo", segundoApellido: "Ochoa", nombre: "", correo: "jprestrepo@correo.com" }
             ],
@@ -68,10 +70,10 @@ const dbProcesos = {
         {
             id: 2,
             codigo: "05001400300320250007800",
-            estadoProceso: "Definir 1",
+            estadoProceso: "Admitida o libra mandamiento",
             fechaActuacion: "2026-09-10",
             link: "",
-            observaciones: "",
+            observaciones: "Demanda admitida. En trámite de notificación al demandado.",
             demandantes: [
                 { tipo: "natural", primerNombre: "Sandra", segundoNombre: "", primerApellido: "Múnera", segundoApellido: "Arango", nombre: "", correo: "smunera@correo.com" }
             ],
@@ -84,10 +86,10 @@ const dbProcesos = {
         {
             id: 3,
             codigo: "05001400300320230045600",
-            estadoProceso: "Definir 3",
+            estadoProceso: "En estado de fallo",
             fechaActuacion: "2026-03-02",
             link: "",
-            observaciones: "",
+            observaciones: "Alegatos surtidos. Pendiente proferir sentencia.",
             demandantes: [
                 { tipo: "juridica", primerNombre: "", segundoNombre: "", primerApellido: "", segundoApellido: "", nombre: "BANCOLOMBIA S.A.", correo: "judicial@bancolombia.com.co" }
             ],

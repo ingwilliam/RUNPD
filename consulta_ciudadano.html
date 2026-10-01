@@ -3,10 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Seguridad: los resultados no se indexan en buscadores y la URL no se comparte con sitios externos -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="referrer" content="no-referrer">
     <title>Consulta Ciudadana de Procesos de Descongestión - PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/consulta.css">
+    <!-- Cloudflare Turnstile (verificación anti-bots). En producción: llave propia + validación del token en el servidor -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileListo&render=explicit" async defer></script>
 </head>
 <body class="cq-body">
 
@@ -36,12 +41,28 @@
                            oninput="limpiarRadicado(this)">
                     <span id="radicado-contador" class="cq-counter">0/23</span>
                 </div>
-                <button type="submit" class="btn-primary-action cq-btn">🔍 Consultar</button>
+                <button type="submit" id="btn-consultar" class="btn-primary-action cq-btn">🔍 Consultar</button>
             </form>
+
+            <!-- VERIFICACIÓN DE SEGURIDAD -->
+            <div class="cq-verificacion">
+                <!-- Widget real de Cloudflare Turnstile -->
+                <div id="cf-turnstile"></div>
+
+                <!-- Respaldo para el prototipo (archivo local o sin internet): simula el widget -->
+                <label id="verificacion-simulada" class="cq-simulada" hidden>
+                    <input type="checkbox" id="check-simulado" onchange="verificarSimulado(this)">
+                    <span id="texto-simulado">Verifique que es humano</span>
+                    <span class="cq-simulada-marca">Cloudflare<br><small>Turnstile · simulación</small></span>
+                </label>
+
+                <div class="cq-seguridad-nota">🔒 Consulta protegida contra accesos automatizados. Los datos personales se muestran de forma parcial.</div>
+            </div>
+
             <div id="error-radicado" class="cq-error" role="alert"></div>
 
-            <div class="cq-ejemplos">
-                <span>Radicados de prueba:</span>
+            <div class="cq-ejemplos" id="bloque-ejemplos">
+                <span>Códigos de prueba:</span>
                 <div id="lista-ejemplos"></div>
             </div>
         </section>

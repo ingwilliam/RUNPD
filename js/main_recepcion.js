@@ -434,7 +434,38 @@ function cambiarModoActuacion() {
     document.getElementById("act-btn-guardar").textContent = finalizar ? "🏁 Finalizar proceso" : "💾 Registrar actuación";
     document.querySelector('label[for="act-observacion"]').textContent = finalizar ? "Observación de la terminación (opcional)" : "Observación (opcional)";
     document.getElementById("act-observacion").placeholder = finalizar ? "Ej: sentencia favorable al demandante" : "Describa brevemente la actuación realizada";
+    if (finalizar) sugerirFormaTerminacion();
     validarFechas();
+}
+
+// Preselecciona la forma de terminación según el último estado registrado del proceso
+function sugerirFormaTerminacion() {
+    const p = obtenerProceso();
+    const forma = document.getElementById("act-forma");
+
+    // Texto de ayuda debajo del select (se crea una sola vez)
+    let ayuda = document.getElementById("act-forma-ayuda");
+    if (!ayuda) {
+        ayuda = document.createElement("div");
+        ayuda.id = "act-forma-ayuda";
+        ayuda.style.cssText = "font-size: 0.75rem; margin-top: 0.35rem;";
+        forma.insertAdjacentElement("afterend", ayuda);
+    }
+
+    const ultima = p ? ultimaActuacion(p) : null;
+    const estado = ultima ? ultima.estadoProceso : "";
+    const sugerida = (dbRecepcion.catalogos.formaSugeridaPorEstado || {})[estado];
+
+    if (sugerida) {
+        if (!forma.value) forma.value = sugerida;
+        ayuda.style.color = "var(--primary-green)";
+        ayuda.textContent = `✔ Sugerida según el último estado ("${estado}"). Puede cambiarla.`;
+    } else if (estado === "Auto que decreta terminación") {
+        ayuda.style.color = "#b45309";
+        ayuda.textContent = "Indique la causa de la terminación que decretó el auto.";
+    } else {
+        ayuda.textContent = "";
+    }
 }
 
 function validarFechas() {
@@ -605,7 +636,7 @@ function abrirCorreoDevolucion(p, { fecha, motivo, observacion, estadoProcesal, 
         }
     };
 
-    const url = `correo_devolucion.html?data=${encodeURIComponent(JSON.stringify(payloadCorreo))}`;
+    const url = `email_devolucion_despacho_descongestion.html?data=${encodeURIComponent(JSON.stringify(payloadCorreo))}`;
     return window.open(url, "_blank");
 }
 

@@ -2,6 +2,26 @@
 // RUNPD - Consulta ciudadana: estado actual y trazabilidad del proceso
 // =====================================================================
 
+// ---------------------------------------------------------------------
+// Configuración de seguridad (prototipo)
+// ---------------------------------------------------------------------
+const SEGURIDAD = {
+    // Llave de PRUEBA pública de Cloudflare (siempre aprueba). En producción se usa la llave del sitio
+    // y el token se valida en el servidor con la llave secreta antes de devolver datos.
+    turnstileSiteKey: "1x00000000000000000000AA",
+    maxConsultasPorMinuto: 5,     // límite de consultas seguidas
+    segundosBloqueo: 60,          // espera al superar el límite
+    enmascararNombres: true,      // muestra parcialmente los nombres de personas naturales
+    mostrarEjemplos: true         // radicados de prueba: SOLO para la presentación (en producción: false)
+};
+
+let tokenVerificacion = null;   // token entregado por Turnstile (o por la simulación)
+let widgetTurnstile = null;
+let consultaPendiente = false;  // el usuario pidió consultar antes de verificarse
+const historialConsultas = [];  // marcas de tiempo para el límite de consultas
+let bloqueadoHasta = 0;
+let intervaloBloqueo = null;
+
 let procesoConsultado = null;
 let ordenReciente = false; // false = del origen al estado actual
 
@@ -22,20 +42,125 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // Radicados de prueba para la demostración
-    document.getElementById("lista-ejemplos").innerHTML = dbConsulta.procesos
-        .map(p => `<button type="button" class="cq-chip-ejemplo" onclick="consultarEjemplo('${p.codigo}')">${p.codigo}</button>`)
-        .join("");
+    // Radicados de prueba para la demostración (desactivar en producción)
+    if (SEGURIDAD.mostrarEjemplos) {
+        document.getElementById("lista-ejemplos").innerHTML = dbConsulta.procesos
+            .map(p => `<button type="button" class="cq-chip-ejemplo" onclick="consultarEjemplo('${p.codigo}')">${p.codigo}</button>`)
+            .join("");
+    } else {
+        document.getElementById("bloque-ejemplos").hidden = true;
+    }
 
-    // Si llega desde el correo (consulta_ciudadano.html?radicado=...), consulta de una vez
+    // Si llega desde el correo (consulta_ciudadano.html?radicado=...), precarga el radicado
+    // pero exige la verificación antes de mostrar información
     const radicado = new URLSearchParams(window.location.search).get("radicado");
     if (radicado) {
         const input = document.getElementById("radicado");
         input.value = radicado;
         limpiarRadicado(input);
-        consultar();
+        consultaPendiente = true;
+        mostrarMensaje("Complete la verificación de seguridad para ver la información del proceso.", "info");
+    }
+
+    // Turnstile no funciona abriendo el archivo directamente (file://) ni sin internet:
+    // en ese caso se usa la simulación para poder presentar el prototipo
+    if (location.protocol === "file:") {
+        activarVerificacionSimulada();
+    } else {
+        setTimeout(() => { if (!widgetTurnstile) activarVerificacionSimulada(); }, 5000);
     }
 });
+
+// ---------------------------------------------------------------------
+// Verificación de seguridad (Cloudflare Turnstile)
+// ---------------------------------------------------------------------
+window.onTurnstileListo = function () {
+    if (location.protocol === "file:" || typeof turnstile === "undefined") return;
+    widgetTurnstile = turnstile.render("#cf-turnstile", {
+        sitekey: SEGURIDAD.turnstileSiteKey,
+        language: "es",
+        callback: token => verificacionExitosa(token),
+        "expired-callback": () => { tokenVerificacion = null; },
+        "error-callback": () => activarVerificacionSimulada()
+    });
+};
+
+function activarVerificacionSimulada() {
+    document.getElementById("cf-turnstile").innerHTML = "";
+    document.getElementById("verificacion-simulada").hidden = false;
+}
+
+function verificarSimulado(check) {
+    const caja = document.getElementById("verificacion-simulada");
+    const texto = document.getElementById("texto-simulado");
+    if (!check.checked) return;
+    check.disabled = true;
+    texto.textContent = "Verificando…";
+    setTimeout(() => {
+        texto.textContent = "✔ ¡Verificación exitosa!";
+        caja.classList.add("ok");
+        verificacionExitosa("token-simulado");
+    }, 900);
+}
+
+function verificacionExitosa(token) {
+    tokenVerificacion = token;
+    mostrarMensaje("");
+    if (consultaPendiente) {
+        consultaPendiente = false;
+        consultar();
+    }
+}
+
+// El token es de un solo uso: después de cada consulta se pide de nuevo
+function reiniciarVerificacion() {
+    tokenVerificacion = null;
+    if (widgetTurnstile !== null && typeof turnstile !== "undefined") turnstile.reset(widgetTurnstile);
+    const check = document.getElementById("check-simulado");
+    check.checked = false;
+    check.disabled = false;
+    document.getElementById("texto-simulado").textContent = "Verifique que es humano";
+    document.getElementById("verificacion-simulada").classList.remove("ok");
+}
+
+// Límite de consultas por minuto (en producción: regla de "rate limiting" en Cloudflare / servidor)
+function superaLimiteConsultas() {
+    const ahora = Date.now();
+    while (historialConsultas.length && ahora - historialConsultas[0] > 60000) historialConsultas.shift();
+    if (historialConsultas.length >= SEGURIDAD.maxConsultasPorMinuto) {
+        bloqueadoHasta = ahora + SEGURIDAD.segundosBloqueo * 1000;
+        iniciarCuentaRegresiva();
+        return true;
+    }
+    historialConsultas.push(ahora);
+    return false;
+}
+
+function iniciarCuentaRegresiva() {
+    const boton = document.getElementById("btn-consultar");
+    boton.disabled = true;
+    clearInterval(intervaloBloqueo);
+    const actualizar = () => {
+        const restante = Math.ceil((bloqueadoHasta - Date.now()) / 1000);
+        if (restante <= 0) {
+            clearInterval(intervaloBloqueo);
+            boton.disabled = false;
+            boton.textContent = "🔍 Consultar";
+            mostrarMensaje("");
+            return;
+        }
+        boton.textContent = `⏳ Espere ${restante} s`;
+        mostrarMensaje(`Realizó demasiadas consultas seguidas. Por seguridad, espere ${restante} segundos para continuar.`);
+    };
+    actualizar();
+    intervaloBloqueo = setInterval(actualizar, 1000);
+}
+
+function mostrarMensaje(texto, tipo = "") {
+    const caja = document.getElementById("error-radicado");
+    caja.textContent = texto;
+    caja.className = "cq-error" + (tipo ? " " + tipo : "");
+}
 
 // ---------------------------------------------------------------------
 // Utilidades
@@ -51,8 +176,16 @@ function formatoFecha(iso) {
     return `${Number(d)} ${meses[Number(m) - 1]} ${a}`;
 }
 
+// Personas naturales: primer nombre completo y el resto con la inicial (ej: "Juan P*** R*** O***").
+// Las personas jurídicas se muestran completas.
+function enmascararNombre(parte) {
+    if (!SEGURIDAD.enmascararNombres || parte.tipo === "juridica") return parte.nombre;
+    const palabras = String(parte.nombre || "").trim().split(/\s+/);
+    return palabras.map((p, i) => i === 0 ? p : `${p.charAt(0)}***`).join(" ");
+}
+
 function nombres(lista) {
-    return (lista || []).map(p => p.nombre).join(", ") || "No especificado";
+    return (lista || []).map(enmascararNombre).join(", ") || "No especificado";
 }
 
 function ultimoEvento(p, tipos) {
@@ -68,7 +201,7 @@ function limpiarRadicado(input) {
     const contador = document.getElementById("radicado-contador");
     contador.textContent = `${input.value.length}/23`;
     contador.classList.toggle("completo", input.value.length === 23);
-    document.getElementById("error-radicado").textContent = "";
+    if (Date.now() >= bloqueadoHasta) mostrarMensaje("");
 }
 
 function consultarEjemplo(codigo) {
@@ -81,13 +214,28 @@ function consultarEjemplo(codigo) {
 function consultar(event) {
     if (event) event.preventDefault();
     const codigo = document.getElementById("radicado").value.trim();
-    const error = document.getElementById("error-radicado");
+
+    if (Date.now() < bloqueadoHasta) return;
 
     if (codigo.length !== 23) {
-        error.textContent = "El número de radicación debe tener exactamente 23 dígitos.";
+        mostrarMensaje("El número de radicación debe tener exactamente 23 dígitos.");
         document.getElementById("radicado").focus();
         return;
     }
+
+    // 1) Verificación anti-bots obligatoria
+    if (!tokenVerificacion) {
+        consultaPendiente = true;
+        mostrarMensaje("Complete la verificación de seguridad para consultar.", "info");
+        return;
+    }
+
+    // 2) Límite de consultas seguidas
+    if (superaLimiteConsultas()) return;
+
+    // 3) El token se consume: la siguiente consulta requiere verificarse otra vez
+    reiniciarVerificacion();
+    mostrarMensaje("");
 
     procesoConsultado = dbConsulta.procesos.find(p => p.codigo === codigo) || null;
     ordenReciente = false;
@@ -181,7 +329,7 @@ function htmlResumen(p, est) {
         <div class="cq-card">
             <div class="cq-resumen-top">
                 <div>
-                    <div class="cq-radicado-label">Radicado</div>
+                    <div class="cq-radicado-label">Código</div>
                     <div class="cq-radicado">${esc(p.codigo)}</div>
                     <div class="cq-partes">${esc(nombres(p.demandantes))} <em>contra</em> ${esc(nombres(p.demandados))}</div>
                 </div>
