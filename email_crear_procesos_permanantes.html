@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Envío de Procesos al Consejo Seccional — PEYGI</title>
+    <title>Procesos Remitidos por Medida de Descongestión — PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
@@ -46,36 +46,70 @@
                     <tr>
                         <td style="padding: 35px 30px;">
                             <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
-                                📤 Solicitud de Distribución de Procesos para Descongestión
+                                📤 Procesos Remitidos para Traslado por Medida de Descongestión
                             </h1>
                             <p style="font-size: 15px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
                                 Cordial saludo, <strong id="lbl-consejo" style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">Consejo Seccional de CALDAS</strong>.
-                                El despacho permanente <strong id="lbl-despacho" style="color: #0f172a;">JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES</strong>
-                                (Código: <span id="lbl-codigo" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">170014005801</span>)
-                                ha remitido <strong id="lbl-total-texto">los siguientes procesos</strong> para que sean distribuidos entre los despachos de descongestión de su competencia.
+                                El despacho permanente <strong id="lbl-despacho" style="color: #0f172a;">JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES</strong>
+                                (Código: <span id="lbl-codigo" style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">170014105002</span>)
+                                remitió <strong id="lbl-total-texto">2 proceso(s)</strong> en el marco del
+                                <strong id="lbl-acuerdo" style="color: #0f172a;">Acuerdo PCSJA26-11234 de 2026</strong>, para que sean asignados a los despachos de descongestión definidos en el plan de distribución de la medida.
                             </p>
+
+                            <!-- MEDIDA DE DESCONGESTIÓN -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                                <tr>
+                                    <td style="padding: 20px;">
+                                        <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">
+                                            📜 Medida de Descongestión
+                                        </h3>
+                                        <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
+                                            <tr>
+                                                <td width="38%" style="font-weight: 600; color: #64748b;">Acuerdo:</td>
+                                                <td id="lbl-medida-acuerdo" style="font-weight: 600; color: #0f172a;">Acuerdo PCSJA26-11234 de 2026</td>
+                                            </tr>
+                                            <tr id="fila-resolucion">
+                                                <td style="font-weight: 600; color: #64748b;">Resolución:</td>
+                                                <td id="lbl-medida-resolucion">Resolución CSJCAR26-045 de 2026</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b;">Vigencia:</td>
+                                                <td id="lbl-medida-vigencia">15/01/2026 al 31/12/2026</td>
+                                            </tr>
+                                            <tr>
+                                                <td style="font-weight: 600; color: #64748b; vertical-align: top;">Plan de distribución:</td>
+                                                <td id="lbl-medida-destinos">➔ JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES: <strong>40</strong> proceso(s) autorizados</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
 
                             <!-- RESUMEN DEL ENVÍO -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
                                 <tr>
-                                    <td width="50%" style="padding-right: 6px;">
+                                    <td width="33%" style="padding-right: 6px;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;">
-                                            <tr>
-                                                <td align="center" style="padding: 14px;">
-                                                    <div id="lbl-total" style="font-size: 26px; font-weight: 800; color: #166534; line-height: 1;">0</div>
-                                                    <div style="font-size: 12px; color: #475569; margin-top: 4px;">Proceso(s) remitido(s)</div>
-                                                </td>
-                                            </tr>
+                                            <tr><td align="center" style="padding: 14px;">
+                                                <div id="lbl-total" style="font-size: 26px; font-weight: 800; color: #166534; line-height: 1;">2</div>
+                                                <div style="font-size: 12px; color: #475569; margin-top: 4px;">Remitidos en este envío</div>
+                                            </td></tr>
                                         </table>
                                     </td>
-                                    <td width="50%" style="padding-left: 6px;">
+                                    <td width="34%" style="padding: 0 3px;">
+                                        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px;">
+                                            <tr><td align="center" style="padding: 14px;">
+                                                <div id="lbl-avance" style="font-size: 26px; font-weight: 800; color: #0369a1; line-height: 1;">2 de 40</div>
+                                                <div style="font-size: 12px; color: #475569; margin-top: 4px;">Total remitidos en la medida</div>
+                                            </td></tr>
+                                        </table>
+                                    </td>
+                                    <td width="33%" style="padding-left: 6px;">
                                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
-                                            <tr>
-                                                <td align="center" style="padding: 14px;">
-                                                    <div id="lbl-fecha" style="font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.2;">—</div>
-                                                    <div style="font-size: 12px; color: #475569; margin-top: 4px;">Fecha de envío</div>
-                                                </td>
-                                            </tr>
+                                            <tr><td align="center" style="padding: 14px;">
+                                                <div id="lbl-fecha" style="font-size: 20px; font-weight: 800; color: #0f172a; line-height: 1.3;">—</div>
+                                                <div style="font-size: 12px; color: #475569; margin-top: 4px;">Fecha de envío</div>
+                                            </td></tr>
                                         </table>
                                     </td>
                                 </tr>
@@ -105,16 +139,14 @@
                                         <th style="padding: 10px; border-bottom: 2px solid #e2e8f0;">Estado y Observaciones</th>
                                     </tr>
                                 </thead>
-                                <tbody id="tabla-procesos-correo">
-                                    <tr><td colspan="4" style="padding: 15px; text-align: center; color: #64748b; font-size: 12px;">No se registran procesos en este envío.</td></tr>
-                                </tbody>
+                                <tbody id="tabla-procesos-correo"></tbody>
                             </table>
 
                             <!-- ACCIÓN REQUERIDA -->
                             <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
                                 <tr>
                                     <td style="background-color: #f0f9ff; border: 1px solid #bae6fd; border-radius: 6px; padding: 12px 15px; font-size: 13px; color: #0c4a6e; line-height: 1.5;">
-                                        📌 <strong>Acción requerida:</strong> ingrese al módulo <em>Gestión de Solicitudes para el Traslado de Procesos</em> para predistribuir estos procesos según la carga de cada despacho de descongestión y confirmar el traslado.
+                                        📌 <strong>Acción requerida:</strong> ingrese al módulo <em>Gestión de Solicitudes para el Traslado de Procesos</em> y asigne estos procesos a los despachos de descongestión del plan de distribución de la medida, sin superar las cantidades autorizadas por la UDAE.
                                     </td>
                                 </tr>
                             </table>
@@ -123,7 +155,7 @@
                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 <tr>
                                     <td align="center" style="padding: 5px 0 15px 0;">
-                                        <a href="index_admin_c.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar a PEYGI y distribuir</a>
+                                        <a href="index_admin_c.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar a PEYGI y asignar los procesos</a>
                                     </td>
                                 </tr>
                             </table>
@@ -145,9 +177,41 @@
     </table>
 
     <script>
+        // Ejemplo coherente con data_procesos.js (se muestra si el correo se abre sin datos)
+        const EJEMPLO = {
+            nombreDespacho: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
+            codigoDespacho: "170014105002",
+            consejoSeccional: "CALDAS",
+            fechaEnvio: null,
+            nota: "",
+            medida: {
+                acuerdo: "Acuerdo PCSJA26-11234 de 2026",
+                resolucion: "Resolución CSJCAR26-045 de 2026",
+                vigencia: "15/01/2026 al 31/12/2026",
+                autorizados: 40,
+                remitidosTotal: 2,
+                destinos: [{ nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 40 }]
+            },
+            procesos: [
+                {
+                    codigo: "05001400300320240012300", estadoProceso: "Decreta pruebas y señala fecha de audiencia", fechaActuacion: "2026-08-14",
+                    observaciones: "Pruebas decretadas. Pendiente dictamen pericial para la audiencia.", link: "https://procesos.ramajudicial.gov.co/",
+                    demandantes: [{ tipo: "natural", primerNombre: "Juan", segundoNombre: "Pablo", primerApellido: "Restrepo", segundoApellido: "Ochoa" }],
+                    demandados: [{ tipo: "juridica", nombre: "INVERSIONES EL POBLADO S.A.S." }]
+                },
+                {
+                    codigo: "05001400300320250007800", estadoProceso: "Admitida o libra mandamiento", fechaActuacion: "2026-09-10",
+                    observaciones: "Demanda admitida. En trámite de notificación al demandado.", link: "",
+                    demandantes: [{ tipo: "natural", primerNombre: "Sandra", primerApellido: "Múnera", segundoApellido: "Arango" }],
+                    demandados: [{ tipo: "juridica", nombre: "CONSTRUCTORA ANDINA LTDA." }]
+                }
+            ]
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-            const fecha = iso => { if (!iso) return "—"; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+            const fecha = iso => { if (!iso) return null; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+            const poner = (id, valor) => { if (valor !== undefined && valor !== null && valor !== "") document.getElementById(id).textContent = valor; };
             const formatearPartes = lista => {
                 if (!Array.isArray(lista) || lista.length === 0) return "No especificado";
                 return lista.map(d => {
@@ -157,67 +221,79 @@
                 }).join(", ");
             };
 
-            // Fecha por defecto: hoy
-            const h = new Date();
-            const hoyTexto = `${String(h.getDate()).padStart(2, "0")}/${String(h.getMonth() + 1).padStart(2, "0")}/${h.getFullYear()}`;
-            document.getElementById("lbl-fecha").textContent = hoyTexto;
-            document.getElementById("lbl-fecha-top").textContent = hoyTexto;
-
+            let datos = EJEMPLO;
             const dataParam = new URLSearchParams(window.location.search).get("data");
-            if (!dataParam) return;
-
-            try {
-                // URLSearchParams ya entrega el texto decodificado (no se usa decodeURIComponent otra vez)
-                const datos = JSON.parse(dataParam);
-                const procesos = datos.procesos || [];
-
-                // Consejo Seccional: acepta "CALDAS" o "Consejo Seccional de CALDAS"
-                const valorConsejo = datos.consejoSeccional || datos.consejoseccional || datos.consejo || "";
-                const textoConsejo = valorConsejo.toUpperCase().includes("CONSEJO SECCIONAL") ? valorConsejo : `Consejo Seccional de ${valorConsejo}`;
-                if (valorConsejo) {
-                    document.getElementById("lbl-consejo").textContent = textoConsejo;
-                    document.getElementById("lbl-para").textContent = textoConsejo;
+            if (dataParam) {
+                try {
+                    datos = JSON.parse(dataParam); // URLSearchParams ya entrega el texto decodificado
+                } catch (error) {
+                    console.error("Error al procesar los datos del envío:", error);
                 }
-
-                if (datos.nombreDespacho) document.getElementById("lbl-despacho").textContent = datos.nombreDespacho;
-                if (datos.codigoDespacho) document.getElementById("lbl-codigo").textContent = datos.codigoDespacho;
-                if (datos.fechaEnvio) {
-                    document.getElementById("lbl-fecha").textContent = fecha(datos.fechaEnvio);
-                    document.getElementById("lbl-fecha-top").textContent = fecha(datos.fechaEnvio);
-                }
-
-                document.getElementById("lbl-total").textContent = procesos.length;
-                document.getElementById("lbl-total-texto").textContent = `${procesos.length} proceso(s)`;
-
-                // Nota del despacho, solo si fue diligenciada
-                if (datos.nota && datos.nota.trim() !== "") {
-                    document.getElementById("lbl-nota").textContent = datos.nota;
-                    document.getElementById("contenedor-nota").style.display = "table";
-                }
-
-                // Relación de procesos
-                if (procesos.length) {
-                    document.getElementById("tabla-procesos-correo").innerHTML = procesos.map((p, i) => `
-                        <tr>
-                            <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">${i + 1}</td>
-                            <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
-                                <div style="font-family: monospace; font-weight: 700; color: #166534; font-size: 12px;">${esc(p.codigo)}</div>
-                                <div style="font-size: 11px; color: #64748b; margin-top: 3px;">Últ. actuación: ${fecha(p.fechaActuacion)}</div>
-                            </td>
-                            <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #334155;">
-                                <div style="margin-bottom: 4px;"><strong>Demandante:</strong> ${esc(formatearPartes(p.demandantes))}</div>
-                                <div><strong>Demandado:</strong> ${esc(formatearPartes(p.demandados))}</div>
-                            </td>
-                            <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
-                                <span style="background-color: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600;">${esc(p.estadoProceso || "Sin estado")}</span>
-                                ${p.observaciones ? `<div style="font-size: 11px; color: #475569; font-style: italic; margin-top: 5px;">Obs: ${esc(p.observaciones)}</div>` : ""}
-                                ${p.link ? `<div style="margin-top: 5px;"><a href="${esc(p.link)}" target="_blank" style="font-size: 11px; color: #0284c7; text-decoration: underline;">🔗 Expediente Rama Judicial</a></div>` : ""}
-                            </td>
-                        </tr>`).join("");
-                }
-            } catch (error) {
-                console.error("Error al procesar los datos del envío:", error);
             }
+
+            const procesos = datos.procesos || [];
+            const m = datos.medida || (Array.isArray(datos.medidas) ? datos.medidas[0] : null);
+
+            // Encabezado y saludo
+            const valorConsejo = datos.consejoSeccional || datos.consejoseccional || "";
+            if (valorConsejo) {
+                const textoConsejo = valorConsejo.toUpperCase().includes("CONSEJO SECCIONAL") ? valorConsejo : `Consejo Seccional de ${valorConsejo}`;
+                poner("lbl-consejo", textoConsejo);
+                poner("lbl-para", textoConsejo);
+            }
+            poner("lbl-despacho", datos.nombreDespacho);
+            poner("lbl-codigo", datos.codigoDespacho);
+
+            const hoy = new Date();
+            const fechaEnvio = fecha(datos.fechaEnvio) ||
+                `${String(hoy.getDate()).padStart(2, "0")}/${String(hoy.getMonth() + 1).padStart(2, "0")}/${hoy.getFullYear()}`;
+            poner("lbl-fecha", fechaEnvio);
+            poner("lbl-fecha-top", fechaEnvio);
+
+            poner("lbl-total", procesos.length);
+            poner("lbl-total-texto", `${procesos.length} proceso(s)`);
+
+            // Medida de descongestión y plan de distribución
+            if (m) {
+                poner("lbl-acuerdo", m.acuerdo);
+                poner("lbl-medida-acuerdo", m.acuerdo);
+                poner("lbl-medida-vigencia", m.vigencia);
+                if (m.resolucion) poner("lbl-medida-resolucion", m.resolucion);
+                else document.getElementById("fila-resolucion").style.display = "none";
+                if (Array.isArray(m.destinos) && m.destinos.length) {
+                    document.getElementById("lbl-medida-destinos").innerHTML = m.destinos
+                        .map(d => `➔ ${esc(d.nombre)}: <strong>${esc(d.procesos)}</strong> proceso(s) autorizados`).join("<br>");
+                }
+                const autorizados = m.autorizados ?? m.cupo;
+                if (autorizados) poner("lbl-avance", `${m.remitidosTotal ?? procesos.length} de ${autorizados}`);
+            }
+
+            // Nota del despacho, solo si fue diligenciada
+            if (datos.nota && datos.nota.trim() !== "") {
+                document.getElementById("lbl-nota").textContent = datos.nota;
+                document.getElementById("contenedor-nota").style.display = "table";
+            }
+
+            // Relación de procesos
+            document.getElementById("tabla-procesos-correo").innerHTML = procesos.length
+                ? procesos.map((p, i) => `
+                    <tr>
+                        <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">${i + 1}</td>
+                        <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
+                            <div style="font-family: monospace; font-weight: 700; color: #166534; font-size: 12px;">${esc(p.codigo)}</div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 3px;">Últ. actuación: ${fecha(p.fechaActuacion) || "—"}</div>
+                        </td>
+                        <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #334155;">
+                            <div style="margin-bottom: 4px;"><strong>Demandante:</strong> ${esc(formatearPartes(p.demandantes))}</div>
+                            <div><strong>Demandado:</strong> ${esc(formatearPartes(p.demandados))}</div>
+                        </td>
+                        <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
+                            <span style="background-color: #f1f5f9; color: #0f172a; padding: 2px 6px; border-radius: 4px; border: 1px solid #cbd5e1; font-size: 11px; font-weight: 600;">${esc(p.estadoProceso || "Sin estado")}</span>
+                            ${p.observaciones ? `<div style="font-size: 11px; color: #475569; font-style: italic; margin-top: 5px;">Obs: ${esc(p.observaciones)}</div>` : ""}
+                            ${p.link ? `<div style="margin-top: 5px;"><a href="${esc(p.link)}" target="_blank" style="font-size: 11px; color: #0284c7; text-decoration: underline;">🔗 Expediente Rama Judicial</a></div>` : ""}
+                        </td>
+                    </tr>`).join("")
+                : `<tr><td colspan="4" style="padding: 15px; text-align: center; color: #64748b; font-size: 12px;">No se registran procesos en este envío.</td></tr>`;
         });
     </script>
 </body>

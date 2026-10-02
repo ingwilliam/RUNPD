@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Medida de Descongestión — PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
+
+    <!-- Aviso: se genera un correo por cada despacho involucrado -->
+    <div id="aviso-varios" style="display: none; max-width: 680px; margin: 20px auto 0; background-color: #e0f2fe; border: 1px solid #bae6fd; color: #0c4a6e; border-radius: 6px; padding: 10px 14px; font-size: 13px; text-align: center;"></div>
+
+    <div id="correos"></div>
+
+    <script>
+        // Ejemplo que se muestra si la página se abre sin datos
+        const EJEMPLO = {
+            reenvio: false,
+            consejoSeccional: "CALDAS",
+            acuerdo: { numero: "PCSJA26-11234", anio: 2026, archivo: "PCSJA26-11234.pdf" },
+            resolucion: { numero: "CSJCAR26-045", anio: 2026, archivo: "CSJCAR26-045.pdf" },
+            fechaInicio: "2026-01-15",
+            fechaFin: "2026-12-31",
+            descripcion: "Medida de descongestión para la especialidad laboral en Manizales.",
+            fechaEnvio: null,
+            despachos: [
+                { id: 101, nombre: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES", codigo: "170014105002", correo: "j02lpmmanizales@cendoj.ramajudicial.gov.co", tipo: "Permanente" },
+                { id: 5, nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", codigo: "170014005801", correo: "lgiraldo@cendoj.ramajudicial.gov.co", tipo: "Descongestión" }
+            ],
+            distribuciones: [
+                { origenId: 101, origen: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES", destinoId: 5, destino: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 40 }
+            ]
+        };
+
+        const esc = v => String(v ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        const fecha = iso => { if (!iso) return "—"; const [a, m, d] = iso.split("-"); return `${d}/${m}/${a}`; };
+        const hoyISO = () => { const d = new Date(); return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10); };
+        const fila = (etiqueta, valor) => `
+            <tr>
+                <td width="38%" style="font-weight: 600; color: #64748b; vertical-align: top;">${etiqueta}</td>
+                <td>${valor}</td>
+            </tr>`;
+        const paso = (n, texto) => `
+            <tr>
+                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">${n}</span></td>
+                <td style="padding: 3px 0 12px 0;">${texto}</td>
+            </tr>`;
+
+        // Correo para UN despacho, con solo su participación en el plan
+        function construirCorreo(datos, d) {
+            const acuerdo = `Acuerdo ${esc(datos.acuerdo.numero)} de ${datos.acuerdo.anio}`;
+            const enviaA = datos.distribuciones.filter(r => r.origenId === d.id);
+            const recibeDe = datos.distribuciones.filter(r => r.destinoId === d.id);
+            const totalEnvia = enviaA.reduce((t, r) => t + Number(r.procesos), 0);
+            const totalRecibe = recibeDe.reduce((t, r) => t + Number(r.procesos), 0);
+            const esDescongestion = d.tipo === "Descongestión" || (recibeDe.length && !enviaA.length);
+
+            const filasPlan = [
+                ...enviaA.map(r => ({ accion: "📤 Trasladará", otro: r.destino, prep: "a", procesos: r.procesos })),
+                ...recibeDe.map(r => ({ accion: "📥 Recibirá", otro: r.origen, prep: "de", procesos: r.procesos }))
+            ].map(f => `
+                <tr>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px; font-weight: 600; white-space: nowrap;">${f.accion}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 18px; font-weight: 800; color: #166534; text-align: center;">${f.procesos}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px;">proceso(s) ${f.prep} <strong>${esc(f.otro)}</strong></td>
+                </tr>`).join("");
+
+            const pasos = esDescongestion
+                ? paso(1, "<strong>Ingrese a PEYGI</strong> y verifique la información de la medida.") +
+                  paso(2, `El <strong>Consejo Seccional de ${esc(datos.consejoSeccional)}</strong> le asignará los procesos dentro de las cantidades autorizadas.`) +
+                  paso(3, "Consulte los procesos recibidos en <em>Recepción y Seguimiento de Procesos</em> y registre sus actuaciones.")
+                : paso(1, "<strong>Ingrese a PEYGI</strong> y verifique la información de la medida.") +
+                  paso(2, `<strong>Registre los procesos</strong> que se trasladarán (hasta ${totalEnvia} según esta medida).`) +
+                  paso(3, `<strong>Envíelos al Consejo Seccional de ${esc(datos.consejoSeccional)}</strong> para su distribución.`);
+
+            return `
+            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="table-layout: fixed; background-color: #f4f6f8; padding: 20px 0;">
+                <tr><td align="center">
+                    <table border="0" cellpadding="0" cellspacing="0" width="680" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);">
+
+                        <!-- LOGOS -->
+                        <tr>
+                            <td align="center" style="background-color: #ffffff; padding: 20px 30px; border-bottom: 2px solid #e2e8f0;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="left" style="vertical-align: middle;"><img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;"></td>
+                                        <td align="right" style="vertical-align: middle;"><img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;"></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- DESTINATARIO Y FECHA -->
+                        <tr>
+                            <td style="background-color: #f8fafc; padding: 12px 30px; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td align="left"><strong style="color: #334155;">Para:</strong> ${esc(d.correo || d.nombre)}</td>
+                                        <td align="right"><strong style="color: #334155;">Fecha:</strong> ${fecha(datos.fechaEnvio || hoyISO())}</td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- CONTENIDO -->
+                        <tr>
+                            <td style="padding: 35px 30px;">
+                                ${datos.reenvio ? `
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 20px;">
+                                    <tr><td style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 6px; padding: 10px 14px; font-size: 13px; color: #92400e;">
+                                        🔁 <strong>Reenvío:</strong> esta notificación reemplaza las anteriores e incluye la información actualizada de la medida.
+                                    </td></tr>
+                                </table>` : ""}
+
+                                <h1 style="font-size: 20px; font-weight: 700; color: #0f172a; margin-top: 0; margin-bottom: 15px;">
+                                    📜 Registro de Medida de Descongestión
+                                </h1>
+                                <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
+                                    Cordial saludo, señor(a) Juez y equipo de trabajo del <strong style="color: #0f172a;">${esc(d.nombre)}</strong>
+                                    (Código: <span style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(d.codigo)}</span>).
+                                    La Unidad de Desarrollo y Análisis Estadístico (UDAE) le informa que se registró en el sistema <strong>PEYGI (RUNPD)</strong> la medida de descongestión
+                                    adoptada mediante el <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">${acuerdo}</strong>, en la cual su despacho participa.
+                                </p>
+
+                                <!-- DATOS DE LA MEDIDA -->
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f8fafc; border-radius: 6px; border: 1px solid #e2e8f0; margin-bottom: 25px;">
+                                    <tr><td style="padding: 20px;">
+                                        <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">📋 Información de la Medida</h3>
+                                        <table border="0" cellpadding="5" cellspacing="0" width="100%" style="font-size: 14px; color: #334155;">
+                                            ${fila("Acuerdo:", `<strong>${acuerdo}</strong> · 📎 ${esc(datos.acuerdo.archivo || "")}`)}
+                                            ${fila("Resolución de creación de cargos:", datos.resolucion ? `Resolución ${esc(datos.resolucion.numero)} de ${datos.resolucion.anio} · 📎 ${esc(datos.resolucion.archivo || "")}` : `<span style="color: #64748b;">No aplica</span>`)}
+                                            ${fila("Consejo Seccional:", esc(datos.consejoSeccional))}
+                                            ${fila("Vigencia:", `<strong>${fecha(datos.fechaInicio)}</strong> al <strong>${fecha(datos.fechaFin)}</strong>`)}
+                                            ${datos.descripcion ? fila("Objeto:", esc(datos.descripcion)) : ""}
+                                        </table>
+                                    </td></tr>
+                                </table>
+
+                                <!-- PARTICIPACIÓN DEL DESPACHO -->
+                                <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">🔀 Participación de su Despacho en el Plan de Distribución</h3>
+                                <table border="0" cellpadding="8" cellspacing="0" width="100%" style="border-collapse: collapse; border: 1px solid #e2e8f0; margin-bottom: 10px;">
+                                    ${filasPlan}
+                                </table>
+                                <p style="font-size: 12px; color: #64748b; margin: 0 0 25px 0;">
+                                    ${totalEnvia ? `Total a trasladar: <strong>${totalEnvia}</strong> proceso(s).` : ""}
+                                    ${totalRecibe ? `Total a recibir: <strong>${totalRecibe}</strong> proceso(s).` : ""}
+                                    Las cantidades son el máximo autorizado por la medida.
+                                </p>
+
+                                <!-- PRÓXIMOS PASOS -->
+                                <h3 style="font-size: 14px; font-weight: 600; color: #1e3a8a; margin: 0 0 12px 0; text-transform: uppercase; letter-spacing: 0.5px;">🚀 Próximos Pasos</h3>
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; color: #334155; margin-bottom: 20px;">${pasos}</table>
+
+                                <!-- BOTÓN -->
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr><td align="center" style="padding: 5px 0 15px 0;">
+                                        <a href="${esDescongestion ? "index_admin_d.html" : "index_admin_p.html"}" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema PEYGI</a>
+                                    </td></tr>
+                                </table>
+                            </td>
+                        </tr>
+
+                        <!-- PIE -->
+                        <tr>
+                            <td align="center" style="background-color: #f8fafc; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
+                                <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Rama Judicial</p>
+                                <p style="margin: 0;">Este es un mensaje automático, por favor no responda a este correo.</p>
+                            </td>
+                        </tr>
+                    </table>
+                </td></tr>
+            </table>`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            let datos = EJEMPLO;
+            const dataParam = new URLSearchParams(window.location.search).get("data");
+            if (dataParam) {
+                try {
+                    datos = JSON.parse(dataParam); // URLSearchParams ya entrega el texto decodificado
+                } catch (error) {
+                    console.error("Error al procesar los datos de la notificación:", error);
+                }
+            }
+
+            const despachos = datos.despachos || [];
+            document.getElementById("correos").innerHTML = despachos.map(d => construirCorreo(datos, d)).join("");
+
+            if (despachos.length > 1) {
+                const aviso = document.getElementById("aviso-varios");
+                aviso.innerHTML = `✉️ ${datos.reenvio ? "Reenvío: se generaron" : "Se generaron"} <strong>${despachos.length} notificaciones</strong>, una para cada despacho involucrado en la medida.`;
+                aviso.style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

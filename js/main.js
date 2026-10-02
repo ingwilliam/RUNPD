@@ -1,5 +1,5 @@
 // =====================================================================
-// RUNPD - Gestión de despachos con medida de descongestión (UDAE)
+// RUNPD - Gestión y creación de despachos (UDAE)
 // Los datos vienen de js/data.js (constante dbDatos) y no se modifican.
 // =====================================================================
 
@@ -11,21 +11,6 @@ let accionDialogo = null;
 // ---------------------------------------------------------------------
 function esc(valor) {
     return String(valor ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-}
-
-function hoy() {
-    const d = new Date();
-    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
-}
-
-function diasEntre(desde, hasta) {
-    return Math.round((new Date(hasta + "T00:00:00") - new Date(desde + "T00:00:00")) / 86400000);
-}
-
-function formatoFecha(iso) {
-    if (!iso) return "—";
-    const [a, m, d] = iso.split("-");
-    return `${d}/${m}/${a}`;
 }
 
 // Quita tildes para buscar sin importar cómo se escriba
@@ -44,21 +29,6 @@ function nombreAdministrador(item) {
 function cerrarModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) modal.classList.remove("visible");
-}
-
-// Estado de la vigencia de la medida
-function infoVigencia(item) {
-    const actual = hoy();
-    if (!item.fechaInicio || !item.fechaFin) return { clave: "sin_fecha", texto: "Sin vigencia", fondo: "#edf2f7", color: "#475569" };
-    if (actual < item.fechaInicio) {
-        const d = diasEntre(actual, item.fechaInicio);
-        return { clave: "futura", texto: `Inicia en ${d} día(s)`, fondo: "#dbeafe", color: "#1d4ed8" };
-    }
-    const dias = diasEntre(actual, item.fechaFin);
-    if (dias < 0)   return { clave: "vencida",    texto: `Vencida hace ${-dias} día(s)`, fondo: "#fee2e2", color: "#991b1b" };
-    if (dias <= 30) return { clave: "por_vencer", texto: dias === 0 ? "Vence hoy" : `Vence en ${dias} día(s)`, fondo: "#fee2e2", color: "#991b1b" };
-    if (dias <= 60) return { clave: "por_vencer", texto: `Vence en ${dias} días`, fondo: "#fef3c7", color: "#92400e" };
-    return { clave: "vigente", texto: `${dias} días restantes`, fondo: "#dcfce7", color: "#166534" };
 }
 
 function chip(texto, fondo, color) {
@@ -96,7 +66,7 @@ function aceptarDialogo() {
 }
 
 // ---------------------------------------------------------------------
-// 2. Llenar los selects dinámicamente según el JSON
+// Llenar los selects dinámicamente según el JSON
 // ---------------------------------------------------------------------
 function llenarSelects(datosSeleccionados = {}) {
     for (const [campo, opciones] of Object.entries(dbDatos.opcionesSelects)) {
@@ -104,12 +74,10 @@ function llenarSelects(datosSeleccionados = {}) {
         if (selectElement) {
             selectElement.innerHTML = '<option value="" disabled selected>Seleccione una opción...</option>';
             opciones.forEach(opt => {
-                const optionTag = document.createElement('option');
+                const optionTag = document.createElement("option");
                 optionTag.value = opt.value;
                 optionTag.textContent = opt.label;
-                if (datosSeleccionados[campo] === opt.value) {
-                    optionTag.selected = true;
-                }
+                if (datosSeleccionados[campo] === opt.value) optionTag.selected = true;
                 selectElement.appendChild(optionTag);
             });
         }
@@ -134,17 +102,26 @@ function filtrarOpciones(campo, texto) {
 // Opciones de los filtros de la tabla (solo valores que existen en los despachos)
 function llenarFiltros() {
     const unicos = campo => [...new Set(dbDatos.despachos.map(d => d[campo]).filter(Boolean))].sort();
-    document.getElementById("filtro-consejo").innerHTML = `<option value="">Todos</option>` +
-        unicos("consejoseccional").map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
-    document.getElementById("filtro-especialidad").innerHTML = `<option value="">Todas</option>` +
-        unicos("especialidad").map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+    const llenar = (id, campo, textoTodos) => {
+        const select = document.getElementById(id);
+        const actual = select.value;
+        select.innerHTML = `<option value="">${textoTodos}</option>` +
+            unicos(campo).map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+        select.value = actual;
+    };
+    llenar("filtro-consejo", "consejoseccional", "Todos");
+    llenar("filtro-especialidad", "especialidad", "Todas");
+    // El filtro de tipo toma las opciones del catálogo (Permanente / Descongestión)
+    const tipo = document.getElementById("filtro-tipo");
+    const actualTipo = tipo.value;
+    tipo.innerHTML = `<option value="">Todos</option>` +
+        dbDatos.opcionesSelects.tipo.map(t => `<option value="${esc(t.value)}">${esc(t.label)}</option>`).join("");
+    tipo.value = actualTipo;
 }
 
 function limpiarFiltros() {
-    document.getElementById("filtro-busqueda").value = "";
-    document.getElementById("filtro-consejo").value = "";
-    document.getElementById("filtro-especialidad").value = "";
-    document.getElementById("filtro-estado").value = "";
+    ["filtro-busqueda", "filtro-consejo", "filtro-especialidad", "filtro-tipo", "filtro-estado"]
+        .forEach(id => document.getElementById(id).value = "");
     filtroKpi = "todos";
     renderizarTabla();
 }
@@ -154,13 +131,13 @@ function limpiarFiltros() {
 // ---------------------------------------------------------------------
 function renderizarIndicadores() {
     const lista = dbDatos.despachos;
-    const activos = lista.filter(esActivo);
+    const activos = lista.filter(esActivo).length;
     const tarjetas = [
-        { clave: "todos",      icono: "🏛️", valor: lista.length,                                                  texto: "Despachos registrados", color: "var(--primary-green)" },
-        { clave: "activos",    icono: "✅", valor: activos.length,                                                texto: "Activos",               color: "#166534" },
-        { clave: "inactivos",  icono: "🚫", valor: lista.length - activos.length,                                 texto: "Inactivos",             color: "#64748b" },
-        { clave: "por_vencer", icono: "⏰", valor: activos.filter(d => infoVigencia(d).clave === "por_vencer").length, texto: "Medida por vencer (≤ 60 días)", color: "#f59e0b" },
-        { clave: "vencidas",   icono: "⌛", valor: activos.filter(d => infoVigencia(d).clave === "vencida").length,    texto: "Activos con medida vencida", color: "#dc2626" }
+        { clave: "todos",         icono: "🏛️", valor: lista.length,                                          texto: "Despachos registrados",    color: "var(--primary-green)" },
+        { clave: "activos",       icono: "✅", valor: activos,                                               texto: "Activos",                  color: "#166534" },
+        { clave: "inactivos",     icono: "🚫", valor: lista.length - activos,                                texto: "Inactivos",                color: "#64748b" },
+        { clave: "permanentes",   icono: "🏢", valor: lista.filter(d => d.tipo === "Permanente").length,     texto: "Permanentes",              color: "#475569" },
+        { clave: "descongestion", icono: "⚖️", valor: lista.filter(d => d.tipo === "Descongestión").length,  texto: "De descongestión",         color: "#0369a1" }
     ];
 
     document.getElementById("indicadores").innerHTML = tarjetas.map(t => {
@@ -186,17 +163,18 @@ function cumpleFiltros(item) {
     const q = normalizar(document.getElementById("filtro-busqueda").value);
     const consejo = document.getElementById("filtro-consejo").value;
     const especialidad = document.getElementById("filtro-especialidad").value;
+    const tipo = document.getElementById("filtro-tipo").value;
     const estado = document.getElementById("filtro-estado").value;
-    const vigencia = infoVigencia(item).clave;
 
     if (consejo && item.consejoseccional !== consejo) return false;
     if (especialidad && item.especialidad !== especialidad) return false;
+    if (tipo && item.tipo !== tipo) return false;
     if (estado && (esActivo(item) ? "Activo" : "Inactivo") !== estado) return false;
 
     if (filtroKpi === "activos" && !esActivo(item)) return false;
     if (filtroKpi === "inactivos" && esActivo(item)) return false;
-    if (filtroKpi === "por_vencer" && !(esActivo(item) && vigencia === "por_vencer")) return false;
-    if (filtroKpi === "vencidas" && !(esActivo(item) && vigencia === "vencida")) return false;
+    if (filtroKpi === "permanentes" && item.tipo !== "Permanente") return false;
+    if (filtroKpi === "descongestion" && item.tipo !== "Descongestión") return false;
 
     if (!q) return true;
     const texto = normalizar([item.nombreDespacho, item.codigoDespacho, item.deptomunicipio, item.consejoseccional, nombreAdministrador(item), item.adminCorreo].join(" "));
@@ -204,26 +182,25 @@ function cumpleFiltros(item) {
 }
 
 // ---------------------------------------------------------------------
-// 3. Renderizar la tabla principal
+// Renderizar la tabla principal
 // ---------------------------------------------------------------------
 function renderizarTabla() {
     renderizarIndicadores();
 
-    const tbody = document.getElementById('cuerpo-tabla');
+    const tbody = document.getElementById("cuerpo-tabla");
     const lista = dbDatos.despachos.filter(cumpleFiltros);
 
     document.getElementById("texto-filtro").innerHTML =
         `Mostrando <strong>${lista.length}</strong> de ${dbDatos.despachos.length} despacho(s)`;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
             No hay despachos que coincidan con los filtros. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
 
     tbody.innerHTML = lista.map(item => {
         const activo = esActivo(item);
-        const vigencia = infoVigencia(item);
         const esDescongestion = item.tipo === "Descongestión";
 
         return `
@@ -249,15 +226,11 @@ function renderizarTabla() {
                     ${esc(nombreAdministrador(item))}<br>
                     <span style="color: var(--text-muted); font-size: 0.72rem;">${esc(item.adminCorreo)}</span>
                 </td>
-                <td style="font-size: 0.8rem; white-space: nowrap;">
-                    ${formatoFecha(item.fechaInicio)} → ${formatoFecha(item.fechaFin)}<br>
-                    <div style="margin-top: 0.3rem;">${chip(vigencia.texto, vigencia.fondo, vigencia.color)}</div>
-                </td>
-                <td><span class="badge-status ${activo ? 'active' : 'inactive'}">${activo ? 'Activo' : 'Inactivo'}</span></td>
+                <td><span class="badge-status ${activo ? "active" : "inactive"}">${activo ? "Activo" : "Inactivo"}</span></td>
                 <td>
                     <div class="action-buttons" style="flex-direction: column; align-items: stretch;">
                         <button class="btn-action edit" style="white-space: nowrap;" onclick="abrirFormularioEditar(${item.id})">✏️ Editar</button>
-                        <button class="btn-action inactivate" style="white-space: nowrap;" onclick="toggleInactivar(${item.id})">${activo ? '🚫 Inactivar' : '✅ Activar'}</button>
+                        <button class="btn-action inactivate" style="white-space: nowrap;" onclick="toggleInactivar(${item.id})">${activo ? "🚫 Inactivar" : "✅ Activar"}</button>
                     </div>
                 </td>
             </tr>`;
@@ -269,30 +242,6 @@ function renderizarTabla() {
 // ---------------------------------------------------------------------
 function limpiarBuscadoresFormulario() {
     document.querySelectorAll('#form-despacho input[type="search"]').forEach(i => i.value = "");
-}
-
-function actualizarVigencia() {
-    const inicio = document.getElementById("fecha_inicio").value;
-    const fin = document.getElementById("fecha_fin");
-    const resumen = document.getElementById("resumen-vigencia");
-
-    fin.min = inicio || "";
-
-    if (!inicio || !fin.value) {
-        resumen.style.display = "none";
-        return;
-    }
-
-    const dias = diasEntre(inicio, fin.value);
-    resumen.style.display = "block";
-    if (dias <= 0) {
-        resumen.style.background = "#fee2e2"; resumen.style.borderColor = "#fecaca"; resumen.style.color = "#991b1b";
-        resumen.innerHTML = "⚠️ La fecha fin debe ser posterior a la fecha de inicio.";
-    } else {
-        const vigencia = infoVigencia({ fechaInicio: inicio, fechaFin: fin.value });
-        resumen.style.background = "#f0f9ff"; resumen.style.borderColor = "#bae6fd"; resumen.style.color = "#0c4a6e";
-        resumen.innerHTML = `📅 La medida durará <strong>${dias} días</strong> (aprox. ${Math.round(dias / 30)} mes(es)), del ${formatoFecha(inicio)} al ${formatoFecha(fin.value)}. Estado: <strong>${vigencia.texto}</strong>.`;
-    }
 }
 
 function generarPassword() {
@@ -307,7 +256,14 @@ function enlaceCredenciales(item) {
     const datos = {
         nombreDespacho: item.nombreDespacho,
         codigoDespacho: item.codigoDespacho,
+        tipo: item.tipo,
+        tipoDespacho: item.tipodespacho,
+        jurisdiccion: item.jurisdiccion,
+        especialidad: item.especialidad,
+        municipio: item.deptomunicipio,
         consejoSeccional: item.consejoseccional,
+        distrito: item.distrito,
+        circuito: item.circuito,
         administrador: nombreAdministrador(item),
         correo: item.adminCorreo,
         password: item.adminPassword
@@ -316,124 +272,98 @@ function enlaceCredenciales(item) {
 }
 
 // ---------------------------------------------------------------------
-// 4. Abrir Layer / Modal vacío para Nuevo
+// Abrir el formulario vacío para crear
 // ---------------------------------------------------------------------
 function abrirFormularioNuevo() {
-    document.getElementById('despacho-id').value = '';
-    document.getElementById('form-titulo').textContent = '📝 Habilitar despacho de descongestión';
+    document.getElementById("despacho-id").value = "";
+    document.getElementById("form-titulo").textContent = "📝 Crear despacho";
+    document.getElementById("btn-enviar-credenciales").style.display = "none";
 
-    // Ocultar el botón de credenciales porque es un registro nuevo
-    const btnCredenciales = document.getElementById('btn-enviar-credenciales');
-    if (btnCredenciales) {
-        btnCredenciales.style.display = 'none';
-    }
-
-    document.getElementById('form-despacho').reset();
+    document.getElementById("form-despacho").reset();
     limpiarBuscadoresFormulario();
     llenarSelects();
-    actualizarVigencia();
-    document.getElementById('btn-guardar').textContent = '💾 Habilitar despacho';
-    document.getElementById('modal-despacho').classList.add('visible');
+    document.getElementById("btn-guardar").textContent = "💾 Crear despacho";
+    document.getElementById("modal-despacho").classList.add("visible");
 }
 
 // ---------------------------------------------------------------------
-// 5. Abrir Layer / Modal precargado para Editar
+// Abrir el formulario precargado para editar
 // ---------------------------------------------------------------------
 function abrirFormularioEditar(id) {
     const despacho = dbDatos.despachos.find(d => d.id === id);
     if (!despacho) return;
 
-    document.getElementById('form-despacho').reset();
+    document.getElementById("form-despacho").reset();
     limpiarBuscadoresFormulario();
 
-    document.getElementById('despacho-id').value = despacho.id;
-    document.getElementById('form-titulo').textContent = `✏️ Editar: ${despacho.nombreDespacho}`;
-    document.getElementById('btn-guardar').textContent = '💾 Guardar cambios';
+    document.getElementById("despacho-id").value = despacho.id;
+    document.getElementById("form-titulo").textContent = `✏️ Editar: ${despacho.nombreDespacho}`;
+    document.getElementById("btn-guardar").textContent = "💾 Guardar cambios";
 
-    // MOSTRAR el botón de credenciales porque estamos editando
-    const btnCredenciales = document.getElementById('btn-enviar-credenciales');
-    if (btnCredenciales) {
-        btnCredenciales.style.display = 'inline-flex';
-        btnCredenciales.href = enlaceCredenciales(despacho);
-    }
+    // Al editar se puede (re)enviar las credenciales
+    const btnCredenciales = document.getElementById("btn-enviar-credenciales");
+    btnCredenciales.style.display = "inline-flex";
+    btnCredenciales.href = enlaceCredenciales(despacho);
 
     llenarSelects(despacho);
 
-    // Asignar valores a los inputs de texto del despacho
-    document.getElementById('codigo_despacho').value = despacho.codigoDespacho || '';
-    document.getElementById('nombre_despacho').value = despacho.nombreDespacho || '';
-    document.getElementById('fecha_inicio').value = despacho.fechaInicio;
-    document.getElementById('fecha_fin').value = despacho.fechaFin;
+    document.getElementById("codigo_despacho").value = despacho.codigoDespacho || "";
+    document.getElementById("nombre_despacho").value = despacho.nombreDespacho || "";
 
-    // Asignar valores a los campos del Administrador
-    document.getElementById('admin_primer_nombre').value = despacho.adminPrimerNombre || '';
-    document.getElementById('admin_segundo_nombre').value = despacho.adminSegundoNombre || '';
-    document.getElementById('admin_primer_apellido').value = despacho.adminPrimerApellido || '';
-    document.getElementById('admin_segundo_apellido').value = despacho.adminSegundoApellido || '';
-    document.getElementById('admin_correo').value = despacho.adminCorreo || '';
-    document.getElementById('admin_password').value = despacho.adminPassword || '';
+    document.getElementById("admin_primer_nombre").value = despacho.adminPrimerNombre || "";
+    document.getElementById("admin_segundo_nombre").value = despacho.adminSegundoNombre || "";
+    document.getElementById("admin_primer_apellido").value = despacho.adminPrimerApellido || "";
+    document.getElementById("admin_segundo_apellido").value = despacho.adminSegundoApellido || "";
+    document.getElementById("admin_correo").value = despacho.adminCorreo || "";
+    document.getElementById("admin_password").value = despacho.adminPassword || "";
 
-    actualizarVigencia();
-    document.getElementById('modal-despacho').classList.add('visible');
+    document.getElementById("modal-despacho").classList.add("visible");
 }
 
-// ---------------------------------------------------------------------
-// 6. Ocultar Layer / Modal
-// ---------------------------------------------------------------------
 function ocultarFormulario() {
-    cerrarModal('modal-despacho');
+    cerrarModal("modal-despacho");
 }
 
 // ---------------------------------------------------------------------
-// 7. Guardar o actualizar registro (incluyendo la data del Administrador)
+// Guardar o actualizar el despacho (incluye la información del administrador)
 // ---------------------------------------------------------------------
 function guardarDespacho(event) {
     event.preventDefault();
-    const id = document.getElementById('despacho-id').value;
+    const id = document.getElementById("despacho-id").value;
+    const valor = campo => document.getElementById(campo).value.trim();
 
-    const nuevoRegistro = {
+    const datos = {
         id: id ? parseInt(id) : Date.now(),
-        consejoseccional: document.getElementById('consejoseccional').value,
-        jurisdiccion: document.getElementById('jurisdiccion').value,
-        deptomunicipio: document.getElementById('deptomunicipio').value,
-        distrito: document.getElementById('distrito').value,
-        circuito: document.getElementById('circuito').value,
-        tipodespacho: document.getElementById('tipodespacho').value,
-        especialidad: document.getElementById('especialidad').value,
-        tipo: document.getElementById('tipo').value, // antes no se guardaba
-        codigoDespacho: document.getElementById('codigo_despacho').value.trim(),
-        nombreDespacho: document.getElementById('nombre_despacho').value.trim(),
-        fechaInicio: document.getElementById('fecha_inicio').value,
-        fechaFin: document.getElementById('fecha_fin').value,
-        estado: "Activo",
-        // Campos del Administrador
-        adminPrimerNombre: document.getElementById('admin_primer_nombre').value.trim(),
-        adminSegundoNombre: document.getElementById('admin_segundo_nombre').value.trim(),
-        adminPrimerApellido: document.getElementById('admin_primer_apellido').value.trim(),
-        adminSegundoApellido: document.getElementById('admin_segundo_apellido').value.trim(),
-        adminCorreo: document.getElementById('admin_correo').value.trim(),
-        adminPassword: document.getElementById('admin_password').value.trim()
+        consejoseccional: valor("consejoseccional"),
+        jurisdiccion: valor("jurisdiccion"),
+        deptomunicipio: valor("deptomunicipio"),
+        distrito: valor("distrito"),
+        circuito: valor("circuito"),
+        tipodespacho: valor("tipodespacho"),
+        especialidad: valor("especialidad"),
+        tipo: valor("tipo"),
+        codigoDespacho: valor("codigo_despacho"),
+        nombreDespacho: valor("nombre_despacho"),
+        adminPrimerNombre: valor("admin_primer_nombre"),
+        adminSegundoNombre: valor("admin_segundo_nombre"),
+        adminPrimerApellido: valor("admin_primer_apellido"),
+        adminSegundoApellido: valor("admin_segundo_apellido"),
+        adminCorreo: valor("admin_correo"),
+        adminPassword: valor("admin_password")
     };
 
-    // Validaciones adicionales
-    if (nuevoRegistro.fechaFin <= nuevoRegistro.fechaInicio) {
-        mostrarDialogoAlerta("Revise la vigencia", "La fecha fin de la medida debe ser posterior a la fecha de inicio.", "⚠️");
-        return;
-    }
-    const duplicado = dbDatos.despachos.find(d => d.codigoDespacho === nuevoRegistro.codigoDespacho && d.id !== nuevoRegistro.id);
+    const duplicado = dbDatos.despachos.find(d => d.codigoDespacho === datos.codigoDespacho && d.id !== datos.id);
     if (duplicado) {
-        mostrarDialogoAlerta("Código repetido", `El código ${nuevoRegistro.codigoDespacho} ya está registrado para: ${duplicado.nombreDespacho}.`, "⚠️");
+        mostrarDialogoAlerta("Código repetido", `El código ${datos.codigoDespacho} ya está registrado para: ${duplicado.nombreDespacho}.`, "⚠️");
         return;
     }
 
     if (id) {
-        const index = dbDatos.despachos.findIndex(d => d.id === parseInt(id));
-        if (index !== -1) {
-            nuevoRegistro.estado = dbDatos.despachos[index].estado;
-            dbDatos.despachos[index] = nuevoRegistro;
-        }
+        // Se conserva lo que el formulario no maneja (estado y demás campos existentes)
+        const index = dbDatos.despachos.findIndex(d => d.id === datos.id);
+        if (index !== -1) dbDatos.despachos[index] = { ...dbDatos.despachos[index], ...datos };
     } else {
-        dbDatos.despachos.push(nuevoRegistro);
+        dbDatos.despachos.push({ ...datos, estado: "Activo" });
     }
 
     llenarFiltros();
@@ -441,13 +371,13 @@ function guardarDespacho(event) {
     ocultarFormulario();
 
     if (id) {
-        mostrarDialogoAlerta("Cambios guardados", `Se actualizó la información de ${nuevoRegistro.nombreDespacho}.`);
+        mostrarDialogoAlerta("Cambios guardados", `Se actualizó la información de ${datos.nombreDespacho}.`);
     } else {
-        // Al habilitar un despacho nuevo, ofrecer el envío inmediato de credenciales
+        // Al crear un despacho, se ofrece enviar de inmediato las credenciales al administrador
         mostrarDialogoConfirmacion(
-            "Despacho habilitado",
-            `${nuevoRegistro.nombreDespacho} quedó activo del ${formatoFecha(nuevoRegistro.fechaInicio)} al ${formatoFecha(nuevoRegistro.fechaFin)}. ¿Desea enviar ahora las credenciales a ${nombreAdministrador(nuevoRegistro)}?`,
-            () => window.open(enlaceCredenciales(nuevoRegistro), "_blank"),
+            "Despacho creado",
+            `${datos.nombreDespacho} quedó creado y activo. ¿Desea enviar ahora las credenciales de acceso a ${nombreAdministrador(datos)}?`,
+            () => window.open(enlaceCredenciales(datos), "_blank"),
             "✅",
             "✉️ Enviar credenciales",
             "Más tarde"
@@ -456,7 +386,7 @@ function guardarDespacho(event) {
 }
 
 // ---------------------------------------------------------------------
-// 8. Inactivar / Activar despacho (con confirmación)
+// Inactivar / Activar despacho (con confirmación)
 // ---------------------------------------------------------------------
 function toggleInactivar(id) {
     const despacho = dbDatos.despachos.find(d => d.id === id);
@@ -466,8 +396,8 @@ function toggleInactivar(id) {
     mostrarDialogoConfirmacion(
         estadoActual ? "¿Inactivar el despacho?" : "¿Activar el despacho?",
         estadoActual
-            ? `${despacho.nombreDespacho} dejará de estar disponible para recibir procesos de descongestión.`
-            : `${despacho.nombreDespacho} volverá a estar disponible para recibir procesos de descongestión.`,
+            ? `${despacho.nombreDespacho} quedará inactivo y su administrador no podrá ingresar al sistema.`
+            : `${despacho.nombreDespacho} volverá a estar activo y su administrador podrá ingresar al sistema.`,
         () => {
             despacho.estado = estadoActual ? "Inactivo" : "Activo";
             renderizarTabla();
@@ -485,7 +415,7 @@ document.addEventListener("keydown", e => {
 });
 
 // Inicializar al cargar
-window.onload = function() {
+window.onload = function () {
     llenarFiltros();
     renderizarTabla();
 };

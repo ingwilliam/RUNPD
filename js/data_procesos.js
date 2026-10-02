@@ -1,5 +1,7 @@
 // =====================================================================
 // RUNPD - Datos del prototipo: registro de procesos del despacho permanente
+// El despacho permanente registra los procesos que trasladará DENTRO de las
+// medidas de descongestión en las que participa como origen (ver data_medidas.js).
 // =====================================================================
 const dbProcesos = {
     // Catálogos
@@ -26,9 +28,9 @@ const dbProcesos = {
         distribuido: { label: "Distribuido",        clase: "badge-status active" }
     },
 
-    // Despacho permanente que registra
+    // Despacho PERMANENTE que registra (es origen en el plan de distribución de las medidas)
     despachoActual: {
-        id: 5,
+        id: 101,
         consejoseccional: "CALDAS",
         jurisdiccion: "ORDINARIA",
         deptomunicipio: "MANIZALES",
@@ -36,23 +38,51 @@ const dbProcesos = {
         circuito: "MANIZALES",
         tipodespacho: "JUZGADO MUNICIPAL",
         especialidad: "LABORAL",
-        tipo:"Descongestión",
-        codigoDespacho: "170014005801",
-        nombreDespacho: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
-        fechaInicio: "2026-01-15",
-        fechaFin: "2026-12-31",
+        tipo: "Permanente",
+        codigoDespacho: "170014105002",
+        nombreDespacho: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
         estado: "Activo",
         adminPrimerNombre: "Luis",
         adminSegundoNombre: "Fernando",
         adminPrimerApellido: "Giraldo",
         adminSegundoApellido: "Restrepo",
-        adminCorreo: "lgiraldo@cendoj.ramajudicial.gov.co",        
+        adminCorreo: "j02lpmmanizales@cendoj.ramajudicial.gov.co"
     },
 
-    // Procesos registrados
+    // Medidas de descongestión en las que este despacho participa como ORIGEN.
+    // cupo = procesos que el plan de distribución autoriza trasladar desde este despacho.
+    medidas: [
+        {
+            id: 1,
+            acuerdo: { numero: "PCSJA26-11234", anio: 2026 },
+            resolucion: { numero: "CSJCAR26-045", anio: 2026 },
+            consejoseccional: "CALDAS",
+            fechaInicio: "2026-01-15",
+            fechaFin: "2026-12-31",
+            descripcion: "Medida de descongestión para la especialidad laboral en Manizales.",
+            destinos: [
+                { nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 40 }
+            ]
+        },
+        {
+            id: 5,
+            acuerdo: { numero: "PCSJA26-11870", anio: 2026 },
+            resolucion: null,
+            consejoseccional: "CALDAS",
+            fechaInicio: "2026-07-01",
+            fechaFin: "2027-03-31",
+            descripcion: "Ampliación de la medida laboral para procesos en estado de fallo.",
+            destinos: [
+                { nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 15 }
+            ]
+        }
+    ],
+
+    // Procesos registrados (cada uno pertenece a una medida)
     procesos: [
         {
             id: 1,
+            medidaId: 1,
             codigo: "05001400300320240012300",
             estadoProceso: "Decreta pruebas y señala fecha de audiencia",
             fechaActuacion: "2026-08-14",
@@ -69,6 +99,7 @@ const dbProcesos = {
         },
         {
             id: 2,
+            medidaId: 1,
             codigo: "05001400300320250007800",
             estadoProceso: "Admitida o libra mandamiento",
             fechaActuacion: "2026-09-10",
@@ -85,6 +116,7 @@ const dbProcesos = {
         },
         {
             id: 3,
+            medidaId: 5,
             codigo: "05001400300320230045600",
             estadoProceso: "En estado de fallo",
             fechaActuacion: "2026-03-02",

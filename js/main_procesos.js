@@ -1,11 +1,14 @@
 // =====================================================================
-// RUNPD - Registro de procesos del despacho permanente
+// RUNPD - Registro de procesos del despacho permanente POR MEDIDA
+// Flujo: 1) el despacho selecciona la medida que configuró la UDAE
+//        2) registra los procesos de esa medida hasta el número autorizado
+//        3) los envía al Consejo Seccional
 // Los datos vienen de js/data_procesos.js (constante dbProcesos)
 // =====================================================================
 
 const despachoActual = dbProcesos.despachoActual;
 let partesForm = { demandantes: [], demandados: [] };
-let filtroKpi = "todos";
+let medidaActualId = null; // medida seleccionada en el paso 1
 let accionDialogo = null;
 
 // ---------------------------------------------------------------------
@@ -55,6 +58,43 @@ function listarPartes(lista) {
 
 function parteVacia() {
     return { tipo: "natural", primerNombre: "", segundoNombre: "", primerApellido: "", segundoApellido: "", nombre: "", correo: "" };
+}
+
+// ---------------------------------------------------------------------
+// Medidas y número de procesos autorizados
+// ---------------------------------------------------------------------
+function obtenerMedida(id) {
+    return dbProcesos.medidas.find(m => m.id === Number(id));
+}
+
+function medidaActual() {
+    return obtenerMedida(medidaActualId);
+}
+
+function textoAcuerdo(m) {
+    return m ? `Acuerdo ${m.acuerdo.numero} de ${m.acuerdo.anio}` : "";
+}
+
+// Número de procesos que la UDAE autorizó a este despacho en la medida
+function cupoMedida(m) {
+    return m.destinos.reduce((t, d) => t + Number(d.procesos), 0);
+}
+
+function procesosDeMedida(m) {
+    return dbProcesos.procesos.filter(p => p.medidaId === m.id);
+}
+
+function infoVigencia(m) {
+    const actual = hoy();
+    if (actual < m.fechaInicio) return { clave: "futura", texto: `Inicia el ${formatoFecha(m.fechaInicio)}`, fondo: "#dbeafe", color: "#1d4ed8" };
+    const dias = Math.round((new Date(m.fechaFin + "T00:00:00") - new Date(actual + "T00:00:00")) / 86400000);
+    if (dias < 0)   return { clave: "vencida", texto: "Medida vencida", fondo: "#fee2e2", color: "#991b1b" };
+    if (dias <= 60) return { clave: "por_vencer", texto: `Vence en ${dias} día(s)`, fondo: "#fef3c7", color: "#92400e" };
+    return { clave: "vigente", texto: `Vigente hasta ${formatoFecha(m.fechaFin)}`, fondo: "#dcfce7", color: "#166534" };
+}
+
+function puedeRegistrar(m) {
+    return infoVigencia(m).clave !== "vencida" && procesosDeMedida(m).length < cupoMedida(m);
 }
 
 function abrirModal(id) { document.getElementById(id).classList.add("visible"); }
@@ -135,13 +175,11 @@ function renderizarInfoDespacho() {
                 ${dato("Tipo de despacho", esc(d.tipodespacho))}
                 ${dato("Tipo", esc(d.tipo))}
                 ${dato("Especialidad", esc(d.especialidad))}`)}
-            ${bloque("📍 Ubicación y vigencia", `
+            ${bloque("📍 Ubicación", `
                 ${dato("Consejo Seccional", esc(consejoDestino()))}
                 ${dato("Municipio", esc(d.deptomunicipio))}
                 ${dato("Distrito", esc(d.distrito))}
-                ${dato("Circuito", esc(d.circuito))}
-                ${dato("Vigencia inicio", formatoFecha(d.fechaInicio))}
-                ${dato("Vigencia fin", formatoFecha(d.fechaFin))}`)}
+                ${dato("Circuito", esc(d.circuito))}`)}
             ${bloque("👤 Administrador", `
                 ${dato("Primer nombre", esc(d.adminPrimerNombre))}
                 ${dato("Segundo nombre", esc(d.adminSegundoNombre))}
@@ -153,78 +191,109 @@ function renderizarInfoDespacho() {
 }
 
 // ---------------------------------------------------------------------
-// Indicadores, aviso y filtros
+// PASO 1: seleccionar la medida
 // ---------------------------------------------------------------------
-function renderizarIndicadores() {
-    const lista = dbProcesos.procesos;
-    const cuenta = estado => lista.filter(p => p.estado === estado).length;
-    const tarjetas = [
-        { clave: "todos",       icono: "📁", valor: lista.length,           texto: "Procesos registrados", color: "#64748b" },
-        { clave: "pendiente",   icono: "⏳", valor: cuenta("pendiente"),    texto: "Pendientes de envío",  color: "#f59e0b" },
-        { clave: "enviado",     icono: "📤", valor: cuenta("enviado"),      texto: "Enviados al Consejo",  color: "var(--primary-green)" },
-        { clave: "distribuido", icono: "⚖️", valor: cuenta("distribuido"),  texto: "Distribuidos",         color: "#1d4ed8" }
-    ];
-
-    document.getElementById("indicadores").innerHTML = tarjetas.map(t => {
-        const activo = filtroKpi === t.clave && t.clave !== "todos";
-        return `
-            <button type="button" onclick="aplicarFiltroKpi('${t.clave}')" title="Clic para filtrar"
-                style="text-align: left; background: ${activo ? "#f0fdf4" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary-green)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e6f4ea" : "0 1px 3px rgba(0,0,0,0.05)"};">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
-                    <span style="font-size: 1.3rem;">${t.icono}</span>
-                </div>
-                <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.15rem;">${t.texto}</div>
-            </button>`;
-    }).join("");
-}
-
-function renderizarAviso() {
-    const pendientes = dbProcesos.procesos.filter(p => p.estado === "pendiente").length;
-    const aviso = document.getElementById("aviso-pendientes");
-    if (!pendientes) {
-        aviso.style.display = "none";
+function llenarSelectorMedida() {
+    const sel = document.getElementById("selector-medida");
+    if (!dbProcesos.medidas.length) {
+        sel.innerHTML = `<option value="">Su despacho no tiene medidas de descongestión asignadas</option>`;
+        sel.disabled = true;
         return;
     }
-    aviso.style.display = "flex";
-    aviso.innerHTML = `
-        <div style="display: flex; align-items: center; gap: 0.75rem;">
-            <span style="font-size: 1.6rem;">📤</span>
-            <div style="font-size: 0.85rem; color: #713f12; line-height: 1.5;">
-                <div style="font-weight: 700; font-size: 0.9rem;">Tiene ${pendientes} proceso(s) pendiente(s) de envío</div>
-                Revíselos y envíelos al Consejo Seccional de ${esc(consejoDestino())} para que sean distribuidos.
-            </div>
-        </div>
-        <button type="button" class="btn-primary-action" style="padding: 0.5rem 1rem; font-size: 0.85rem;" onclick="abrirEnvio()">Enviar ahora ➔</button>`;
+    sel.innerHTML = `<option value="" disabled selected>Seleccione una medida...</option>` +
+        dbProcesos.medidas.map(m => `<option value="${m.id}">${esc(textoAcuerdo(m))} — ${cupoMedida(m)} proceso(s) a registrar</option>`).join("");
+
+    // Si hay una sola medida, se selecciona sola
+    if (dbProcesos.medidas.length === 1) seleccionarMedida(dbProcesos.medidas[0].id);
 }
 
-function aplicarFiltroKpi(clave) {
-    filtroKpi = filtroKpi === clave ? "todos" : clave;
+function seleccionarMedida(id) {
+    medidaActualId = Number(id) || null;
+    document.getElementById("selector-medida").value = medidaActualId || "";
+    document.getElementById("filtro-busqueda").value = "";
+    renderizarTodo();
+}
+
+// Resumen de la medida: lo que configuró la UDAE y el avance del despacho
+function renderizarResumenMedida() {
+    const cont = document.getElementById("resumen-medida");
+    const m = medidaActual();
+    document.getElementById("paso-procesos").style.display = m ? "block" : "none";
+
+    if (!m) {
+        cont.innerHTML = `<div style="font-size: 0.82rem; color: var(--text-muted);">Seleccione la medida para ver cuántos procesos debe registrar y registrar sus procesos.</div>`;
+        return;
+    }
+
+    const v = infoVigencia(m);
+    const cupo = cupoMedida(m);
+    const lista = procesosDeMedida(m);
+    const registrados = lista.length;
+    const pendientes = lista.filter(p => p.estado === "pendiente").length;
+    const enviados = registrados - pendientes;
+    const faltan = Math.max(0, cupo - registrados);
+    const pct = cupo ? Math.min(100, Math.round((registrados / cupo) * 100)) : 0;
+    const cifra = (valor, texto, color) => `
+        <div style="text-align: center; padding: 0 0.5rem;">
+            <div style="font-size: 1.5rem; font-weight: 800; color: ${color}; line-height: 1;">${valor}</div>
+            <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.25rem;">${texto}</div>
+        </div>`;
+
+    cont.innerHTML = `
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1rem;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap;">
+                <div style="font-size: 0.82rem; line-height: 1.6;">
+                    <div><strong>${esc(textoAcuerdo(m))}</strong> ${m.resolucion ? `· Resolución ${esc(m.resolucion.numero)} de ${m.resolucion.anio}` : ""}</div>
+                    <div style="color: var(--text-muted);">Vigencia: ${formatoFecha(m.fechaInicio)} al ${formatoFecha(m.fechaFin)}
+                        <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 12px; background: ${v.fondo}; color: ${v.color}; margin-left: 0.3rem;">${v.texto}</span></div>
+                    <div style="color: var(--text-muted);">Destino: ${m.destinos.map(d => esc(d.nombre)).join(", ")}</div>
+                </div>
+                <div style="display: flex; gap: 0.5rem; border-left: 1px solid #e2e8f0; padding-left: 0.75rem;">
+                    ${cifra(cupo, "Autorizados por la UDAE", "var(--text-main)")}
+                    ${cifra(registrados, "Registrados", "#0369a1")}
+                    ${cifra(enviados, "Enviados al Consejo", "var(--primary-green)")}
+                    ${cifra(faltan, "Por registrar", faltan ? "#b45309" : "var(--primary-green)")}
+                </div>
+            </div>
+            <div style="height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 0.8rem;">
+                <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? "var(--primary-green)" : "#0ea5e9"};"></div>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
+                ${registrados} de ${cupo} procesos registrados${pendientes ? ` · <strong style="color: #b45309;">${pendientes} pendiente(s) de enviar al Consejo</strong>` : ""}
+                ${v.clave === "vencida" ? ` · <strong style="color: #991b1b;">La medida venció: no admite nuevos registros.</strong>` : (faltan ? "" : ` · <strong style="color: var(--primary-green);">Ya registró todos los procesos autorizados.</strong>`)}
+            </div>
+        </div>`;
+
+    // Botón de registro según el cupo
+    const btn = document.getElementById("btn-registrar");
+    btn.disabled = !puedeRegistrar(m);
+    btn.style.opacity = btn.disabled ? "0.5" : "1";
+    btn.title = btn.disabled ? "No hay cupo disponible en esta medida" : "";
+    document.getElementById("btn-abrir-envio").textContent = pendientes ? `📤 Enviar ${pendientes} al Consejo Seccional` : "📤 Enviar al Consejo Seccional";
+}
+
+// ---------------------------------------------------------------------
+// PASO 2: tabla de procesos de la medida seleccionada
+// ---------------------------------------------------------------------
+function renderizarTodo() {
+    renderizarResumenMedida();
     renderizarTabla();
 }
 
-// ---------------------------------------------------------------------
-// 5. Renderizar la tabla principal
-// ---------------------------------------------------------------------
 function renderizarTabla() {
-    renderizarIndicadores();
-    renderizarAviso();
-
+    const m = medidaActual();
+    if (!m) return;
     const tbody = document.getElementById("cuerpo-tabla");
     const q = normalizar(document.getElementById("filtro-busqueda").value);
     const orden = { pendiente: 0, enviado: 1, distribuido: 2 };
 
-    const lista = dbProcesos.procesos
-        .filter(p => filtroKpi === "todos" || p.estado === filtroKpi)
+    const lista = procesosDeMedida(m)
         .filter(p => !q || normalizar([p.codigo, ...p.demandantes.map(nombreParte), ...p.demandados.map(nombreParte)].join(" ")).includes(q))
         .sort((a, b) => (orden[a.estado] ?? 9) - (orden[b.estado] ?? 9));
 
-    document.getElementById("texto-filtro").innerHTML = `Mostrando <strong>${lista.length}</strong> de ${dbProcesos.procesos.length} proceso(s)` +
-        (filtroKpi !== "todos" ? ` · <a href="#" onclick="aplicarFiltroKpi('${filtroKpi}'); return false;" style="color: var(--primary-green); font-weight: 600;">Ver todos</a>` : "");
-
     if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            ${dbProcesos.procesos.length ? "Ningún proceso coincide con la búsqueda." : 'No hay procesos registrados. Use "Registrar proceso" para agregar el primero.'}</td></tr>`;
+            ${procesosDeMedida(m).length ? "Ningún proceso coincide con la búsqueda." : 'Aún no ha registrado procesos en esta medida. Use "Registrar proceso".'}</td></tr>`;
         return;
     }
 
@@ -234,9 +303,7 @@ function renderizarTabla() {
         const dias = diasDesde(p.fechaActuacion);
         return `
         <tr>
-            <td>
-                <a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle" style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(p.codigo)}</a>
-            </td>
+            <td><a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle" style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(p.codigo)}</a></td>
             <td style="font-size: 0.8rem; min-width: 200px;">
                 <div><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Dte.</span> ${listarPartes(p.demandantes)}</div>
                 <div style="margin-top: 0.2rem;"><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Ddo.</span> ${listarPartes(p.demandados)}</div>
@@ -277,6 +344,7 @@ function verDetalle(id) {
                 <span style="font-family: monospace; color: #166534; font-weight: 700;">${esc(p.codigo)}</span>
                 <span class="${est.clase}">${est.label}</span>
             </div>
+            <p style="margin: 0 0 0.3rem 0;"><strong>Medida de descongestión:</strong> ${esc(textoAcuerdo(obtenerMedida(p.medidaId)))}</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Estado del proceso:</strong> ${esc(p.estadoProceso)}</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Última actuación:</strong> ${formatoFecha(p.fechaActuacion)}</p>
             ${p.fechaEnvio ? `<p style="margin: 0 0 0.3rem 0;"><strong>Enviado al Consejo:</strong> ${formatoFecha(p.fechaEnvio)}</p>` : ""}
@@ -297,7 +365,7 @@ function verDetalle(id) {
 }
 
 // ---------------------------------------------------------------------
-// 6. Formulario: abrir para nuevo / editar
+// Formulario: registrar / editar (siempre dentro de la medida seleccionada)
 // ---------------------------------------------------------------------
 function llenarEstados(valor = "") {
     const sel = document.getElementById("estado_proceso");
@@ -319,10 +387,27 @@ function contarDigitos(input) {
     contador.style.fontWeight = input.value.length === 23 ? "700" : "400";
 }
 
+function mostrarMedidaEnFormulario(m, esEdicion) {
+    const registrados = procesosDeMedida(m).length;
+    const numero = esEdicion ? registrados : registrados + 1;
+    document.getElementById("medida-formulario").innerHTML =
+        `📜 <strong>${esc(textoAcuerdo(m))}</strong> · ${esEdicion ? "Editando proceso de la medida" : `Proceso <strong>${numero} de ${cupoMedida(m)}</strong> autorizados`}`;
+}
+
 function abrirNuevoProceso() {
+    const m = medidaActual();
+    if (!m) return;
+    if (!puedeRegistrar(m)) {
+        mostrarDialogoAlerta("No puede registrar más procesos",
+            infoVigencia(m).clave === "vencida"
+                ? "La medida está vencida y no admite nuevos registros."
+                : `Ya registró los ${cupoMedida(m)} procesos autorizados por la UDAE en esta medida.`, "ℹ️");
+        return;
+    }
     document.getElementById("form-proceso").reset();
     document.getElementById("proceso-id").value = "";
     document.getElementById("form-titulo").textContent = "📝 Registrar proceso";
+    mostrarMedidaEnFormulario(m, false);
     document.getElementById("fecha_actuacion").max = hoy();
     contarDigitos(document.getElementById("codigo_proceso"));
     llenarEstados();
@@ -339,6 +424,7 @@ function abrirEditarProceso(id) {
     document.getElementById("form-proceso").reset();
     document.getElementById("proceso-id").value = p.id;
     document.getElementById("form-titulo").textContent = `✏️ Editar proceso ${p.codigo}`;
+    mostrarMedidaEnFormulario(obtenerMedida(p.medidaId), true);
     document.getElementById("codigo_proceso").value = p.codigo;
     contarDigitos(document.getElementById("codigo_proceso"));
     llenarEstados(p.estadoProceso);
@@ -410,15 +496,20 @@ function cambiarTipo(rol, i, tipo) {
 }
 
 // ---------------------------------------------------------------------
-// 8. Guardar o actualizar proceso
+// Guardar o actualizar proceso
 // ---------------------------------------------------------------------
 function guardarProceso(event) {
     event.preventDefault();
     const id = document.getElementById("proceso-id").value;
     const codigo = document.getElementById("codigo_proceso").value.trim();
+    const m = medidaActual();
 
     if (dbProcesos.procesos.some(p => p.codigo === codigo && String(p.id) !== id)) {
         mostrarDialogoAlerta("Código repetido", `Ya existe un proceso registrado con el código ${codigo}.`, "⚠️");
+        return;
+    }
+    if (!id && !puedeRegistrar(m)) {
+        mostrarDialogoAlerta("No puede registrar más procesos", `Ya registró los ${cupoMedida(m)} procesos autorizados en esta medida.`, "⚠️");
         return;
     }
 
@@ -440,13 +531,15 @@ function guardarProceso(event) {
         const index = dbProcesos.procesos.findIndex(p => p.id === parseInt(id));
         dbProcesos.procesos[index] = { ...dbProcesos.procesos[index], ...datos };
     } else {
-        dbProcesos.procesos.unshift({ id: Date.now(), ...datos, estado: "pendiente", fechaEnvio: "" });
+        dbProcesos.procesos.unshift({ id: Date.now(), medidaId: m.id, ...datos, estado: "pendiente", fechaEnvio: "" });
     }
 
-    renderizarTabla();
     cerrarModal("modal-proceso");
+    renderizarTodo();
+    const faltan = cupoMedida(m) - procesosDeMedida(m).length;
     mostrarDialogoAlerta(id ? "Proceso actualizado" : "Proceso registrado",
-        id ? `Se guardaron los cambios del proceso ${codigo}.` : `El proceso ${codigo} quedó pendiente de envío al Consejo Seccional.`);
+        id ? `Se guardaron los cambios del proceso ${codigo}.`
+           : `El proceso ${codigo} quedó registrado en el ${textoAcuerdo(m)}. ${faltan ? `Faltan ${faltan} proceso(s) por registrar.` : "Ya registró todos los procesos autorizados."}`);
 }
 
 // ---------------------------------------------------------------------
@@ -460,7 +553,7 @@ function eliminarProceso(id) {
         `Se eliminará el proceso ${p.codigo}. Esta acción no se puede deshacer.`,
         () => {
             dbProcesos.procesos = dbProcesos.procesos.filter(x => x.id !== id);
-            renderizarTabla();
+            renderizarTodo();
         },
         "🗑️",
         "Sí, eliminar"
@@ -468,16 +561,17 @@ function eliminarProceso(id) {
 }
 
 // ---------------------------------------------------------------------
-// 10. Enviar al Consejo Seccional
+// Enviar al Consejo Seccional (procesos pendientes de la medida seleccionada)
 // ---------------------------------------------------------------------
 function abrirEnvio() {
-    const pendientes = dbProcesos.procesos.filter(p => p.estado === "pendiente");
+    const m = medidaActual();
+    const pendientes = procesosDeMedida(m).filter(p => p.estado === "pendiente");
     if (pendientes.length === 0) {
-        mostrarDialogoAlerta("Sin procesos pendientes", "No hay procesos pendientes de envío. Registre un proceso para poder enviarlo.", "ℹ️");
+        mostrarDialogoAlerta("Sin procesos pendientes", "Esta medida no tiene procesos pendientes de envío.", "ℹ️");
         return;
     }
 
-    document.getElementById("envio-titulo").textContent = `📤 Enviar al Consejo Seccional de ${consejoDestino()}`;
+    document.getElementById("envio-titulo").textContent = `📤 Enviar al Consejo Seccional de ${consejoDestino()} · ${textoAcuerdo(m)}`;
     document.getElementById("check-todos").checked = true;
     document.getElementById("nota_envio").value = "";
     document.getElementById("cuerpo-envio").innerHTML = pendientes.map(p => `
@@ -511,6 +605,7 @@ function confirmarEnvio() {
         return;
     }
 
+    const m = medidaActual();
     const nota = document.getElementById("nota_envio").value.trim();
     const procesosEnviados = [];
 
@@ -521,8 +616,8 @@ function confirmarEnvio() {
             p.consejoSeccional = consejoDestino();
             p.despachoOrigen = nombreDelDespacho();
             p.notaEnvio = nota;
-
             procesosEnviados.push({
+                medida: textoAcuerdo(m),
                 codigo: p.codigo,
                 estadoProceso: p.estadoProceso,
                 fechaActuacion: p.fechaActuacion,
@@ -534,8 +629,8 @@ function confirmarEnvio() {
         }
     });
 
-    renderizarTabla();
     cerrarModal("modal-envio");
+    renderizarTodo();
 
     // Datos para la plantilla del correo al Consejo Seccional
     const payload = {
@@ -544,12 +639,19 @@ function confirmarEnvio() {
         consejoSeccional: consejoDestino(),
         fechaEnvio: hoy(),
         nota: nota,
+        medida: {
+            acuerdo: textoAcuerdo(m),
+            resolucion: m.resolucion ? `Resolución ${m.resolucion.numero} de ${m.resolucion.anio}` : "",
+            vigencia: `${formatoFecha(m.fechaInicio)} al ${formatoFecha(m.fechaFin)}`,
+            autorizados: cupoMedida(m),
+            remitidosTotal: procesosDeMedida(m).filter(x => x.estado !== "pendiente").length,
+            destinos: m.destinos
+        },
         procesos: procesosEnviados
     };
-
     const ventana = window.open(`email_crear_procesos_permanantes.html?data=${encodeURIComponent(JSON.stringify(payload))}`, "_blank");
 
-    let mensaje = `Se enviaron ${procesosEnviados.length} proceso(s) al Consejo Seccional de ${consejoDestino()} para su distribución.`;
+    let mensaje = `Se enviaron ${procesosEnviados.length} proceso(s) del ${textoAcuerdo(m)} al Consejo Seccional de ${consejoDestino()} para su distribución.`;
     if (!ventana) mensaje += " El navegador bloqueó la ventana del correo: permita las ventanas emergentes para este sitio.";
     mostrarDialogoAlerta("Procesos enviados", mensaje, "📤");
 }
@@ -566,8 +668,8 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("texto-despacho").textContent =
-        `Registre los procesos que requieren apoyo y envíelos al Consejo Seccional de ${consejoDestino()} para su distribución.`;
-
+        `Seleccione la medida de descongestión configurada por la UDAE, registre sus procesos y envíelos al Consejo Seccional de ${consejoDestino()}.`;
     renderizarInfoDespacho();
-    renderizarTabla();
+    llenarSelectorMedida();
+    renderizarResumenMedida();
 });
