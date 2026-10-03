@@ -39,7 +39,7 @@
                 <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
                     <li><a href="modulo_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
                     <li style="color: #cbd5e1;">/</li>
-                    <li><a href="funcionalidades_despacho_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li><a href="funcionalidades_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
                     <li style="color: #cbd5e1;">/</li>
                     <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Recepción y Seguimiento de Procesos</li>
                 </ol>
@@ -48,11 +48,11 @@
             <div class="content-header">
                 <div class="welcome-section" style="margin-bottom: 0;">
                     <h1>Recepción y Seguimiento de Procesos</h1>
-                    <p>Consulte los procesos asignados por el Consejo Seccional, registre cada actuación y controle la fecha de la próxima actuación.</p>
+                    <p>Consulte los procesos que el Consejo Seccional aprobó para su despacho en cada medida de descongestión, registre cada actuación y controle la fecha de la próxima actuación.</p>
                 </div>
             </div>
 
-            <!-- Vigencia de la medida de descongestión -->
+            <!-- Despacho y medidas de descongestión en las que es destino -->
             <div id="tarjeta-medida" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                 <!-- Dinámico vía JS -->
             </div>
@@ -69,7 +69,10 @@
 
             <!-- Búsqueda -->
             <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-                <input type="search" id="filtro-busqueda" class="form-control" style="max-width: 420px;" placeholder="🔍 Buscar por código, demandante o demandado" oninput="renderizarTabla()">
+                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; flex: 1;">
+                    <input type="search" id="filtro-busqueda" class="form-control" style="max-width: 380px;" placeholder="🔍 Buscar por código, demandante o demandado" oninput="renderizarTabla()">
+                    <select id="filtro-medida" class="form-control" style="max-width: 300px;" onchange="renderizarTodo()"></select>
+                </div>
                 <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted);"></div>
             </div>
 
@@ -80,7 +83,7 @@
                         <tr>
                             <th>Código Proceso</th>
                             <th>Partes</th>
-                            <th>Origen / Recepción</th>
+                            <th>Medida / Origen</th>
                             <th>Estado Procesal Actual</th>
                             <th>Próxima Actuación</th>
                             <th>Acciones</th>

@@ -30,56 +30,122 @@
             <p class="index-subtitle">Así fluye un proceso de descongestión, de principio a fin:</p>
         </section>
 
-        <!-- FLUJO DEL PROCESO -->
+        <!-- FLUJO DEL PROCESO (grafo interactivo) -->
         <section id="flujo" class="index-section">
+            <div class="grafo">
+                <svg class="grafo-svg" viewBox="0 0 1180 305" role="img" aria-label="Flujo del proceso de descongestión">
+                    <defs>
+                        <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"></path>
+                        </marker>
+                        <marker id="punta-roja" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"></path>
+                        </marker>
+                    </defs>
 
-            <ol class="flow">
-                <li class="flow-step">
-                    <a href="#rol-udae" class="flow-link">
-                        <span class="flow-num">1</span>
-                        <span class="flow-icon">🏢</span>
-                        <strong class="flow-title">Habilitar</strong>
-                        <span class="flow-actor">UDAE</span>
-                        <span class="flow-desc">Habilita despachos de descongestión y valida los despachos permanentes.</span>
-                    </a>
-                </li>
-                <li class="flow-step">
-                    <a href="#rol-permanente" class="flow-link">
-                        <span class="flow-num">2</span>
-                        <span class="flow-icon">🏛️</span>
-                        <strong class="flow-title">Registrar</strong>
-                        <span class="flow-actor">Despacho Permanente</span>
-                        <span class="flow-desc">Registra los procesos con sus partes y los envía al Consejo Seccional.</span>
-                    </a>
-                </li>
-                <li class="flow-step">
-                    <a href="#rol-consejo" class="flow-link">
-                        <span class="flow-num">3</span>
-                        <span class="flow-icon">📋</span>
-                        <strong class="flow-title">Distribuir</strong>
-                        <span class="flow-actor">Consejo Seccional</span>
-                        <span class="flow-desc">Predistribuye según la carga de cada despacho y confirma el traslado.</span>
-                    </a>
-                </li>
-                <li class="flow-step">
-                    <a href="#rol-descongestion" class="flow-link">
-                        <span class="flow-num">4</span>
-                        <span class="flow-icon">⚖️</span>
-                        <strong class="flow-title">Gestionar</strong>
-                        <span class="flow-actor">Despacho de Descongestión</span>
-                        <span class="flow-desc">Recibe los expedientes asignados y registra sus actuaciones.</span>
-                    </a>
-                </li>
-                <li class="flow-step">
-                    <a href="#rol-ciudadano" class="flow-link flow-link-public">
-                        <span class="flow-num">5</span>
-                        <span class="flow-icon">🔍</span>
-                        <strong class="flow-title">Consultar</strong>
-                        <span class="flow-actor">Ciudadano</span>
-                        <span class="flow-desc">Consulta el estado de su proceso y su trazabilidad completa.</span>
-                    </a>
-                </li>
-            </ol>
+                    <!-- Aristas -->
+                    <g class="g-aristas">
+                        <line class="arista" x1="96" y1="140" x2="144" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="216" y1="140" x2="266" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="300" y1="106" x2="300" y2="81" marker-end="url(#punta)"></line>
+                        <path class="arista" d="M336 45 C 400 45, 430 66, 430 104" marker-end="url(#punta)"></path>
+                        <line class="arista" x1="334" y1="140" x2="394" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="466" y1="140" x2="524" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="596" y1="140" x2="654" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="726" y1="140" x2="776" y2="140" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="844" y1="140" x2="914" y2="140" marker-end="url(#punta)"></line>
+                        <path class="arista arista-devolucion" d="M810 222 C 810 284, 560 284, 560 224" marker-end="url(#punta-roja)"></path>
+                        <line class="arista arista-consulta" x1="986" y1="140" x2="1064" y2="140" marker-end="url(#punta)"></line>
+                    </g>
+
+                    <!-- Etiquetas de las aristas -->
+                    <g class="g-etiquetas">
+                        <text x="310" y="98">NO</text>
+                        <text x="350" y="132">SÍ</text>
+                        <text x="854" y="132">SÍ · notifica</text>
+                        <text x="685" y="296" class="et-roja">NO · devuelve al despacho origen</text>
+                        <text x="1025" y="126" class="et-centro">consulta</text>
+                    </g>
+
+                    <!-- Punto que recorre el flujo -->
+                    <circle class="g-token" r="6">
+                        <animateMotion dur="9s" repeatCount="indefinite" path="M60 140 L950 140"></animateMotion>
+                    </circle>
+
+                    <!-- Nodos -->
+                    <g class="g-nodo" data-paso="acuerdos" style="--col: #64748b;" tabindex="0">
+                        <circle cx="60" cy="140" r="34"></circle>
+                        <text x="60" y="149" class="ico">📜</text>
+                        <text x="60" y="196" class="lbl">Acuerdos</text>
+                        <text x="60" y="211" class="sub">y resoluciones</text>
+                    </g>
+                    <g class="g-nodo" data-paso="udae" style="--col: #166534;" tabindex="0">
+                        <circle cx="180" cy="140" r="34"></circle>
+                        <text x="180" y="149" class="ico">🏢</text>
+                        <text x="180" y="196" class="lbl">UDAE</text>
+                        <text x="180" y="211" class="sub">revisa cada acuerdo</text>
+                    </g>
+                    <g class="g-nodo rombo" data-paso="existen" style="--col: #d97706;" tabindex="0">
+                        <polygon points="300,106 334,140 300,174 266,140"></polygon>
+                        <text x="300" y="146" class="ico-s">?</text>
+                        <text x="300" y="196" class="lbl">¿Existen los</text>
+                        <text x="300" y="211" class="lbl">despachos?</text>
+                    </g>
+                    <g class="g-nodo" data-paso="crear" style="--col: #166534;" tabindex="0">
+                        <circle cx="300" cy="45" r="30"></circle>
+                        <text x="300" y="54" class="ico">🏗️</text>
+                        <text x="380" y="30" class="lbl izq">Crea despachos</text>
+                    </g>
+                    <g class="g-nodo" data-paso="medida" style="--col: #166534;" tabindex="0">
+                        <circle cx="430" cy="140" r="34"></circle>
+                        <text x="430" y="149" class="ico">📋</text>
+                        <text x="430" y="196" class="lbl">Crea la medida</text>
+                        <text x="430" y="211" class="sub">origen ➔ destino · N</text>
+                    </g>
+                    <g class="g-nodo" data-paso="origen" style="--col: #0369a1;" tabindex="0">
+                        <circle cx="560" cy="140" r="34"></circle>
+                        <text x="560" y="149" class="ico">🏛️</text>
+                        <text x="560" y="196" class="lbl">Despacho origen</text>
+                        <text x="560" y="211" class="sub">registra procesos</text>
+                    </g>
+                    <g class="g-nodo" data-paso="consejo" style="--col: #7c3aed;" tabindex="0">
+                        <circle cx="690" cy="140" r="34"></circle>
+                        <text x="690" y="149" class="ico">⚖️</text>
+                        <text x="690" y="196" class="lbl">Consejo</text>
+                        <text x="690" y="211" class="sub">Seccional</text>
+                    </g>
+                    <g class="g-nodo rombo" data-paso="aprueba" style="--col: #7c3aed;" tabindex="0">
+                        <polygon points="810,106 844,140 810,174 776,140"></polygon>
+                        <text x="810" y="146" class="ico-s">✔</text>
+                        <text x="810" y="196" class="lbl">¿Aprueba la</text>
+                        <text x="810" y="211" class="lbl">distribución?</text>
+                    </g>
+                    <g class="g-nodo" data-paso="destino" style="--col: #b45309;" tabindex="0">
+                        <circle cx="950" cy="140" r="34"></circle>
+                        <text x="950" y="149" class="ico">🗂️</text>
+                        <text x="950" y="196" class="lbl">Despacho destino</text>
+                        <text x="950" y="211" class="sub">gestiona y finaliza</text>
+                    </g>
+                    <g class="g-nodo" data-paso="ciudadano" style="--col: #1d4ed8;" tabindex="0">
+                        <circle cx="1100" cy="140" r="34"></circle>
+                        <text x="1100" y="149" class="ico">🔍</text>
+                        <text x="1100" y="196" class="lbl">Ciudadano</text>
+                        <text x="1100" y="211" class="sub">consulta pública</text>
+                    </g>
+                </svg>
+
+                <!-- Explicación del paso activo -->
+                <div class="grafo-panel" id="grafo-panel" aria-live="polite">
+                    <span class="gp-num" id="gp-num">1</span>
+                    <div class="gp-texto">
+                        <div class="gp-actor" id="gp-actor">Entrada</div>
+                        <strong id="gp-titulo">Llegan los acuerdos</strong>
+                        <p id="gp-desc"></p>
+                    </div>
+                    <a href="#rol-udae" class="gp-link" id="gp-link">Ver módulo →</a>
+                </div>
+                <div class="grafo-ayuda">Pase el mouse o haga clic sobre un nodo para ver el detalle · el recorrido avanza solo</div>
+            </div>
         </section>
 
         <!-- MÓDULOS POR ROL -->
@@ -96,65 +162,62 @@
                 <article class="role-card" id="rol-udae">
                     <div class="role-card-top">
                         <span class="role-icon">🏢</span>
-                        <span class="role-step">Etapa 1 · Habilitar</span>
+                        <span class="role-step">Etapa 1 · Crear</span>
                     </div>
                     <h3 class="role-title">Administrador Central (UDAE)</h3>
-                    <p class="role-desc">Coordinación y control general de los despachos a nivel nacional para garantizar la eficiencia institucional.</p>
+                    <p class="role-desc">Crea los despachos y las medidas de descongestión, y define cuántos procesos pasan de cada despacho origen a cada despacho destino.</p>
                     <ul class="role-features">
-                        <li>Habilitar despachos de descongestión y su vigencia</li>
-                        <li>Validar y autorizar despachos permanentes</li>
-                        <li>Crear administradores y enviar credenciales</li>
+                        <li>Crear despachos permanentes y de descongestión, con sus administradores</li>
+                        <li>Crear medidas con su acuerdo, resolución y plan de distribución</li>
+                        <li>Notificar la medida a los despachos involucrados</li>
                     </ul>
                     <a href="index_admin.html" class="role-btn">Ingresar como UDAE <span aria-hidden="true">→</span></a>
                 </article>
 
-                <!-- Rol 2: Administrador del Despacho Permanente -->
+                <!-- Rol 2: Administrador del Despacho Permanente (origen) -->
                 <article class="role-card" id="rol-permanente">
                     <div class="role-card-top">
                         <span class="role-icon">🏛️</span>
                         <span class="role-step">Etapa 2 · Registrar</span>
                     </div>
                     <h3 class="role-title">Administrador del Despacho Permanente</h3>
-                    <p class="role-desc">Postulación del despacho para su habilitación y registro de los procesos que requieren apoyo para mitigar la congestión.</p>
+                    <p class="role-desc">Despacho origen: registra los procesos que se trasladarán en cada medida, según lo autorizado por la UDAE.</p>
                     <ul class="role-features">
-                        <li>Postular el despacho para su habilitación</li>
-                        <li>Registrar procesos, demandantes y demandados</li>
-                        <li>Enviar procesos al Consejo Seccional</li>
+                        <li>Seleccionar la medida de descongestión</li>
+                        <li>Registrar los procesos con sus demandantes y demandados, hasta completar el total</li>
+                        <li>Enviar los procesos al Consejo Seccional</li>
                     </ul>
-                    <div class="role-actions">
-                        <a href="index_admin_p.html" class="role-btn">Ingresar al Despacho <span aria-hidden="true">→</span></a>
-                        <a href="registro_usuario_despacho_permanente.html" class="role-link">✨ ¿Su despacho no está habilitado? Postúlese aquí</a>
-                    </div>
+                    <a href="index_admin_p.html" class="role-btn">Ingresar al Despacho <span aria-hidden="true">→</span></a>
                 </article>
 
                 <!-- Rol 3: Administrador del Consejo Seccional -->
                 <article class="role-card" id="rol-consejo">
                     <div class="role-card-top">
                         <span class="role-icon">📋</span>
-                        <span class="role-step">Etapa 3 · Distribuir</span>
+                        <span class="role-step">Etapa 3 · Aprobar</span>
                     </div>
                     <h3 class="role-title">Administrador del Consejo Seccional</h3>
-                    <p class="role-desc">Revisión, distribución y control territorial de los procesos elevados por los despachos de su competencia.</p>
+                    <p class="role-desc">Revisa los procesos enviados por los despachos de su competencia y aprueba la distribución definida en cada medida.</p>
                     <ul class="role-features">
-                        <li>Filtrar solicitudes por competencia territorial</li>
-                        <li>Predistribuir según la carga de cada despacho</li>
-                        <li>Confirmar el traslado y notificar por correo</li>
+                        <li>Revisar los envíos por medida y el cupo autorizado</li>
+                        <li>Aprobar la distribución o devolver el envío con su motivo</li>
+                        <li>Notificar al despacho destino para que tramite los procesos</li>
                     </ul>
                     <a href="index_admin_c.html" class="role-btn">Ingresar al Consejo <span aria-hidden="true">→</span></a>
                 </article>
 
-                <!-- Rol 4: Administrador del Despacho de Descongestión -->
+                <!-- Rol 4: Administrador del Despacho de Descongestión (destino) -->
                 <article class="role-card" id="rol-descongestion">
                     <div class="role-card-top">
                         <span class="role-icon">⚖️</span>
                         <span class="role-step">Etapa 4 · Gestionar</span>
                     </div>
                     <h3 class="role-title">Administrador del Despacho de Descongestión</h3>
-                    <p class="role-desc">Supervisión específica del flujo de expedientes y actuaciones destinadas a las medidas de descongestión.</p>
+                    <p class="role-desc">Despacho destino: tramita los procesos recibidos dentro de la vigencia de cada medida.</p>
                     <ul class="role-features">
-                        <li>Recibir los procesos asignados</li>
-                        <li>Registrar actuaciones y avances</li>
-                        <li>Reportar el estado de cada expediente</li>
+                        <li>Recibir los procesos aprobados por el Consejo Seccional</li>
+                        <li>Registrar actuaciones y controlar la próxima actuación</li>
+                        <li>Registrar la última actuación, finalizar o devolver al Consejo</li>
                     </ul>
                     <a href="index_admin_d.html" class="role-btn">Ingresar a Descongestión <span aria-hidden="true">→</span></a>
                 </article>
@@ -178,6 +241,8 @@
             </div>
         </section>
     </main>
+
+    <script src="js/index.js"></script>
 
     <!-- Pie de página -->
     <footer class="index-footer">

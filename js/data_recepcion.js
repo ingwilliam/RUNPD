@@ -1,16 +1,22 @@
 // =====================================================================
 // RUNPD - Datos del prototipo: recepción y seguimiento en el despacho de descongestión
+// Los procesos llegan cuando el Consejo Seccional APRUEBA el envío del despacho
+// permanente, dentro de una medida de descongestión. La vigencia es de cada medida.
 // =====================================================================
 const dbRecepcion = {
-    // Despacho de descongestión que recibe (con la vigencia de su medida)
+    // Despacho de descongestión que recibe (destino en el plan de distribución de las medidas)
     despachoActual: {
-        codigo: "170013105901",
-        nombre: "JUZGADO 01 DE DESCONGESTIÓN LABORAL DE MANIZALES",
-        correo: "j01labdescongestsion@cendoj.ramajudicial.gov.co",
-        consejoSeccional: "CALDAS",
-        medidaInicio: "2026-01-15",
-        medidaFin: "2026-11-15"
+        codigo: "170014005801",
+        nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
+        correo: "lgiraldo@cendoj.ramajudicial.gov.co",
+        consejoSeccional: "CALDAS"
     },
+
+    // Medidas en las que el despacho es destino (autorizados = procesos que puede recibir)
+    medidas: [
+        { id: 1, acuerdo: { numero: "PCSJA26-11234", anio: 2026 }, fechaInicio: "2026-01-15", fechaFin: "2026-12-31", autorizados: 70 },
+        { id: 5, acuerdo: { numero: "PCSJA26-11870", anio: 2026 }, fechaInicio: "2026-07-01", fechaFin: "2027-03-31", autorizados: 15 }
+    ],
 
     catalogos: {
         // Estados definidos por el equipo funcional (despacho con medida de descongestión)
@@ -47,19 +53,20 @@ const dbRecepcion = {
         },
         motivosDevolucion: [
             { value: "error_traslado", label: "Error de traslado", descripcion: "El proceso no corresponde a este despacho (competencia, especialidad o datos incorrectos)." },
-            { value: "fin_medida", label: "Finalizó la medida de descongestión", descripcion: "La medida terminó y el proceso no alcanzó a finalizarse en este despacho." }
+            { value: "fin_medida", label: "Finalizó la medida de descongestión", descripcion: "La medida del proceso terminó y no alcanzó a finalizarse en este despacho." }
         ]
     },
 
-    // Procesos asignados por el Consejo Seccional
+    // Procesos recibidos (aprobados por el Consejo Seccional)
     procesos: [
         {
             id: 901,
+            medidaId: 1,
             codigo: "05001400300320220011100",
             estadoProceso: "Decreta pruebas y señala fecha de audiencia",
             fechaActuacion: "2026-07-20",
             link: "",
-            observaciones: "Asignado en ciclo anterior de descongestión.",
+            observaciones: "",
             demandantes: [{ tipo: "natural", primerNombre: "Gloria", segundoNombre: "Inés", primerApellido: "Pineda", segundoApellido: "", nombre: "", correo: "gpineda@correo.com" }],
             demandados: [{ tipo: "juridica", nombre: "HOSPITAL SAN JUAN DE DIOS", correo: "juridica@hsjd.gov.co" }],
             despachoOrigen: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
@@ -73,14 +80,15 @@ const dbRecepcion = {
         },
         {
             id: 902,
+            medidaId: 1,
             codigo: "05001400300320220022200",
             estadoProceso: "Con fecha para audiencia inicial, de instrucción y juzgamiento",
             fechaActuacion: "2026-08-05",
             link: "",
-            observaciones: "Pendiente fallo de segunda instancia.",
+            observaciones: "",
             demandantes: [{ tipo: "natural", primerNombre: "Alonso", segundoNombre: "", primerApellido: "Ramírez", segundoApellido: "", nombre: "", correo: "aramirez@correo.com" }],
-            demandados: [{ tipo: "juridica", nombre: "EMPRESA DE LICORES", correo: "notificaciones@licores.gov.co" }],
-            despachoOrigen: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
+            demandados: [{ tipo: "juridica", nombre: "EMPRESA DE LICORES DE CALDAS", correo: "notificaciones@licoreracaldas.gov.co" }],
+            despachoOrigen: "JUZGADO 003 LABORAL DEL CIRCUITO DE MANIZALES",
             fechaRecepcion: "2026-08-10",
             visto: true,
             estado: "tramite",
@@ -90,37 +98,40 @@ const dbRecepcion = {
             ]
         },
         {
-            id: 1,
-            codigo: "05001400300320240012300",
-            estadoProceso: "Decreta pruebas y señala fecha de audiencia",
-            fechaActuacion: "2026-08-14",
-            link: "https://procesos.ramajudicial.gov.co/",
-            observaciones: "Pendiente dictamen pericial.",
-            demandantes: [{ tipo: "natural", primerNombre: "Juan", segundoNombre: "Pablo", primerApellido: "Restrepo", segundoApellido: "Ochoa", nombre: "", correo: "jprestrepo@correo.com" }],
-            demandados: [{ tipo: "juridica", nombre: "INVERSIONES EL POBLADO S.A.S.", correo: "notificaciones@invpoblado.com" }],
-            despachoOrigen: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
-            fechaRecepcion: "2026-09-29",
+            id: 14,
+            medidaId: 1,
+            codigo: "17001410500220240039100",
+            estadoProceso: "Integrada la litis",
+            fechaActuacion: "2026-08-30",
+            link: "",
+            observaciones: "",
+            demandantes: [{ tipo: "natural", primerNombre: "Beatriz", segundoNombre: "", primerApellido: "Londoño", segundoApellido: "Gil", nombre: "", correo: "blondono@correo.com" }],
+            demandados: [{ tipo: "juridica", nombre: "CLÍNICA SANTA SOFÍA S.A.", correo: "juridica@clinicasantasofia.co" }],
+            despachoOrigen: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
+            fechaRecepcion: "2026-09-26",
             visto: false,
             estado: "tramite",
             actuaciones: []
         },
         {
-            id: 3,
-            codigo: "05001400300320230045600",
+            id: 905,
+            medidaId: 1,
+            codigo: "17001310500320230066600",
             estadoProceso: "En estado de fallo",
-            fechaActuacion: "2026-03-02",
-            link: "",
-            observaciones: "Proceso priorizado por antigüedad.",
-            demandantes: [{ tipo: "juridica", nombre: "BANCOLOMBIA S.A.", correo: "judicial@bancolombia.com.co" }],
-            demandados: [{ tipo: "natural", primerNombre: "Martha", segundoNombre: "Lucía", primerApellido: "Henao", segundoApellido: "Vélez", nombre: "", correo: "mhenao@correo.com" }],
-            despachoOrigen: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
-            fechaRecepcion: "2026-09-29",
+            fechaActuacion: "2026-04-14",
+            link: "https://procesos.ramajudicial.gov.co/",
+            observaciones: "Alegatos presentados por ambas partes.",
+            demandantes: [{ tipo: "natural", primerNombre: "Hernán", segundoNombre: "", primerApellido: "Toro", segundoApellido: "Valencia", nombre: "", correo: "htoro@correo.com" }],
+            demandados: [{ tipo: "juridica", nombre: "COLPENSIONES", correo: "notificacionesjudiciales@colpensiones.gov.co" }],
+            despachoOrigen: "JUZGADO 003 LABORAL DEL CIRCUITO DE MANIZALES",
+            fechaRecepcion: "2026-09-22",
             visto: false,
             estado: "tramite",
             actuaciones: []
         },
         {
             id: 903,
+            medidaId: 1,
             codigo: "17001310500120210033300",
             estadoProceso: "En estado de fallo",
             fechaActuacion: "2026-02-10",
@@ -143,6 +154,7 @@ const dbRecepcion = {
         },
         {
             id: 904,
+            medidaId: 1,
             codigo: "17001410500220250004400",
             estadoProceso: "Admitida o libra mandamiento",
             fechaActuacion: "2026-05-02",

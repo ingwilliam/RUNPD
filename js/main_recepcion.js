@@ -1,5 +1,7 @@
 // =====================================================================
 // RUNPD - Despacho de Descongestión: recepción y seguimiento de procesos
+// Los procesos llegan cuando el Consejo Seccional aprueba la distribución de una
+// medida. La vigencia que se controla es la de la MEDIDA de cada proceso.
 // Acciones: Actualizar estado · Finalizar · Devolver al Consejo Seccional
 // =====================================================================
 
@@ -63,6 +65,22 @@ function nombresPartes(lista) {
     return (lista || []).map(nombreParte).filter(Boolean).join(", ") || "No especificado";
 }
 
+function obtenerMedida(id) {
+    return dbRecepcion.medidas.find(m => m.id === Number(id));
+}
+
+function textoAcuerdo(m) {
+    return m ? `Acuerdo ${m.acuerdo.numero} de ${m.acuerdo.anio}` : "Sin medida";
+}
+
+function diasRestantesMedida(m) {
+    return diasEntre(hoy(), m.fechaFin);
+}
+
+function chipMedida(m) {
+    return `<span style="display: inline-block; font-size: 0.72rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 12px; background: #e0f2fe; color: #0369a1; white-space: nowrap;">📜 ${esc(m ? `${m.acuerdo.numero} de ${m.acuerdo.anio}` : "Sin medida")}</span>`;
+}
+
 function obtenerProceso(id = procesoActualId) {
     return dbRecepcion.procesos.find(p => p.id === Number(id));
 }
@@ -94,6 +112,10 @@ function alertaProceso(p) {
     }
     if (p.estado === "devuelto") {
         return { clave: "devuelto", prioridad: 6, texto: "Devuelto", paso: `Devuelto al Consejo el ${formatoFecha(p.devolucion.fecha)}`, fondo: "#edf2f7", color: "#475569" };
+    }
+    const m = obtenerMedida(p.medidaId);
+    if (m && diasRestantesMedida(m) < 0) {
+        return { clave: "medida_vencida", prioridad: -1, texto: "Medida finalizada", paso: "Devuelva el proceso al Consejo Seccional", fondo: "#fee2e2", color: "#991b1b" };
     }
     const u = ultimaActuacion(p);
     if (!u) {
@@ -152,61 +174,76 @@ function renderizarTodo() {
     renderizarTabla();
 }
 
-// Vigencia de la medida de descongestión
+// Despacho y medidas en las que es destino (cada medida con su propia vigencia)
 function renderizarMedida() {
     const d = dbRecepcion.despachoActual;
-    const total = Math.max(1, diasEntre(d.medidaInicio, d.medidaFin));
-    const restantes = diasEntre(hoy(), d.medidaFin);
-    const transcurrido = Math.min(100, Math.max(0, Math.round((diasEntre(d.medidaInicio, hoy()) / total) * 100)));
+    const tarjetas = dbRecepcion.medidas.map(m => {
+        const total = Math.max(1, diasEntre(m.fechaInicio, m.fechaFin));
+        const restantes = diasRestantesMedida(m);
+        const transcurrido = Math.min(100, Math.max(0, Math.round((diasEntre(m.fechaInicio, hoy()) / total) * 100)));
+        const recibidos = dbRecepcion.procesos.filter(p => p.medidaId === m.id && p.estado !== "devuelto").length;
+        const enTramite = dbRecepcion.procesos.filter(p => p.medidaId === m.id && p.estado === "tramite").length;
 
-    let color = "#166534", fondo = "#dcfce7", barra = "var(--primary-green)", mensaje = "La medida está vigente.";
-    if (restantes < 0) {
-        color = "#991b1b"; fondo = "#fee2e2"; barra = "#dc2626";
-        mensaje = "La medida finalizó. Devuelva al Consejo Seccional los procesos que no alcanzó a terminar.";
-    } else if (restantes <= 30) {
-        color = "#991b1b"; fondo = "#fee2e2"; barra = "#dc2626";
-        mensaje = "La medida está por terminar. Priorice los procesos y devuelva los que no alcance a finalizar.";
-    } else if (restantes <= 60) {
-        color = "#92400e"; fondo = "#fef3c7"; barra = "#f59e0b";
-        mensaje = "Planee el cierre: revise qué procesos alcanzará a finalizar antes del fin de la medida.";
-    }
+        let color = "#166534", fondo = "#dcfce7", barra = "var(--primary-green)", texto = `${restantes} días para finalizar`, mensaje = "Medida vigente.";
+        if (hoy() < m.fechaInicio) {
+            color = "#1d4ed8"; fondo = "#dbeafe"; barra = "#3b82f6"; texto = `Inicia el ${formatoFecha(m.fechaInicio)}`; mensaje = "La medida aún no inicia.";
+        } else if (restantes < 0) {
+            color = "#991b1b"; fondo = "#fee2e2"; barra = "#dc2626"; texto = `Finalizó hace ${-restantes} día(s)`;
+            mensaje = "Devuelva al Consejo los procesos que no alcanzó a terminar.";
+        } else if (restantes <= 30) {
+            color = "#991b1b"; fondo = "#fee2e2"; barra = "#dc2626"; mensaje = "Por terminar: priorice los procesos.";
+        } else if (restantes <= 60) {
+            color = "#92400e"; fondo = "#fef3c7"; barra = "#f59e0b"; mensaje = "Planee el cierre de los procesos.";
+        }
+        const seleccionada = document.getElementById("filtro-medida").value === String(m.id);
+
+        return `
+            <div onclick="seleccionarMedida(${m.id})" title="Ver solo los procesos de esta medida"
+                 style="cursor: pointer; background: ${seleccionada ? "#f0fdf4" : "#f8fafc"}; border: 1px solid ${seleccionada ? "var(--primary-green)" : "#e2e8f0"}; border-radius: 8px; padding: 0.75rem 0.9rem;">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem;">
+                    <div>
+                        <div style="font-weight: 700; font-size: 0.85rem; color: var(--text-main);">${esc(textoAcuerdo(m))}</div>
+                        <div style="font-size: 0.72rem; color: var(--text-muted);">Vigencia: ${formatoFecha(m.fechaInicio)} al ${formatoFecha(m.fechaFin)}</div>
+                    </div>
+                    <span style="font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.5rem; border-radius: 12px; background: ${fondo}; color: ${color}; white-space: nowrap;">${texto}</span>
+                </div>
+                <div style="height: 6px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 0.55rem;">
+                    <div style="height: 100%; width: ${transcurrido}%; background: ${barra};"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap; font-size: 0.72rem; margin-top: 0.35rem;">
+                    <span style="color: var(--text-muted);">Recibidos: <strong style="color: var(--text-main);">${recibidos}</strong> de ${m.autorizados} autorizados · ${enTramite} en trámite</span>
+                    <span style="color: ${color}; font-weight: 600;">${mensaje}</span>
+                </div>
+            </div>`;
+    }).join("");
 
     document.getElementById("tarjeta-medida").innerHTML = `
-        <div style="display: flex; justify-content: space-between; align-items: center; gap: 1.25rem; flex-wrap: wrap;">
-            <div style="display: flex; align-items: center; gap: 0.9rem;">
-                <div style="width: 3rem; height: 3rem; border-radius: 10px; background: #e6f4ea; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏛️</div>
-                <div>
-                    <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">${esc(d.nombre)}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">
-                        Medida de descongestión: <strong style="color: var(--text-main);">${formatoFecha(d.medidaInicio)}</strong> al <strong style="color: var(--text-main);">${formatoFecha(d.medidaFin)}</strong>
-                        &nbsp;·&nbsp; Consejo Seccional de ${esc(d.consejoSeccional)}
-                    </div>
-                </div>
-            </div>
-            <div style="background: ${fondo}; color: ${color}; border-radius: 8px; padding: 0.5rem 1rem; text-align: center; min-width: 160px;">
-                <div style="font-size: 1.6rem; font-weight: 800; line-height: 1.1;">${restantes < 0 ? "Finalizó" : restantes}</div>
-                <div style="font-size: 0.75rem; font-weight: 600;">${restantes < 0 ? `hace ${-restantes} día(s)` : "días para finalizar la medida"}</div>
+        <div style="display: flex; align-items: center; gap: 0.9rem; margin-bottom: 0.85rem;">
+            <div style="width: 3rem; height: 3rem; border-radius: 10px; background: #e6f4ea; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;">🏛️</div>
+            <div>
+                <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">${esc(d.nombre)}</div>
+                <div style="font-size: 0.8rem; color: var(--text-muted);">Código <span style="font-family: monospace; font-weight: 700; color: var(--primary-green);">${esc(d.codigo)}</span> · Consejo Seccional de ${esc(d.consejoSeccional)} · Medidas de descongestión en las que recibe procesos:</div>
             </div>
         </div>
-        <div style="margin-top: 0.9rem;">
-            <div style="height: 8px; background: #edf2f7; border-radius: 999px; overflow: hidden;">
-                <div style="height: 100%; width: ${transcurrido}%; background: ${barra}; border-radius: 999px;"></div>
-            </div>
-            <div style="display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); margin-top: 0.35rem;">
-                <span>${transcurrido}% del tiempo de la medida transcurrido</span>
-                <span style="color: ${color}; font-weight: 600;">${mensaje}</span>
-            </div>
-        </div>`;
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 0.75rem;">${tarjetas}</div>`;
+}
+
+function seleccionarMedida(id) {
+    const sel = document.getElementById("filtro-medida");
+    sel.value = sel.value === String(id) ? "" : String(id);
+    renderizarTodo();
 }
 
 function contar() {
-    const c = { tramite: 0, sin_actuacion: 0, atencion: 0, vencida: 0, por_vencer: 0, finalizado: 0, devuelto: 0, nuevos: 0 };
-    dbRecepcion.procesos.forEach(p => {
+    const c = { tramite: 0, sin_actuacion: 0, atencion: 0, vencida: 0, por_vencer: 0, medida_vencida: 0, finalizado: 0, devuelto: 0, nuevos: 0 };
+    const medida = document.getElementById("filtro-medida").value;
+    dbRecepcion.procesos.filter(p => !medida || p.medidaId === Number(medida)).forEach(p => {
         const a = alertaProceso(p).clave;
         if (p.estado === "tramite") c.tramite++;
         if (p.estado === "tramite" && !p.visto) c.nuevos++;
         if (a === "sin_actuacion") c.sin_actuacion++;
         if (a === "vencida") { c.vencida++; c.atencion++; }
+        if (a === "medida_vencida") { c.medida_vencida++; c.atencion++; }
         if (a === "por_vencer") { c.por_vencer++; c.atencion++; }
         if (a === "finalizado") c.finalizado++;
         if (a === "devuelto") c.devuelto++;
@@ -218,6 +255,7 @@ function renderizarAvisoPendientes() {
     const c = contar();
     const aviso = document.getElementById("aviso-pendientes");
     const partes = [];
+    if (c.medida_vencida) partes.push(`<strong>${c.medida_vencida}</strong> de una medida ya finalizada (devuélvalos al Consejo)`);
     if (c.nuevos) partes.push(`<strong>${c.nuevos}</strong> proceso(s) nuevo(s) recibido(s)`);
     if (c.sin_actuacion) partes.push(`<strong>${c.sin_actuacion}</strong> sin actuación registrada`);
     if (c.vencida) partes.push(`<strong>${c.vencida}</strong> con la próxima actuación vencida`);
@@ -275,8 +313,8 @@ function cumpleFiltro(p) {
     switch (filtroActivo) {
         case "tramite":       return p.estado === "tramite";
         case "sin_actuacion": return a === "sin_actuacion";
-        case "atencion":      return a === "vencida" || a === "por_vencer";
-        case "pendientes":    return a === "sin_actuacion" || a === "vencida" || a === "por_vencer";
+        case "atencion":      return a === "vencida" || a === "por_vencer" || a === "medida_vencida";
+        case "pendientes":    return a === "sin_actuacion" || a === "vencida" || a === "por_vencer" || a === "medida_vencida";
         case "finalizado":    return a === "finalizado";
         case "devuelto":      return a === "devuelto";
         default:              return true;
@@ -296,7 +334,9 @@ function renderizarTabla() {
         finalizado: "procesos finalizados", devuelto: "procesos devueltos al Consejo"
     };
 
+    const medida = document.getElementById("filtro-medida").value;
     const lista = dbRecepcion.procesos
+        .filter(p => !medida || p.medidaId === Number(medida))
         .filter(cumpleFiltro)
         .filter(p => !q || [p.codigo, nombresPartes(p.demandantes), nombresPartes(p.demandados)].join(" ").toLowerCase().includes(q))
         .sort((a, b) => alertaProceso(a).prioridad - alertaProceso(b).prioridad);
@@ -333,9 +373,10 @@ function renderizarTabla() {
                     <div><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Dte.</span> ${esc(nombresPartes(p.demandantes))}</div>
                     <div><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Ddo.</span> ${esc(nombresPartes(p.demandados))}</div>
                 </td>
-                <td style="font-size: 0.8rem;">
-                    ${esc(p.despachoOrigen)}<br>
-                    <span style="color: var(--text-muted);">Recibido: ${formatoFecha(p.fechaRecepcion)}</span>
+                <td style="font-size: 0.8rem; min-width: 200px;">
+                    ${chipMedida(obtenerMedida(p.medidaId))}
+                    <div style="margin-top: 0.25rem;">${esc(p.despachoOrigen)}</div>
+                    <span style="color: var(--text-muted);">Aprobado por el Consejo: ${formatoFecha(p.fechaRecepcion)}</span>
                 </td>
                 <td style="font-size: 0.8rem;">
                     <strong>${esc(estadoProcesalActual(p))}</strong><br>
@@ -356,6 +397,8 @@ function renderizarTabla() {
 // ---------------------------------------------------------------------
 function llenarCatalogos() {
     const cat = dbRecepcion.catalogos;
+    document.getElementById("filtro-medida").innerHTML = `<option value="">Todas las medidas</option>` +
+        dbRecepcion.medidas.map(m => `<option value="${m.id}">${esc(textoAcuerdo(m))}</option>`).join("");
     document.getElementById("act-estado").innerHTML =
         `<option value="" disabled selected>Seleccione una opción...</option>` +
         `<optgroup label="Continuar el trámite">${cat.estadosProceso.map(e => `<option value="${esc(e)}">${esc(e)}</option>`).join("")}</optgroup>` +
@@ -380,7 +423,7 @@ function resumenProceso(p) {
     return `
         <div style="display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
             <strong style="font-family: monospace; color: #166534;">Cod: ${esc(p.codigo)}</strong>
-            <span style="color: var(--text-muted);">Recibido el ${formatoFecha(p.fechaRecepcion)} de ${esc(p.despachoOrigen)}</span>
+            <span style="color: var(--text-muted);">${esc(textoAcuerdo(obtenerMedida(p.medidaId)))} · Recibido el ${formatoFecha(p.fechaRecepcion)} de ${esc(p.despachoOrigen)}</span>
         </div>
         <div style="color: #475569; margin-top: 0.25rem;">${esc(nombresPartes(p.demandantes))} <em>c/</em> ${esc(nombresPartes(p.demandados))}</div>
         <div style="margin-top: 0.25rem;"><strong>Estado actual:</strong> ${esc(estadoProcesalActual(p))}
@@ -472,12 +515,14 @@ function validarFechas() {
     const fecha = document.getElementById("act-fecha").value;
     const proxima = document.getElementById("act-proxima");
     const aviso = document.getElementById("act-aviso-medida");
-    const finMedida = dbRecepcion.despachoActual.medidaFin;
+    const p = obtenerProceso();
+    const medida = p ? obtenerMedida(p.medidaId) : null;
+    const finMedida = medida ? medida.fechaFin : "9999-12-31";
 
     if (fecha) proxima.min = sumarDias(fecha, 1);
 
     if (!esModoFinalizar() && proxima.value && proxima.value > finMedida) {
-        aviso.innerHTML = `⚠️ La próxima actuación (${formatoFecha(proxima.value)}) queda <strong>después del fin de la medida</strong> (${formatoFecha(finMedida)}). Si no alcanza a finalizar el proceso, considere <strong>devolverlo al Consejo Seccional</strong>.`;
+        aviso.innerHTML = `⚠️ La próxima actuación (${formatoFecha(proxima.value)}) queda <strong>después del fin de la medida</strong> ${esc(textoAcuerdo(medida))} (${formatoFecha(finMedida)}). Si no alcanza a finalizar el proceso, considere <strong>devolverlo al Consejo Seccional</strong>.`;
         aviso.style.display = "block";
     } else {
         aviso.style.display = "none";
@@ -540,6 +585,7 @@ function abrirCorreoFinalizacion(p, { fecha, forma, observacion }) {
     const payloadCorreo = {
         consejoSeccional: d.consejoSeccional,
         despacho: { nombre: d.nombre, codigo: d.codigo, correo: d.correo },
+        medida: textoAcuerdo(obtenerMedida(p.medidaId)),
         fechaTerminacion: fecha,
         formaTerminacion: forma,
         observacion,
@@ -568,7 +614,7 @@ function abrirDevolver(id) {
     document.getElementById("form-devolver").reset();
     document.getElementById("dev-resumen").innerHTML = resumenProceso(p);
     document.getElementById("dev-destino").innerHTML =
-        `ℹ️ El proceso regresará al <strong>Consejo Seccional de ${esc(dbRecepcion.despachoActual.consejoSeccional)}</strong> para que lo redistribuya, y saldrá de su inventario.`;
+        `ℹ️ El proceso regresará al <strong>Consejo Seccional de ${esc(dbRecepcion.despachoActual.consejoSeccional)}</strong> y saldrá de su inventario. No contará como recibido en la medida.`;
     renderizarTodo();
     abrirModal("modal-devolver");
 }
@@ -616,6 +662,7 @@ function abrirCorreoDevolucion(p, { fecha, motivo, observacion, estadoProcesal, 
     const payloadCorreo = {
         consejoSeccional: d.consejoSeccional,
         despacho: { nombre: d.nombre, codigo: d.codigo, correo: d.correo },
+        medida: textoAcuerdo(obtenerMedida(p.medidaId)),
         fechaDevolucion: fecha,
         motivo,
         motivoDescripcion: infoMotivo ? infoMotivo.descripcion : "",
@@ -656,7 +703,7 @@ function verDetalle(id) {
     // Línea de tiempo: recepción + actuaciones + finalización/devolución
     const iconos = { actuacion: "✏️", finalizacion: "🏁", devolucion: "↩" };
     const eventos = [
-        { icono: "📥", fecha: p.fechaRecepcion, titulo: "Recibido del Consejo Seccional", detalle: `Origen: ${p.despachoOrigen} · Estado al recibir: ${p.estadoProceso}` },
+        { icono: "📥", fecha: p.fechaRecepcion, titulo: "Distribución aprobada por el Consejo Seccional y proceso recibido", detalle: `${textoAcuerdo(obtenerMedida(p.medidaId))} · Origen: ${p.despachoOrigen} · Estado al recibir: ${p.estadoProceso}` },
         ...p.actuaciones.map(a => ({
             icono: iconos[a.tipo],
             fecha: a.fecha,
@@ -672,12 +719,13 @@ function verDetalle(id) {
                 ${chip(alerta.texto, alerta.fondo, alerta.color)}
             </div>
             <p style="margin: 0 0 0.3rem 0;"><strong>Estado procesal actual:</strong> ${esc(estadoProcesalActual(p))}</p>
+            <p style="margin: 0 0 0.3rem 0;"><strong>Medida de descongestión:</strong> ${esc(textoAcuerdo(obtenerMedida(p.medidaId)))} (vigencia ${formatoFecha(obtenerMedida(p.medidaId).fechaInicio)} al ${formatoFecha(obtenerMedida(p.medidaId).fechaFin)})</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Despacho de origen:</strong> ${esc(p.despachoOrigen)}</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Última actuación en origen:</strong> ${formatoFecha(p.fechaActuacion)}</p>
             <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 0.6rem 0;">
             <p style="margin: 0;"><strong>Demandante(s):</strong></p>${listaPartes(p.demandantes)}
             <p style="margin: 0;"><strong>Demandado(s):</strong></p>${listaPartes(p.demandados)}
-            <p style="margin: 0;"><strong>Observaciones del traslado:</strong> ${esc(p.observaciones || "Sin observaciones registradas.")}</p>
+            <p style="margin: 0;"><strong>Observaciones del despacho de origen:</strong> ${esc(p.observaciones || "Sin observaciones registradas.")}</p>
             ${p.link ? `<p style="margin: 0.5rem 0 0 0;"><a href="${esc(p.link)}" target="_blank" rel="noopener" style="color: #0284c7; text-decoration: underline; font-weight: 600;">🔗 Ver expediente en línea (Rama Judicial)</a></p>` : ""}
         </div>
 
