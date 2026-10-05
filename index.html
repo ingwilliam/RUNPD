@@ -33,7 +33,7 @@
         <!-- FLUJO DEL PROCESO (grafo interactivo) -->
         <section id="flujo" class="index-section">
             <div class="grafo">
-                <svg class="grafo-svg" viewBox="0 0 1180 305" role="img" aria-label="Flujo del proceso de descongestión">
+                <svg class="grafo-svg" viewBox="0 0 1180 362" role="img" aria-label="Flujo del proceso de descongestión">
                     <defs>
                         <marker id="punta" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"></path>
@@ -41,96 +41,141 @@
                         <marker id="punta-roja" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
                             <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"></path>
                         </marker>
+                        <marker id="punta-verde" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"></path>
+                        </marker>
+                        <marker id="punta-naranja" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                            <path d="M0,0 L10,5 L0,10 z" fill="#ea580c"></path>
+                        </marker>
                     </defs>
+
+                    <g transform="translate(0,22)">
+                    <!-- Etiquetas de los caminos -->
+                    <g class="g-caminos">
+                        <text x="8" y="-10" class="cam-a">CAMINO A · UDAE</text>
+                        <text x="8" y="230" class="cam-b">CAMINO B · CONSEJO SECCIONAL</text>
+                    </g>
 
                     <!-- Aristas -->
                     <g class="g-aristas">
-                        <line class="arista" x1="96" y1="140" x2="144" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="216" y1="140" x2="266" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="300" y1="106" x2="300" y2="81" marker-end="url(#punta)"></line>
-                        <path class="arista" d="M336 45 C 400 45, 430 66, 430 104" marker-end="url(#punta)"></path>
-                        <line class="arista" x1="334" y1="140" x2="394" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="466" y1="140" x2="524" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="596" y1="140" x2="654" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="726" y1="140" x2="776" y2="140" marker-end="url(#punta)"></line>
-                        <line class="arista" x1="844" y1="140" x2="914" y2="140" marker-end="url(#punta)"></line>
-                        <path class="arista arista-devolucion" d="M810 222 C 810 284, 560 284, 560 224" marker-end="url(#punta-roja)"></path>
-                        <line class="arista arista-consulta" x1="986" y1="140" x2="1064" y2="140" marker-end="url(#punta)"></line>
+                        <!-- Camino A: UDAE -->
+                        <line class="arista" x1="87" y1="66" x2="141" y2="66" marker-end="url(#punta)"></line>
+                        <line class="arista arista-no" x1="209" y1="66" x2="265" y2="66" marker-end="url(#punta-roja)"></line>
+                        <path class="arista" d="M322 78 C 390 96, 432 112, 438 134" marker-end="url(#punta)"></path>
+                        <path class="arista arista-si" d="M175 100 C 175 170, 320 170, 402 170" marker-end="url(#punta-verde)"></path>
+                        <!-- Camino B: Consejo Seccional -->
+                        <line class="arista arista-consejo" x1="103" y1="270" x2="161" y2="270" marker-end="url(#punta)"></line>
+                        <path class="arista arista-consejo" d="M227 270 C 340 270, 384 226, 412 194" marker-end="url(#punta)"></path>
+                        <!-- Flujo común -->
+                        <line class="arista" x1="476" y1="170" x2="532" y2="170" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="606" y1="170" x2="664" y2="170" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="736" y1="170" x2="784" y2="170" marker-end="url(#punta)"></line>
+                        <line class="arista" x1="856" y1="170" x2="919" y2="170" marker-end="url(#punta)"></line>
+                        <path class="arista arista-devolucion" d="M820 250 C 820 306, 570 306, 570 254" marker-end="url(#punta-roja)"></path>
+                        <path class="arista arista-devolucion-destino" d="M955 134 C 955 74, 570 74, 570 132" marker-end="url(#punta-naranja)"></path>
+                        <line class="arista arista-consulta" x1="991" y1="170" x2="1064" y2="170" marker-end="url(#punta)"></line>
                     </g>
 
                     <!-- Etiquetas de las aristas -->
                     <g class="g-etiquetas">
-                        <text x="310" y="98">NO</text>
-                        <text x="350" y="132">SÍ</text>
-                        <text x="854" y="132">SÍ · notifica</text>
-                        <text x="685" y="296" class="et-roja">NO · devuelve al despacho origen</text>
-                        <text x="1025" y="126" class="et-centro">consulta</text>
+                        <text x="133" y="262" class="et-centro">requisito</text>
+                        <text x="887" y="162" class="et-centro">visto bueno</text>
+                        <text x="695" y="322" class="et-roja">NO · devuelve al despacho origen</text>
+                        <text x="762" y="92" class="et-naranja">devuelve al despacho origen</text>
+                        <text x="1028" y="156" class="et-centro">consulta</text>
                     </g>
 
-                    <!-- Punto que recorre el flujo -->
+                    <!-- Puntos que recorren el flujo desde cada camino -->
                     <circle class="g-token" r="6">
-                        <animateMotion dur="9s" repeatCount="indefinite" path="M60 140 L950 140"></animateMotion>
+                        <animateMotion dur="9s" repeatCount="indefinite" path="M55 66 L175 66 L295 66 C 390 96, 432 112, 440 170 L955 170"></animateMotion>
+                    </circle>
+                    <circle class="g-token" r="6" visibility="hidden">
+                        <set attributeName="visibility" to="visible" begin="4.5s"></set>
+                        <animateMotion dur="9s" begin="4.5s" repeatCount="indefinite" path="M75 270 L195 270 C 340 270, 384 226, 440 170 L955 170"></animateMotion>
                     </circle>
 
-                    <!-- Nodos -->
-                    <g class="g-nodo" data-paso="acuerdos" style="--col: #64748b;" tabindex="0">
-                        <circle cx="60" cy="140" r="34"></circle>
-                        <text x="60" y="149" class="ico">📜</text>
-                        <text x="60" y="196" class="lbl">Acuerdos</text>
-                        <text x="60" y="211" class="sub">y resoluciones</text>
-                    </g>
+                    <!-- Camino A -->
                     <g class="g-nodo" data-paso="udae" style="--col: #166534;" tabindex="0">
-                        <circle cx="180" cy="140" r="34"></circle>
-                        <text x="180" y="149" class="ico">🏢</text>
-                        <text x="180" y="196" class="lbl">UDAE</text>
-                        <text x="180" y="211" class="sub">revisa cada acuerdo</text>
+                        <circle cx="55" cy="66" r="32"></circle>
+                        <text x="55" y="75" class="ico">🏢</text>
+                        <text x="55" y="116" class="lbl">UDAE</text>
+                        <text x="55" y="130" class="sub">emite acuerdo</text>
+                        <text x="55" y="143" class="sub">y resolución</text>
                     </g>
-                    <g class="g-nodo rombo" data-paso="existen" style="--col: #d97706;" tabindex="0">
-                        <polygon points="300,106 334,140 300,174 266,140"></polygon>
-                        <text x="300" y="146" class="ico-s">?</text>
-                        <text x="300" y="196" class="lbl">¿Existen los</text>
-                        <text x="300" y="211" class="lbl">despachos?</text>
+                    <g class="g-nodo rombo" data-paso="existe" style="--col: #d97706;" tabindex="0">
+                        <polygon points="175,32 209,66 175,100 141,66"></polygon>
+                        <text x="175" y="74" class="ico">🔎</text>
+                        <text x="175" y="4" class="pregunta">¿El despacho origen y el destino</text>
+                        <text x="175" y="18" class="pregunta">ya existen en el sistema?</text>
+                    </g>
+
+                    <!-- Respuestas de la decisión -->
+                    <g class="pill pill-no">
+                        <rect x="207" y="34" width="60" height="17" rx="8.5"></rect>
+                        <text x="237" y="46">NO existen</text>
+                    </g>
+                    <g class="pill pill-si">
+                        <rect x="204" y="149" width="118" height="17" rx="8.5"></rect>
+                        <text x="263" y="161">SÍ existen ➔ continuar</text>
                     </g>
                     <g class="g-nodo" data-paso="crear" style="--col: #166534;" tabindex="0">
-                        <circle cx="300" cy="45" r="30"></circle>
-                        <text x="300" y="54" class="ico">🏗️</text>
-                        <text x="380" y="30" class="lbl izq">Crea despachos</text>
+                        <circle cx="295" cy="66" r="28"></circle>
+                        <text x="295" y="75" class="ico">🏗️</text>
+                        <text x="300" y="112" class="lbl">Crea los despachos</text>
+                        <text x="300" y="126" class="sub">que no existen</text>
                     </g>
-                    <g class="g-nodo" data-paso="medida" style="--col: #166534;" tabindex="0">
-                        <circle cx="430" cy="140" r="34"></circle>
-                        <text x="430" y="149" class="ico">📋</text>
-                        <text x="430" y="196" class="lbl">Crea la medida</text>
-                        <text x="430" y="211" class="sub">origen ➔ destino · N</text>
+
+                    <!-- Camino B -->
+                    <g class="g-nodo" data-paso="requisito" style="--col: #64748b;" tabindex="0">
+                        <circle cx="75" cy="270" r="28"></circle>
+                        <text x="75" y="279" class="ico">📄</text>
+                        <text x="75" y="314" class="lbl">Acuerdo de creación</text>
+                        <text x="75" y="328" class="sub">de despachos (UDAE)</text>
+                    </g>
+                    <g class="g-nodo" data-paso="consejo_acuerdo" style="--col: #7c3aed;" tabindex="0">
+                        <circle cx="195" cy="270" r="32"></circle>
+                        <text x="195" y="279" class="ico">📜</text>
+                        <text x="210" y="320" class="lbl">Consejo Seccional</text>
+                        <text x="210" y="334" class="sub">acuerdo de redistribución</text>
+                    </g>
+
+                    <!-- Flujo común -->
+                    <g class="g-nodo" data-paso="medida" style="--col: #0f766e;" tabindex="0">
+                        <circle cx="440" cy="170" r="34"></circle>
+                        <text x="440" y="179" class="ico">📋</text>
+                        <text x="440" y="226" class="lbl">Crea la medida</text>
+                        <text x="440" y="241" class="sub">en el sistema</text>
                     </g>
                     <g class="g-nodo" data-paso="origen" style="--col: #0369a1;" tabindex="0">
-                        <circle cx="560" cy="140" r="34"></circle>
-                        <text x="560" y="149" class="ico">🏛️</text>
-                        <text x="560" y="196" class="lbl">Despacho origen</text>
-                        <text x="560" y="211" class="sub">registra procesos</text>
+                        <circle cx="570" cy="170" r="34"></circle>
+                        <text x="570" y="179" class="ico">🏛️</text>
+                        <text x="570" y="226" class="lbl">Despacho origen</text>
+                        <text x="570" y="241" class="sub">crea y envía procesos</text>
                     </g>
                     <g class="g-nodo" data-paso="consejo" style="--col: #7c3aed;" tabindex="0">
-                        <circle cx="690" cy="140" r="34"></circle>
-                        <text x="690" y="149" class="ico">⚖️</text>
-                        <text x="690" y="196" class="lbl">Consejo</text>
-                        <text x="690" y="211" class="sub">Seccional</text>
+                        <circle cx="700" cy="170" r="34"></circle>
+                        <text x="700" y="179" class="ico">⚖️</text>
+                        <text x="700" y="226" class="lbl">Consejo Seccional</text>
+                        <text x="700" y="241" class="sub">supervisa y verifica</text>
                     </g>
                     <g class="g-nodo rombo" data-paso="aprueba" style="--col: #7c3aed;" tabindex="0">
-                        <polygon points="810,106 844,140 810,174 776,140"></polygon>
-                        <text x="810" y="146" class="ico-s">✔</text>
-                        <text x="810" y="196" class="lbl">¿Aprueba la</text>
-                        <text x="810" y="211" class="lbl">distribución?</text>
+                        <polygon points="820,136 854,170 820,204 786,170"></polygon>
+                        <text x="820" y="176" class="ico-s">✔</text>
+                        <text x="820" y="226" class="lbl">¿Cumple la</text>
+                        <text x="820" y="241" class="lbl">medida?</text>
                     </g>
                     <g class="g-nodo" data-paso="destino" style="--col: #b45309;" tabindex="0">
-                        <circle cx="950" cy="140" r="34"></circle>
-                        <text x="950" y="149" class="ico">🗂️</text>
-                        <text x="950" y="196" class="lbl">Despacho destino</text>
-                        <text x="950" y="211" class="sub">gestiona y finaliza</text>
+                        <circle cx="955" cy="170" r="34"></circle>
+                        <text x="955" y="179" class="ico">🗂️</text>
+                        <text x="955" y="226" class="lbl">Despacho destino</text>
+                        <text x="955" y="241" class="sub">gestiona y finaliza</text>
                     </g>
                     <g class="g-nodo" data-paso="ciudadano" style="--col: #1d4ed8;" tabindex="0">
-                        <circle cx="1100" cy="140" r="34"></circle>
-                        <text x="1100" y="149" class="ico">🔍</text>
-                        <text x="1100" y="196" class="lbl">Ciudadano</text>
-                        <text x="1100" y="211" class="sub">consulta pública</text>
+                        <circle cx="1100" cy="170" r="34"></circle>
+                        <text x="1100" y="179" class="ico">🔍</text>
+                        <text x="1100" y="226" class="lbl">Ciudadano</text>
+                        <text x="1100" y="241" class="sub">consulta pública</text>
+                    </g>
                     </g>
                 </svg>
 
@@ -138,8 +183,8 @@
                 <div class="grafo-panel" id="grafo-panel" aria-live="polite">
                     <span class="gp-num" id="gp-num">1</span>
                     <div class="gp-texto">
-                        <div class="gp-actor" id="gp-actor">Entrada</div>
-                        <strong id="gp-titulo">Llegan los acuerdos</strong>
+                        <div class="gp-actor" id="gp-actor">Camino A · UDAE</div>
+                        <strong id="gp-titulo">Emite el acuerdo de la medida</strong>
                         <p id="gp-desc"></p>
                     </div>
                     <a href="#rol-udae" class="gp-link" id="gp-link">Ver módulo →</a>
@@ -148,95 +193,133 @@
             </div>
         </section>
 
-        <!-- MÓDULOS POR ROL -->
+        <!-- RECORRIDO DEL PROTOTIPO (mismo orden del flujo) -->
         <section id="roles" class="index-section">
             <div class="section-head">
-                <span class="section-kicker">Módulos por rol</span>
+                <span class="section-kicker">Módulos por paso</span>
                 <h2 class="section-title">Recorra el prototipo</h2>
-                <p class="section-text">Seleccione un rol para conocer las pantallas y funcionalidades que se van a desarrollar.</p>
+                <p class="section-text">Siga el mismo orden del flujo: primero se crea la medida y después cada despacho cumple su parte.</p>
             </div>
 
-            <div class="role-grid">
+            <div class="recorrido">
 
-                <!-- Rol 1: Administrador Central (UDAE) -->
-                <article class="role-card" id="rol-udae">
-                    <div class="role-card-top">
-                        <span class="role-icon">🏢</span>
-                        <span class="role-step">Etapa 1 · Crear</span>
+                <!-- PASO 1: CREAR LA MEDIDA (dos caminos) -->
+                <article class="paso1" id="paso-1">
+                    <div class="paso1-head">
+                        <span class="paso-num">1</span>
+                        <div>
+                            <h3>Crear la medida de descongestión</h3>
+                            <p>La medida se crea por uno de dos caminos. Ambos terminan en la misma medida en el sistema: despacho origen ➔ despacho destino, número de procesos y vigencia.</p>
+                        </div>
                     </div>
-                    <h3 class="role-title">Administrador Central (UDAE)</h3>
-                    <p class="role-desc">Crea los despachos y las medidas de descongestión, y define cuántos procesos pasan de cada despacho origen a cada despacho destino.</p>
-                    <ul class="role-features">
-                        <li>Crear despachos permanentes y de descongestión, con sus administradores</li>
-                        <li>Crear medidas con su acuerdo, resolución y plan de distribución</li>
-                        <li>Notificar la medida a los despachos involucrados</li>
-                    </ul>
-                    <a href="index_admin.html" class="role-btn">Ingresar como UDAE <span aria-hidden="true">→</span></a>
+
+                    <div class="caminos">
+                        <!-- Camino A: UDAE -->
+                        <div class="camino camino-a" id="rol-udae">
+                            <div class="camino-top">
+                                <span class="camino-tag">Camino A</span>
+                                <span class="camino-icono">🏢</span>
+                            </div>
+                            <h4>Administrador Central (UDAE)</h4>
+                            <p class="camino-desc">Emite el acuerdo y la resolución de creación. Es la única que valida y crea despachos.</p>
+                            <ol class="camino-pasos">
+                                <li>Emite el acuerdo y, si aplica, la resolución de creación</li>
+                                <li>Valida si existen los despachos y <strong>los crea si no existen</strong></li>
+                                <li>Crea la medida en el sistema y notifica a los despachos</li>
+                            </ol>
+                            <a href="index_admin.html" class="camino-btn">Ingresar como UDAE <span aria-hidden="true">→</span></a>
+                        </div>
+
+                        <div class="caminos-o" aria-hidden="true">o</div>
+
+                        <!-- Camino B: Consejo Seccional -->
+                        <div class="camino camino-b" id="rol-consejo-medida">
+                            <div class="camino-top">
+                                <span class="camino-tag">Camino B</span>
+                                <span class="camino-icono">📜</span>
+                            </div>
+                            <h4>Administrador del Consejo Seccional</h4>
+                            <p class="camino-desc">No crea despachos: trabaja con los que ya creó la UDAE.</p>
+                            <div class="camino-requisito">📄 <strong>Requisito:</strong> acuerdo de la UDAE de creación de despachos con medidas permanentes y transitorias</div>
+                            <ol class="camino-pasos">
+                                <li>Emite el acuerdo de redistribución de procesos</li>
+                                <li>Crea la medida en el sistema con los despachos ya existentes</li>
+                                <li>Notifica a los despachos de la medida</li>
+                            </ol>
+                            <a href="index_admin_c.html" class="camino-btn">Ingresar al Consejo <span aria-hidden="true">→</span></a>
+                        </div>
+                    </div>
                 </article>
 
-                <!-- Rol 2: Administrador del Despacho Permanente (origen) -->
-                <article class="role-card" id="rol-permanente">
-                    <div class="role-card-top">
-                        <span class="role-icon">🏛️</span>
-                        <span class="role-step">Etapa 2 · Registrar</span>
-                    </div>
-                    <h3 class="role-title">Administrador del Despacho Permanente</h3>
-                    <p class="role-desc">Despacho origen: registra los procesos que se trasladarán en cada medida, según lo autorizado por la UDAE.</p>
-                    <ul class="role-features">
-                        <li>Seleccionar la medida de descongestión</li>
-                        <li>Registrar los procesos con sus demandantes y demandados, hasta completar el total</li>
-                        <li>Enviar los procesos al Consejo Seccional</li>
-                    </ul>
-                    <a href="index_admin_p.html" class="role-btn">Ingresar al Despacho <span aria-hidden="true">→</span></a>
-                </article>
+                <div class="recorrido-flecha" aria-hidden="true">▼</div>
 
-                <!-- Rol 3: Administrador del Consejo Seccional -->
-                <article class="role-card" id="rol-consejo">
-                    <div class="role-card-top">
-                        <span class="role-icon">📋</span>
-                        <span class="role-step">Etapa 3 · Aprobar</span>
-                    </div>
-                    <h3 class="role-title">Administrador del Consejo Seccional</h3>
-                    <p class="role-desc">Revisa los procesos enviados por los despachos de su competencia y aprueba la distribución definida en cada medida.</p>
-                    <ul class="role-features">
-                        <li>Revisar los envíos por medida y el cupo autorizado</li>
-                        <li>Aprobar la distribución o devolver el envío con su motivo</li>
-                        <li>Notificar al despacho destino para que tramite los procesos</li>
-                    </ul>
-                    <a href="index_admin_c.html" class="role-btn">Ingresar al Consejo <span aria-hidden="true">→</span></a>
-                </article>
+                <!-- PASOS 2 A 4 -->
+                <div class="role-grid">
 
-                <!-- Rol 4: Administrador del Despacho de Descongestión (destino) -->
-                <article class="role-card" id="rol-descongestion">
-                    <div class="role-card-top">
-                        <span class="role-icon">⚖️</span>
-                        <span class="role-step">Etapa 4 · Gestionar</span>
-                    </div>
-                    <h3 class="role-title">Administrador del Despacho de Descongestión</h3>
-                    <p class="role-desc">Despacho destino: tramita los procesos recibidos dentro de la vigencia de cada medida.</p>
-                    <ul class="role-features">
-                        <li>Recibir los procesos aprobados por el Consejo Seccional</li>
-                        <li>Registrar actuaciones y controlar la próxima actuación</li>
-                        <li>Registrar la última actuación, finalizar o devolver al Consejo</li>
-                    </ul>
-                    <a href="index_admin_d.html" class="role-btn">Ingresar a Descongestión <span aria-hidden="true">→</span></a>
-                </article>
+                    <article class="role-card role-card-origen" id="rol-origen">
+                        <div class="role-card-top">
+                            <span class="role-icon">🏛️</span>
+                            <span class="role-step">Paso 2 · Crear y enviar</span>
+                        </div>
+                        <h3 class="role-title">Despacho Origen con Medida de Descongestión</h3>
+                        <p class="role-desc">Crea los procesos de cada medida, según el número autorizado, y los envía al Consejo Seccional.</p>
+                        <ul class="role-features">
+                            <li>Seleccionar la medida de descongestión</li>
+                            <li>Crear los procesos con sus partes, hasta completar el total</li>
+                            <li>Enviar los procesos al Consejo Seccional</li>
+                        </ul>
+                        <a href="index_admin_p.html" class="role-btn">Ingresar al Despacho Origen <span aria-hidden="true">→</span></a>
+                    </article>
 
-                <!-- Rol 5: Ciudadano -->
-                <article class="role-card role-card-public" id="rol-ciudadano">
-                    <div class="role-card-top">
-                        <span class="role-icon">🔍</span>
-                        <span class="role-step">Etapa 5 · Consulta pública</span>
-                    </div>
-                    <h3 class="role-title">Ciudadano</h3>
-                    <p class="role-desc">Consulta pública de la información de sus procesos, sin necesidad de usuario ni contraseña.</p>
-                    <ul class="role-features">
-                        <li>Consultar por número de radicación</li>
-                        <li>Ver el estado actual del proceso</li>
-                        <li>Seguir su trazabilidad de origen a destino</li>
-                    </ul>
-                    <a href="consulta_ciudadano.html" class="role-btn">Consultar Proceso <span aria-hidden="true">→</span></a>
-                </article>
+                    <article class="role-card role-card-consejo" id="rol-consejo">
+                        <div class="role-card-top">
+                            <span class="role-icon">⚖️</span>
+                            <span class="role-step">Paso 3 · Supervisar</span>
+                        </div>
+                        <h3 class="role-title">Consejo Seccional</h3>
+                        <p class="role-desc">Supervisa y verifica que los procesos enviados cumplan la medida adoptada.</p>
+                        <ul class="role-features">
+                            <li>Revisar los envíos frente a lo autorizado en la medida</li>
+                            <li>Dar el visto bueno o devolver al despacho origen con el motivo</li>
+                            <li>Notificar al despacho destino para que gestione</li>
+                        </ul>
+                        <a href="index_admin_c.html" class="role-btn">Ingresar al Consejo <span aria-hidden="true">→</span></a>
+                    </article>
+
+                    <article class="role-card role-card-destino" id="rol-destino">
+                        <div class="role-card-top">
+                            <span class="role-icon">🗂️</span>
+                            <span class="role-step">Paso 4 · Gestionar</span>
+                        </div>
+                        <h3 class="role-title">Despacho Destino con Medida de Descongestión</h3>
+                        <p class="role-desc">Recibe los procesos con el visto bueno del Consejo y los gestiona durante la vigencia de la medida.</p>
+                        <ul class="role-features">
+                            <li>Recibir los procesos aprobados por el Consejo</li>
+                            <li>Registrar cada actuación y controlar la próxima</li>
+                            <li>Finalizar los procesos o devolverlos al despacho origen</li>
+                        </ul>
+                        <a href="index_admin_d.html" class="role-btn">Ingresar al Despacho Destino <span aria-hidden="true">→</span></a>
+                    </article>
+                </div>
+
+                <div class="recorrido-flecha" aria-hidden="true">▼</div>
+
+                <!-- PASO 5 -->
+                <div class="role-grid">
+                    <article class="role-card role-card-public role-card-final" id="rol-ciudadano">
+                        <div class="role-card-top">
+                            <span class="role-icon">🔍</span>
+                            <span class="role-step">Paso 5 · Consulta pública</span>
+                        </div>
+                        <h3 class="role-title">Ciudadano</h3>
+                        <p class="role-desc">Consulta pública de sus procesos, sin usuario ni contraseña.</p>
+                        <ul class="role-features">
+                            <li>Consultar por número de radicación</li>
+                            <li>Ver el estado actual y su trazabilidad de origen a destino</li>
+                        </ul>
+                        <a href="consulta_ciudadano.html" class="role-btn">Consultar Proceso <span aria-hidden="true">→</span></a>
+                    </article>
+                </div>
 
             </div>
         </section>

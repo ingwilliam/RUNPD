@@ -1,5 +1,6 @@
 // =====================================================================
-// RUNPD - Gestión de Medidas de Descongestión (UDAE)
+// RUNPD - Gestión de Medidas de Descongestión
+// Cada medida la expide la UDAE (camino A) o un Consejo Seccional (camino B).
 // Cada medida tiene: acuerdo (número, año, PDF), vigencia, resolución de creación
 // de cargos OPCIONAL (número, año, PDF) y un plan de distribución de procesos
 // (despacho origen → despacho destino → número de procesos).
@@ -60,6 +61,24 @@ function textoAcuerdo(m) {
 
 function textoResolucion(r) {
     return r ? `Resolución ${r.numero} de ${r.anio}` : "";
+}
+
+function esConsejo(m) {
+    return m.expedidaPor === "CONSEJO";
+}
+
+function textoExpedida(m) {
+    return esConsejo(m) ? `Consejo Seccional de ${m.consejoseccional}` : "UDAE";
+}
+
+function chipExpedida(m) {
+    return esConsejo(m)
+        ? chip(`📜 Consejo Seccional`, "#ede9fe", "#6d28d9")
+        : chip("🏢 UDAE", "#dcfce7", "#166534");
+}
+
+function entidadSeleccionada() {
+    return document.querySelector('input[name="expedida-por"]:checked').value;
 }
 
 function totalPlaneado(m) {
@@ -137,10 +156,11 @@ function renderizarIndicadores() {
 
     const tarjetas = [
         { clave: "todos",      icono: "📜", valor: lista.length,         texto: "Medidas registradas",            color: "var(--primary-green)" },
-        { clave: "vigente",    icono: "✅", valor: cuenta("vigente"),    texto: "Vigentes",                       color: "#166534" },
+        { clave: "exp_udae",   icono: "🏢", valor: lista.filter(m => !esConsejo(m)).length, texto: "Expedidas por la UDAE", color: "#166534" },
+        { clave: "exp_consejo", icono: "📜", valor: lista.filter(esConsejo).length, texto: "Expedidas por Consejos Seccionales", color: "#7c3aed" },
+        { clave: "vigente",    icono: "✅", valor: cuenta("vigente"),    texto: "Vigentes",                       color: "#16a34a" },
         { clave: "por_vencer", icono: "⏰", valor: cuenta("por_vencer"), texto: "Por vencer (≤ 60 días)",         color: "#f59e0b" },
         { clave: "sin_notificar", icono: "✉️", valor: lista.filter(m => !m.notificacion).length, texto: "Sin notificar a los despachos", color: "#b45309" },
-        { clave: "",           icono: "🔀", valor: planeados,            texto: "Procesos en planes de distribución", color: "#0369a1" },
         { clave: "",           icono: "📤", valor: `${planeados ? Math.round((trasladados / planeados) * 100) : 0}%`, texto: `Avance de traslado (${trasladados} de ${planeados})`, color: "#1e3a8a" }
     ];
 
@@ -161,19 +181,28 @@ function renderizarIndicadores() {
 function aplicarFiltroKpi(clave) {
     filtroKpi = filtroKpi === clave ? "todos" : clave;
     document.getElementById("filtro-vigencia").value = "";
+    if (filtroKpi === "exp_udae" || filtroKpi === "exp_consejo") document.getElementById("filtro-expedida").value = "";
     renderizarTabla();
 }
 
 function llenarFiltros() {
-    const consejos = [...new Set(dbMedidas.medidas.map(m => m.consejoseccional))].sort();
+    const consejos = dbMedidas.consejosSeccionales;
     const select = document.getElementById("filtro-consejo");
     const actual = select.value;
     select.innerHTML = `<option value="">Todos</option>` + consejos.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
     select.value = actual;
+
+    const exp = document.getElementById("filtro-expedida");
+    const actualExp = exp.value;
+    exp.innerHTML = `<option value="">Todas</option>
+        <option value="UDAE">🏢 UDAE</option>
+        <option value="CONSEJO">📜 Cualquier Consejo Seccional</option>
+        <optgroup label="Un Consejo Seccional">${consejos.map(c => `<option value="CONSEJO:${esc(c)}">Consejo Seccional de ${esc(c)}</option>`).join("")}</optgroup>`;
+    exp.value = actualExp;
 }
 
 function limpiarFiltros() {
-    ["filtro-busqueda", "filtro-consejo", "filtro-vigencia"].forEach(id => document.getElementById(id).value = "");
+    ["filtro-busqueda", "filtro-expedida", "filtro-consejo", "filtro-vigencia"].forEach(id => document.getElementById(id).value = "");
     filtroKpi = "todos";
     renderizarTabla();
 }
@@ -182,7 +211,14 @@ function cumpleFiltros(m) {
     const q = normalizar(document.getElementById("filtro-busqueda").value);
     const consejo = document.getElementById("filtro-consejo").value;
     const vigencia = document.getElementById("filtro-vigencia").value;
+    const expedida = document.getElementById("filtro-expedida").value;
     const clave = infoVigencia(m).clave;
+
+    if (expedida === "UDAE" && esConsejo(m)) return false;
+    if (expedida === "CONSEJO" && !esConsejo(m)) return false;
+    if (expedida.startsWith("CONSEJO:") && !(esConsejo(m) && m.consejoseccional === expedida.slice(8))) return false;
+    if (filtroKpi === "exp_udae") return !esConsejo(m) && cumpleBusqueda(m, consejo, vigencia, clave);
+    if (filtroKpi === "exp_consejo") return esConsejo(m) && cumpleBusqueda(m, consejo, vigencia, clave);
 
     if (consejo && m.consejoseccional !== consejo) return false;
     if (vigencia && clave !== vigencia) return false;
@@ -190,10 +226,19 @@ function cumpleFiltros(m) {
     else if (filtroKpi !== "todos" && clave !== filtroKpi) return false;
     if (!q) return true;
 
-    const texto = [m.acuerdo.numero, m.descripcion,
-        m.resolucion ? m.resolucion.numero : "",
+    const texto = [m.acuerdo.numero, m.descripcion, textoExpedida(m),
+        m.resolucion ? m.resolucion.numero : "", m.acuerdoCreacion ? m.acuerdoCreacion.numero : "",
         ...m.distribuciones.map(r => `${nombreDespacho(r.origenId)} ${nombreDespacho(r.destinoId)}`)].join(" ");
     return normalizar(texto).includes(q);
+}
+
+// Filtros comunes (consejo, vigencia y búsqueda) para los indicadores de entidad
+function cumpleBusqueda(m, consejo, vigencia, clave) {
+    if (consejo && m.consejoseccional !== consejo) return false;
+    if (vigencia && clave !== vigencia) return false;
+    const q = normalizar(document.getElementById("filtro-busqueda").value);
+    if (!q) return true;
+    return normalizar([m.acuerdo.numero, m.descripcion, textoExpedida(m)].join(" ")).includes(q);
 }
 
 // ---------------------------------------------------------------------
@@ -207,7 +252,7 @@ function renderizarTabla() {
     document.getElementById("texto-filtro").innerHTML = `Mostrando <strong>${lista.length}</strong> de ${dbMedidas.medidas.length} medida(s)`;
 
     if (!lista.length) {
-        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
             No hay medidas con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
@@ -224,15 +269,21 @@ function renderizarTabla() {
                     <div style="font-size: 0.72rem; margin-top: 0.2rem;">${textoNotificacion(m)}</div>
                     ${m.descripcion ? `<div style="font-size: 0.75rem; color: var(--text-main); margin-top: 0.25rem;">${esc(m.descripcion)}</div>` : ""}
                 </td>
+                <td style="font-size: 0.78rem; min-width: 130px;">
+                    ${chipExpedida(m)}
+                    ${esConsejo(m) ? `<div style="font-size: 0.72rem; color: #6d28d9; margin-top: 0.25rem;">de ${esc(m.consejoseccional)}</div>` : ""}
+                </td>
                 <td style="font-size: 0.8rem;">${esc(m.consejoseccional)}</td>
                 <td style="font-size: 0.8rem; white-space: nowrap;">
                     ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)}
                     <div style="margin-top: 0.3rem;">${chip(v.texto, v.fondo, v.color)}</div>
                 </td>
                 <td style="font-size: 0.78rem;">
-                    ${m.resolucion
-                        ? `<strong>${esc(textoResolucion(m.resolucion))}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">📎 ${esc(m.resolucion.archivo)}</div>`
-                        : `<span style="color: var(--text-muted);">No aplica</span>`}
+                    ${esConsejo(m)
+                        ? `<span style="font-size: 0.7rem; color: #6d28d9; font-weight: 700;">REQUISITO</span><br><strong>Acuerdo de creación ${esc(m.acuerdoCreacion.numero)} de ${m.acuerdoCreacion.anio}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Expedido por la UDAE</div>`
+                        : m.resolucion
+                            ? `<strong>${esc(textoResolucion(m.resolucion))}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">📎 ${esc(m.resolucion.archivo)}</div>`
+                            : `<span style="color: var(--text-muted);">Sin resolución</span>`}
                 </td>
                 <td style="font-size: 0.8rem; min-width: 200px;">
                     <strong>${m.distribuciones.length}</strong> distribución(es) · <strong>${planeados}</strong> proceso(s)<br>
@@ -261,7 +312,7 @@ function verMedida(id) {
 
     document.getElementById("detalle-titulo").textContent = `📜 ${textoAcuerdo(m)}`;
     document.getElementById("detalle-subtitulo").innerHTML =
-        `Consejo Seccional de <strong>${esc(m.consejoseccional)}</strong> · Vigencia ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)} · ${chip(v.texto, v.fondo, v.color)}<br>${textoNotificacion(m)}`;
+        `${chipExpedida(m)} Expedida por <strong>${esc(textoExpedida(m))}</strong> · Consejo Seccional de <strong>${esc(m.consejoseccional)}</strong> · Vigencia ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)} · ${chip(v.texto, v.fondo, v.color)}<br>${textoNotificacion(m)}`;
 
     // Totales por destino
     const porDestino = {};
@@ -274,26 +325,31 @@ function verMedida(id) {
     document.getElementById("detalle-contenido").innerHTML = `
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
-                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">📜 Acuerdo</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: ${esConsejo(m) ? "#7c3aed" : "var(--primary-green)"}; margin-bottom: 0.4rem;">📜 ${esConsejo(m) ? "Acuerdo de redistribución del Consejo Seccional" : "Acuerdo de la UDAE"}</div>
                 <div><strong>Número:</strong> ${esc(m.acuerdo.numero)}</div>
                 <div><strong>Año de expedición:</strong> ${m.acuerdo.anio}</div>
                 <div><strong>Adjunto:</strong> <a href="#" onclick="return false;" style="color: #0284c7;">📎 ${esc(m.acuerdo.archivo || "Sin adjunto")}</a></div>
                 ${m.descripcion ? `<div style="margin-top: 0.3rem; color: var(--text-muted);">${esc(m.descripcion)}</div>` : ""}
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
+                ${esConsejo(m) ? `
+                <div style="font-size: 0.8rem; font-weight: 700; color: #7c3aed; margin-bottom: 0.4rem;">📄 Requisito: acuerdo de creación de despachos (UDAE)</div>
+                <div><strong>Número:</strong> ${esc(m.acuerdoCreacion.numero)}</div>
+                <div><strong>Año de expedición:</strong> ${m.acuerdoCreacion.anio}</div>
+                <div style="margin-top: 0.3rem; color: var(--text-muted);">El Consejo Seccional no crea despachos: usa los creados por la UDAE en este acuerdo.</div>` : `
                 <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">🏛️ Resolución de creación de cargos</div>
                 ${m.resolucion ? `
                     <div><strong>Número:</strong> ${esc(m.resolucion.numero)}</div>
                     <div><strong>Año de expedición:</strong> ${m.resolucion.anio}</div>
                     <div><strong>Adjunto:</strong> <a href="#" onclick="return false;" style="color: #0284c7;">📎 ${esc(m.resolucion.archivo)}</a></div>`
-                  : `<span style="color: var(--text-muted);">La medida no cuenta con resolución de creación de cargos.</span>`}
+                  : `<span style="color: var(--text-muted);">La medida no cuenta con resolución de creación de cargos.</span>`}`}
             </div>
         </div>
 
         <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem;">🔀 Plan de distribución de procesos</div>
         <div class="data-table-container" style="margin-bottom: 1rem;">
             <table class="data-table">
-                <thead><tr><th>#</th><th>Despacho origen (permanente)</th><th></th><th>Despacho destino (descongestión)</th><th>Procesos autorizados</th><th>Avance</th></tr></thead>
+                <thead><tr><th>#</th><th>Despacho origen</th><th></th><th>Despacho destino</th><th>Procesos autorizados</th><th>Avance</th></tr></thead>
                 <tbody>
                     ${m.distribuciones.map((r, i) => `
                         <tr>
@@ -334,8 +390,9 @@ function llenarSelectsFormulario() {
     const opcionesAnio = anios.map(a => `<option value="${a}">${a}</option>`).join("");
     document.getElementById("acuerdo-anio").innerHTML = opcionesAnio;
     document.getElementById("resolucion-anio").innerHTML = opcionesAnio;
+    document.getElementById("creacion-anio").innerHTML = opcionesAnio;
     document.getElementById("consejo").innerHTML = `<option value="" disabled selected>Seleccione una opción...</option>` +
-        dbDatos.opcionesSelects.consejoseccional.map(c => `<option value="${esc(c.value)}">${esc(c.label)}</option>`).join("");
+        dbMedidas.consejosSeccionales.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
 }
 
 function despachosDelConsejo(tipo) {
@@ -360,7 +417,9 @@ function abrirNuevaMedida() {
     document.getElementById("btn-guardar").textContent = "💾 Crear medida";
     llenarSelectsFormulario();
     document.getElementById("acuerdo-archivo-actual").textContent = "Ningún archivo seleccionado.";
+    document.querySelector('input[name="expedida-por"][value="UDAE"]').checked = true;
     mostrarResolucion(null);
+    cambiarEntidad();
     renderizarDistribuciones();
     actualizarResumenVigencia();
     abrirModal("modal-medida");
@@ -384,10 +443,34 @@ function abrirEditarMedida(id) {
     document.getElementById("fecha-fin").value = m.fechaFin;
     document.getElementById("descripcion").value = m.descripcion || "";
     document.getElementById("acuerdo-archivo-actual").innerHTML = `📎 Archivo actual: <strong>${esc(m.acuerdo.archivo)}</strong> (puede reemplazarlo)`;
+    document.querySelector(`input[name="expedida-por"][value="${esConsejo(m) ? "CONSEJO" : "UDAE"}"]`).checked = true;
+    document.getElementById("creacion-numero").value = m.acuerdoCreacion ? m.acuerdoCreacion.numero : "";
+    document.getElementById("creacion-anio").value = m.acuerdoCreacion ? m.acuerdoCreacion.anio : new Date().getFullYear();
     mostrarResolucion(m.resolucion);
+    cambiarEntidad();
     renderizarDistribuciones();
     actualizarResumenVigencia();
     abrirModal("modal-medida");
+}
+
+// UDAE (camino A) o Consejo Seccional (camino B): cambia títulos y secciones del formulario
+function cambiarEntidad() {
+    const consejo = entidadSeleccionada() === "CONSEJO";
+    document.getElementById("opcion-udae").style.borderColor = consejo ? "#e2e8f0" : "#166534";
+    document.getElementById("opcion-udae").style.background = consejo ? "#ffffff" : "#f0fdf4";
+    document.getElementById("opcion-consejo").style.borderColor = consejo ? "#7c3aed" : "#e2e8f0";
+    document.getElementById("opcion-consejo").style.background = consejo ? "#f5f3ff" : "#ffffff";
+
+    document.getElementById("titulo-acuerdo").textContent = consejo ? "📜 Acuerdo de redistribución del Consejo Seccional" : "📜 Acuerdo de la medida (UDAE)";
+    document.getElementById("label-consejo").textContent = consejo ? "Consejo Seccional que expide" : "Consejo Seccional de la medida";
+    document.getElementById("acuerdo-numero").placeholder = consejo ? "Ej: CSJCAA26-87" : "Ej: PCSJA26-11234";
+    document.getElementById("seccion-requisito").style.display = consejo ? "block" : "none";
+    document.getElementById("seccion-resolucion").style.display = consejo ? "none" : "block";
+    document.getElementById("creacion-numero").required = consejo;
+    if (consejo) {
+        document.getElementById("tiene-resolucion").checked = false;
+        cambiarResolucion();
+    }
 }
 
 // Al cambiar el Consejo, las listas de despachos se ajustan a ese Consejo
@@ -455,7 +538,7 @@ function renderizarDistribuciones() {
 
     cont.innerHTML = `
         <div style="display: grid; grid-template-columns: 0.3fr 2fr 0.3fr 2fr 1fr 0.6fr; gap: 0.6rem; font-size: 0.75rem; font-weight: 600; color: var(--text-muted); padding: 0 0.25rem 0.35rem;">
-            <span>#</span><span>Despacho origen (permanente)</span><span></span><span>Despacho destino (descongestión)</span><span>N.º de procesos</span><span></span>
+            <span>#</span><span>Despacho origen</span><span></span><span>Despacho destino</span><span>N.º de procesos</span><span></span>
         </div>` +
         borrador.distribuciones.map((r, i) => {
             const minimo = Math.max(1, Number(r.trasladados || 0));
@@ -536,6 +619,7 @@ function notificarMedida(id, preguntar = true) {
     const enviar = () => {
         const payload = {
             reenvio,
+            expedidaPor: textoExpedida(m),
             consejoSeccional: m.consejoseccional,
             acuerdo: m.acuerdo,
             resolucion: m.resolucion,
@@ -597,9 +681,18 @@ function guardarMedida(event) {
     if (!borrador.acuerdoArchivo) return alerta("Falta el acuerdo", "Adjunte el PDF del acuerdo de la medida.");
     if (fin <= inicio) return alerta("Revise la vigencia", "La fecha fin de la medida debe ser posterior a la fecha de inicio.");
 
-    // Resolución de creación de cargos (opcional): si se marca, número y PDF son obligatorios
+    // Camino B (Consejo): el acuerdo de creación de despachos de la UDAE es obligatorio
+    const expedidaPor = entidadSeleccionada();
+    let acuerdoCreacion = null;
+    if (expedidaPor === "CONSEJO") {
+        const numeroCreacion = document.getElementById("creacion-numero").value.trim();
+        if (!numeroCreacion) return alerta("Falta el requisito", "Indique el acuerdo de la UDAE de creación de despachos. Sin él, el Consejo Seccional no puede crear la medida.");
+        acuerdoCreacion = { numero: numeroCreacion, anio: Number(document.getElementById("creacion-anio").value) };
+    }
+
+    // Resolución de creación de cargos (solo UDAE, opcional): si se marca, número y PDF son obligatorios
     let resolucion = null;
-    if (document.getElementById("tiene-resolucion").checked) {
+    if (expedidaPor === "UDAE" && document.getElementById("tiene-resolucion").checked) {
         const numeroRes = document.getElementById("resolucion-numero").value.trim();
         if (!numeroRes) return alerta("Resolución incompleta", "Indique el número de la resolución de creación de cargos o desmarque la opción.");
         if (!borrador.resolucionArchivo) return alerta("Falta un adjunto", "Adjunte el PDF de la resolución de creación de cargos.");
@@ -620,6 +713,8 @@ function guardarMedida(event) {
     }
 
     const datos = {
+        expedidaPor,
+        acuerdoCreacion,
         acuerdo: { numero, anio, archivo: borrador.acuerdoArchivo },
         consejoseccional: document.getElementById("consejo").value,
         fechaInicio: inicio,

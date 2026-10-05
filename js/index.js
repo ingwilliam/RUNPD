@@ -1,19 +1,33 @@
 // =====================================================================
 // RUNPD - Portada: grafo interactivo del flujo
-// Recorre los pasos automáticamente; al pasar el mouse o hacer clic en un
-// nodo se muestra su explicación. Sin dependencias.
+// Camino A (UDAE): emite el acuerdo, valida y crea despachos, crea la medida.
+// Camino B (Consejo Seccional): con el acuerdo de creación de despachos de la
+// UDAE emite el acuerdo de redistribución y crea la medida.
+// Luego: despacho origen → Consejo supervisa → despacho destino → ciudadano.
 // =====================================================================
 const PASOS_FLUJO = [
-    { id: "acuerdos",  actor: "Entrada", titulo: "Llegan los acuerdos de medidas de descongestión", desc: "La UDAE recibe los acuerdos. Cuando una medida crea despachos, el acuerdo llega con la resolución de creación de los despachos.", link: "#rol-udae" },
-    { id: "udae",      actor: "UDAE", titulo: "Revisa acuerdo por acuerdo", desc: "Analiza cada acuerdo para identificar el despacho origen, el despacho destino, el número de procesos y la vigencia de la medida.", link: "#rol-udae" },
-    { id: "existen",   actor: "UDAE · decisión", titulo: "¿Existen los despachos?", desc: "Si el despacho origen o destino ya existe, continúa con la medida. Si no existe, primero lo crea.", link: "#rol-udae" },
-    { id: "crear",     actor: "UDAE", titulo: "Crea los despachos que faltan", desc: "Crea el despacho permanente o de descongestión con su administrador, según la resolución de creación, y le envía las credenciales.", link: "#rol-udae" },
-    { id: "medida",    actor: "UDAE", titulo: "Crea la medida y notifica", desc: "Registra el acuerdo y configura el plan: despacho origen ➔ despacho destino · número de procesos. Notifica al despacho origen.", link: "#rol-udae" },
-    { id: "origen",    actor: "Despacho origen (permanente)", titulo: "Registra los procesos de la medida", desc: "Selecciona la medida, registra el detalle de cada proceso y sus partes hasta completar el total autorizado, y los envía al Consejo Seccional.", link: "#rol-permanente" },
-    { id: "consejo",   actor: "Consejo Seccional", titulo: "Revisa el envío", desc: "Revisa los procesos remitidos frente a lo que autorizó la UDAE en la medida.", link: "#rol-consejo" },
-    { id: "aprueba",   actor: "Consejo Seccional · decisión", titulo: "¿Aprueba la distribución?", desc: "Sí: aprueba la distribución y notifica al despacho destino. No: devuelve el envío al despacho origen con el motivo, para que lo corrija.", link: "#rol-consejo" },
-    { id: "destino",   actor: "Despacho destino (descongestión)", titulo: "Gestiona los procesos hasta terminarlos", desc: "Registra cada actuación y la última actuación del proceso, lo finaliza o lo devuelve al Consejo si termina la medida.", link: "#rol-descongestion" },
-    { id: "ciudadano", actor: "Ciudadano", titulo: "Consulta pública", desc: "Con el número de radicación consulta el estado del proceso y su trazabilidad de origen a destino.", link: "#rol-ciudadano" }
+    { id: "udae", actor: "Camino A · UDAE", titulo: "Emite el acuerdo de la medida",
+      desc: "La UDAE expide el acuerdo de la medida de descongestión y, cuando se requieren despachos nuevos, la resolución de creación.", link: "#rol-udae" },
+    { id: "existe", actor: "Camino A · UDAE · decisión", titulo: "¿El despacho origen y el destino ya existen en el sistema?",
+      desc: "Solo la UDAE hace esta validación. NO existen: primero los crea. SÍ existen: continúa directo a crear la medida.", link: "#rol-udae" },
+    { id: "crear", actor: "Camino A · UDAE", titulo: "Crea los despachos que faltan",
+      desc: "Crea el despacho con medida permanente o transitoria y su administrador, y le envía las credenciales. Luego crea la medida.", link: "#rol-udae" },
+    { id: "requisito", actor: "Camino B · requisito obligatorio", titulo: "Acuerdo de creación de despachos de la UDAE",
+      desc: "Antes de crear una medida, el Consejo Seccional debe contar sí o sí con el acuerdo de la UDAE que crea los despachos con medidas permanentes y transitorias.", link: "#rol-consejo-medida" },
+    { id: "consejo_acuerdo", actor: "Camino B · Consejo Seccional", titulo: "Emite el acuerdo de redistribución",
+      desc: "Con los despachos ya creados por la UDAE, el Consejo Seccional expide el acuerdo de redistribución de procesos.", link: "#rol-consejo-medida" },
+    { id: "medida", actor: "UDAE o Consejo Seccional", titulo: "Crea la medida de descongestión en el sistema",
+      desc: "Registra el acuerdo y configura la medida: despacho origen ➔ despacho destino, número de procesos y vigencia. Se notifica al despacho origen.", link: "#paso-1" },
+    { id: "origen", actor: "Despacho origen con medida de descongestión", titulo: "Crea y envía los procesos",
+      desc: "Selecciona la medida, crea cada proceso con sus partes hasta completar el total autorizado y los envía al Consejo Seccional.", link: "#rol-origen" },
+    { id: "consejo", actor: "Consejo Seccional · supervisa", titulo: "Supervisa y verifica el cumplimiento",
+      desc: "Verifica que los procesos enviados cumplan lo adoptado en la medida de descongestión.", link: "#rol-consejo" },
+    { id: "aprueba", actor: "Consejo Seccional · decisión", titulo: "¿Cumple la medida?",
+      desc: "Sí: da el visto bueno y notifica al despacho destino. No: devuelve el envío al despacho origen con el motivo, para que lo corrija.", link: "#rol-consejo" },
+    { id: "destino", actor: "Despacho destino con medida de descongestión", titulo: "Gestiona los procesos",
+      desc: "Registra las actuaciones de cada proceso y, según el caso, los finaliza o los devuelve al despacho origen.", link: "#rol-destino" },
+    { id: "ciudadano", actor: "Ciudadano", titulo: "Consulta pública",
+      desc: "Con el número de radicación consulta el estado del proceso y su trazabilidad de origen a destino.", link: "#rol-ciudadano" }
 ];
 
 (function () {
