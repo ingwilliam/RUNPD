@@ -22,7 +22,7 @@ const PASOS_FLUJO = [
       desc: "Selecciona la medida, crea cada proceso con sus partes hasta completar el total autorizado y los envía al Consejo Seccional.", link: "#rol-origen" },
     { id: "consejo", actor: "Consejo Seccional · supervisa", titulo: "Supervisa y verifica el cumplimiento",
       desc: "Verifica que los procesos enviados cumplan lo adoptado en la medida de descongestión.", link: "#rol-consejo" },
-    { id: "aprueba", actor: "Consejo Seccional · decisión", titulo: "¿Cumple la medida?",
+    { id: "aprueba", actor: "Consejo Seccional · decisión", titulo: "¿Cumple criterios?",
       desc: "Sí: da el visto bueno y notifica al despacho destino. No: devuelve el envío al despacho origen con el motivo, para que lo corrija.", link: "#rol-consejo" },
     { id: "destino", actor: "Despacho destino con medida de descongestión", titulo: "Gestiona los procesos",
       desc: "Registra las actuaciones de cada proceso y, según el caso, los finaliza o los devuelve al despacho origen.", link: "#rol-destino" },
