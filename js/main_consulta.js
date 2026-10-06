@@ -25,15 +25,16 @@ let intervaloBloqueo = null;
 let procesoConsultado = null;
 let ordenReciente = false; // false = del origen al estado actual
 
-// Cómo se muestra cada tipo de evento de la trazabilidad
+// Cómo se muestra cada tipo de evento de la trazabilidad (flujo por medida)
 const TIPOS_EVENTO = {
-    registro:     { icono: "📝", fondo: "#edf2f7", color: "#475569", titulo: "Proceso registrado para descongestión", rol: "Despacho permanente" },
-    envio:        { icono: "📤", fondo: "#dbeafe", color: "#1d4ed8", titulo: "Enviado al Consejo Seccional",          rol: "Despacho permanente" },
-    asignacion:   { icono: "⚖️", fondo: "#dcfce7", color: "#166534", titulo: "Asignado a despacho de descongestión",  rol: "Consejo Seccional" },
-    devolucion:   { icono: "↩",  fondo: "#fef3c7", color: "#92400e", titulo: "Devuelto al Consejo Seccional",         rol: "Despacho de descongestión" },
-    reasignacion: { icono: "🔁", fondo: "#dcfce7", color: "#166534", titulo: "Nueva asignación",                      rol: "Consejo Seccional" },
-    actuacion:    { icono: "✏️", fondo: "#e6f4ea", color: "#2e843c", titulo: "Actuación registrada",                  rol: "Despacho de descongestión" },
-    finalizacion: { icono: "🏁", fondo: "#359946", color: "#ffffff", titulo: "Proceso terminado",                     rol: "Despacho de descongestión" }
+    medida:             { icono: "📜", fondo: "#ede9fe", color: "#6d28d9", titulo: "Incluido en una medida de descongestión", rol: "Expide la medida" },
+    registro:           { icono: "📝", fondo: "#e0f2fe", color: "#0369a1", titulo: "Registrado por el despacho origen",       rol: "Despacho origen" },
+    envio:              { icono: "📤", fondo: "#dbeafe", color: "#1d4ed8", titulo: "Enviado al Consejo Seccional para verificación", rol: "Despacho origen" },
+    devolucion_consejo: { icono: "↩",  fondo: "#fef3c7", color: "#92400e", titulo: "Devuelto al despacho origen para corrección",    rol: "Consejo Seccional" },
+    aprobacion:         { icono: "✔",  fondo: "#dcfce7", color: "#166534", titulo: "Distribución aprobada (visto bueno)",   rol: "Consejo Seccional" },
+    actuacion:          { icono: "✏️", fondo: "#ffedd5", color: "#9a3412", titulo: "Actuación registrada",                  rol: "Despacho destino" },
+    devolucion_origen:  { icono: "↩",  fondo: "#fee2e2", color: "#991b1b", titulo: "Devuelto al despacho origen",           rol: "Despacho destino" },
+    finalizacion:       { icono: "🏁", fondo: "#359946", color: "#ffffff", titulo: "Proceso terminado",                     rol: "Despacho destino" }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -45,7 +46,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Radicados de prueba para la demostración (desactivar en producción)
     if (SEGURIDAD.mostrarEjemplos) {
         document.getElementById("lista-ejemplos").innerHTML = dbConsulta.procesos
-            .map(p => `<button type="button" class="cq-chip-ejemplo" onclick="consultarEjemplo('${p.codigo}')">${p.codigo}</button>`)
+            .map((p, i) => `<button type="button" class="cq-chip-ejemplo" onclick="consultarEjemplo('${p.codigo}')" title="${p.escenario}">
+                <span class="cq-chip-num">${i + 1}</span><span class="cq-chip-codigo">${p.codigo}</span><small>${p.escenario}</small></button>`)
             .join("");
     } else {
         document.getElementById("bloque-ejemplos").hidden = true;
@@ -265,7 +267,8 @@ function renderizarNoEncontrado(codigo) {
             <div class="cq-vacio-icono">🔎</div>
             <h2>No encontramos el radicado ${esc(codigo)}</h2>
             <p>Verifique que los 23 dígitos estén completos y correctos.<br>
-            Si el número es correcto, es posible que el proceso no haya sido incluido en una medida de descongestión.
+            Si el número es correcto, es posible que el proceso no haya sido incluido en una medida de descongestión
+            o que el despacho origen aún no lo haya registrado.
             Consulte directamente con el despacho de conocimiento.</p>
         </div>`;
 }
@@ -275,32 +278,38 @@ function renderizarNoEncontrado(codigo) {
 // ---------------------------------------------------------------------
 function estadoActual(p) {
     const ultimo = p.trazabilidad[p.trazabilidad.length - 1];
-    const asignacion = ultimoEvento(p, ["asignacion", "reasignacion"]);
     const actuacion = ultimoEvento(p, ["actuacion"]);
+    const registro = ultimoEvento(p, ["registro"]);
+    const consejo = `Consejo Seccional de ${p.consejoSeccional.charAt(0) + p.consejoSeccional.slice(1).toLowerCase()}`;
 
     const estados = {
-        registro:     { texto: "Registrado",                    fondo: "#edf2f7", color: "#475569", descripcion: "El despacho de origen registró el proceso para enviarlo a descongestión." },
-        envio:        { texto: "En revisión del Consejo",       fondo: "#dbeafe", color: "#1d4ed8", descripcion: "El Consejo Seccional está definiendo a qué despacho de descongestión se asignará." },
-        asignacion:   { texto: "Asignado",                      fondo: "#dcfce7", color: "#166534", descripcion: "El proceso fue asignado a un despacho de descongestión." },
-        reasignacion: { texto: "Asignado",                      fondo: "#dcfce7", color: "#166534", descripcion: "El proceso fue asignado a un nuevo despacho de descongestión." },
-        devolucion:   { texto: "En redistribución",             fondo: "#fef3c7", color: "#92400e", descripcion: "El proceso fue devuelto al Consejo Seccional, que lo asignará a otro despacho." },
-        actuacion:    { texto: "En trámite",                    fondo: "#dcfce7", color: "#166534", descripcion: "El despacho de descongestión está adelantando el proceso." },
-        finalizacion: { texto: "Terminado",                     fondo: "#359946", color: "#ffffff", descripcion: `Proceso terminado por ${ultimo.formaTerminacion || "decisión del despacho"}.` }
+        medida:             { texto: "Incluido en la medida", fondo: "#ede9fe", color: "#6d28d9", donde: p.despachoOrigen,
+                              descripcion: "El proceso hace parte de una medida de descongestión." },
+        registro:           { texto: "Registrado · pendiente de envío", fondo: "#e0f2fe", color: "#0369a1", donde: p.despachoOrigen,
+                              descripcion: "El despacho origen registró el proceso en la medida y aún no lo ha enviado al Consejo Seccional." },
+        envio:              { texto: "En verificación del Consejo", fondo: "#dbeafe", color: "#1d4ed8", donde: consejo,
+                              descripcion: "El Consejo Seccional verifica que el proceso cumpla la medida antes de dar su visto bueno." },
+        devolucion_consejo: { texto: "Devuelto para corrección", fondo: "#fef3c7", color: "#92400e", donde: p.despachoOrigen,
+                              descripcion: "El Consejo Seccional devolvió el proceso al despacho origen para que lo corrija y lo envíe de nuevo." },
+        aprobacion:         { texto: "Aprobado · en el despacho destino", fondo: "#dcfce7", color: "#166534", donde: p.despachoDestino,
+                              descripcion: "El Consejo Seccional dio el visto bueno. El despacho destino debe registrar la primera actuación." },
+        actuacion:          { texto: "En trámite", fondo: "#ffedd5", color: "#9a3412", donde: p.despachoDestino,
+                              descripcion: "El despacho destino con medida de descongestión está adelantando el proceso." },
+        devolucion_origen:  { texto: "Devuelto al despacho origen", fondo: "#fee2e2", color: "#991b1b", donde: p.despachoOrigen,
+                              descripcion: `El despacho destino devolvió el proceso al despacho origen (${ultimo.motivo || "sin motivo"}).` },
+        finalizacion:       { texto: "Terminado", fondo: "#359946", color: "#ffffff", donde: p.despachoDestino,
+                              descripcion: `Proceso terminado por ${ultimo.formaTerminacion || "decisión del despacho"}.` }
     };
-
-    const tieneDespachoActivo = asignacion && !["devolucion"].includes(ultimo.tipo) &&
-        p.trazabilidad.indexOf(asignacion) > p.trazabilidad.map(e => e.tipo).lastIndexOf("devolucion");
+    const e = estados[ultimo.tipo];
 
     return {
-        ...estados[ultimo.tipo],
+        ...e,
         ultimo,
-        despachoActual: ultimo.tipo === "finalizacion" ? ultimo.actor
-            : tieneDespachoActivo ? asignacion.despachoDestino
-            : ["registro"].includes(ultimo.tipo) ? p.trazabilidad[0].actor
-            : `Consejo Seccional de ${p.consejoSeccional.charAt(0) + p.consejoSeccional.slice(1).toLowerCase()}`,
+        consejo,
+        despachoActual: e.donde,
         estadoProcesal: ultimo.tipo === "finalizacion" ? `Terminado – ${ultimo.formaTerminacion}`
             : actuacion ? actuacion.estadoProcesal
-            : p.trazabilidad[0].estadoProcesal,
+            : registro ? registro.estadoProcesal : "—",
         fechaUltimo: ultimo.fecha,
         proxima: ultimo.tipo === "actuacion" ? actuacion.proximaActuacion : null
     };
@@ -352,8 +361,8 @@ function htmlResumen(p, est) {
                     <div class="cq-dato-valor">${formatoFecha(est.fechaUltimo)}</div>
                 </div>
                 <div>
-                    <div class="cq-dato-label">Próxima actuación estimada</div>
-                    <div class="cq-dato-valor">${est.proxima ? formatoFecha(est.proxima) : "—"}</div>
+                    <div class="cq-dato-label">Medida de descongestión</div>
+                    <div class="cq-dato-valor">${esc(p.medida.acuerdo)}<br><span class="cq-dato-sub">Expedida por ${esc(p.medida.expedidaPor)} · vigencia ${esc(p.medida.vigencia)}</span></div>
                 </div>
                 <div>
                     <div class="cq-dato-label">Jurisdicción / Especialidad</div>
@@ -363,76 +372,80 @@ function htmlResumen(p, est) {
         </div>`;
 }
 
-// Las 5 etapas del flujo con su avance
+// Las 5 etapas del flujo: Medida · Registro · Verificación · Gestión · Terminación
 function htmlEtapas(p) {
     const tipos = p.trazabilidad.map(e => e.tipo);
     const ultimo = tipos[tipos.length - 1];
-    const primero = t => p.trazabilidad.find(e => t.includes(e.tipo));
-    const devoluciones = tipos.filter(t => t === "devolucion").length;
-    const enDevolucion = ultimo === "devolucion";
+    const ev = t => p.trazabilidad.find(e => e.tipo === t);
+    const ultimoDe = t => ultimoEvento(p, [t]);
+    const devConsejo = tipos.filter(t => t === "devolucion_consejo").length;
 
+    // estado de cada etapa: hecha · actual · alerta · pendiente
     const etapas = [
-        { nombre: "Registro",   icono: "📝", evento: primero(["registro"]) },
-        { nombre: "Consejo Seccional", icono: "📤", evento: primero(["envio"]) },
-        { nombre: "Asignación", icono: "⚖️", evento: enDevolucion ? null : ultimoEvento(p, ["asignacion", "reasignacion"]) },
-        { nombre: "Gestión",    icono: "✏️", evento: enDevolucion ? null : primero(["actuacion"]) },
-        { nombre: "Terminación", icono: "🏁", evento: primero(["finalizacion"]) }
+        { nombre: "Medida",       icono: "📜", estado: "hecha", fecha: ev("medida")?.fecha },
+        { nombre: "Registro",     icono: "📝", estado: ev("registro") ? (ultimo === "registro" ? "actual" : "hecha") : "pendiente", fecha: ev("registro")?.fecha,
+          nota: ultimo === "registro" ? "Pendiente de envío" : "" },
+        { nombre: "Verificación del Consejo", icono: "⚖️",
+          estado: ev("aprobacion") ? "hecha" : ultimo === "devolucion_consejo" ? "alerta" : ultimo === "envio" ? "actual" : "pendiente",
+          fecha: ev("aprobacion")?.fecha || ultimoDe("envio")?.fecha,
+          nota: ultimo === "devolucion_consejo" ? "Devuelto para corrección" : devConsejo && ev("aprobacion") ? `Aprobado tras ${devConsejo} devolución${devConsejo > 1 ? "es" : ""}` : ultimo === "envio" ? "En verificación" : "" },
+        { nombre: "Gestión",      icono: "✏️",
+          estado: ultimo === "devolucion_origen" ? "alerta" : ultimo === "finalizacion" ? "hecha" : ["aprobacion", "actuacion"].includes(ultimo) ? "actual" : "pendiente",
+          fecha: ev("actuacion")?.fecha || (ev("aprobacion") ? ev("aprobacion").fecha : null),
+          nota: ultimo === "aprobacion" ? "Sin primera actuación" : ultimo === "devolucion_origen" ? "Devuelto al despacho origen" : "" },
+        { nombre: "Terminación",  icono: "🏁", estado: ev("finalizacion") ? "hecha" : "pendiente", fecha: ev("finalizacion")?.fecha }
     ];
-
-    // La etapa actual es la última con evento
-    let actual = etapas.map(e => !!e.evento).lastIndexOf(true);
 
     return `
         <div class="cq-card">
             <div class="cq-card-titulo">Etapas del proceso</div>
             <ol class="cq-etapas">
-                ${etapas.map((e, i) => {
-                    let clase = i < actual ? "hecha" : i === actual ? (ultimo === "finalizacion" ? "hecha" : "actual") : "pendiente";
-                    if (enDevolucion && i === 2) clase = "alerta";
-                    const nota = i === 2 && devoluciones
-                        ? `<span class="cq-etapa-nota">${enDevolucion ? "En redistribución" : `Reasignado (${devoluciones} devolución${devoluciones > 1 ? "es" : ""})`}</span>`
-                        : "";
-                    return `
-                        <li class="cq-etapa ${clase}">
-                            <div class="cq-etapa-circulo">${clase === "hecha" ? "✓" : e.icono}</div>
-                            <div>
-                                <div class="cq-etapa-nombre">${e.nombre}</div>
-                                <div class="cq-etapa-fecha">${e.evento ? formatoFecha(e.evento.fecha) : (clase === "alerta" ? "Pendiente de nueva asignación" : "Pendiente")}</div>
-                                ${nota}
-                            </div>
-                        </li>`;
-                }).join("")}
+                ${etapas.map(e => `
+                    <li class="cq-etapa ${e.estado}">
+                        <div class="cq-etapa-circulo">${e.estado === "hecha" ? "✓" : e.icono}</div>
+                        <div>
+                            <div class="cq-etapa-nombre">${e.nombre}</div>
+                            <div class="cq-etapa-fecha">${e.fecha && e.estado !== "pendiente" ? formatoFecha(e.fecha) : "Pendiente"}</div>
+                            ${e.nota ? `<span class="cq-etapa-nota ${e.estado === "alerta" ? "alerta" : ""}">${e.nota}</span>` : ""}
+                        </div>
+                    </li>`).join("")}
             </ol>
         </div>`;
 }
 
-// Recorrido del proceso entre despachos: origen → Consejo → destinos
+// Recorrido del proceso: medida → despacho origen → Consejo Seccional → despacho destino
 function htmlRuta(p, est) {
-    const nodos = [{ rol: "Origen · Despacho permanente", nombre: p.trazabilidad[0].actor, clase: "" }];
+    const tipos = p.trazabilidad.map(e => e.tipo);
+    const u = est.ultimo.tipo;
+    const aprobado = tipos.includes("aprobacion");
+    const aqui = { texto: "Aquí está hoy", fondo: "#dcfce7", color: "#166534" };
 
-    if (p.trazabilidad.some(e => e.tipo === "envio")) {
-        const enConsejo = ["envio", "devolucion"].includes(est.ultimo.tipo);
-        nodos.push({
-            rol: "Distribución",
-            nombre: `Consejo Seccional de ${p.consejoSeccional.charAt(0) + p.consejoSeccional.slice(1).toLowerCase()}`,
-            clase: enConsejo ? "actual" : "",
-            tag: enConsejo ? { texto: "Aquí está hoy", fondo: "#dcfce7", color: "#166534" } : null
-        });
-    }
-
-    p.trazabilidad.forEach((e, i) => {
-        if (!["asignacion", "reasignacion"].includes(e.tipo)) return;
-        const devuelto = p.trazabilidad.slice(i + 1).find(x => x.tipo === "devolucion" && x.actor === e.despachoDestino);
-        const esActual = !devuelto && est.despachoActual === e.despachoDestino;
-        nodos.push({
-            rol: e.tipo === "reasignacion" ? "Nuevo destino · Descongestión" : "Destino · Descongestión",
-            nombre: e.despachoDestino,
-            clase: devuelto ? "devuelto" : esActual ? "actual" : "",
-            tag: devuelto ? { texto: `Devuelto: ${devuelto.motivo}`, fondo: "#fef3c7", color: "#92400e" }
-                : esActual ? { texto: est.ultimo.tipo === "finalizacion" ? "Terminó el proceso" : "Aquí está hoy", fondo: "#dcfce7", color: "#166534" }
+    const nodos = [
+        { rol: `Medida · expedida por ${p.medida.expedidaPor}`, nombre: p.medida.acuerdo, clase: "" },
+        {
+            rol: "Despacho origen",
+            nombre: p.despachoOrigen,
+            clase: ["registro", "devolucion_consejo", "devolucion_origen"].includes(u) ? "actual" : "",
+            tag: ["registro", "devolucion_consejo", "devolucion_origen"].includes(u)
+                ? { texto: u === "registro" ? "Aquí está hoy · pendiente de envío" : "Aquí está hoy · devuelto", fondo: u === "registro" ? "#dcfce7" : "#fef3c7", color: u === "registro" ? "#166534" : "#92400e" }
                 : null
-        });
-    });
+        },
+        {
+            rol: "Verificación · Consejo Seccional",
+            nombre: est.consejo,
+            clase: u === "envio" ? "actual" : tipos.includes("envio") ? "" : "pendiente",
+            tag: u === "envio" ? aqui : aprobado ? { texto: "✔ Visto bueno", fondo: "#dcfce7", color: "#166534" } : null
+        },
+        {
+            rol: "Despacho destino",
+            nombre: p.despachoDestino,
+            clase: u === "devolucion_origen" ? "devuelto" : ["aprobacion", "actuacion", "finalizacion"].includes(u) ? "actual" : "pendiente",
+            tag: u === "devolucion_origen" ? { texto: `Devuelto: ${est.ultimo.motivo}`, fondo: "#fee2e2", color: "#991b1b" }
+                : u === "finalizacion" ? { texto: "Terminó el proceso", fondo: "#dcfce7", color: "#166534" }
+                : ["aprobacion", "actuacion"].includes(u) ? aqui
+                : { texto: "Aún no llega", fondo: "#f1f5f9", color: "#64748b" }
+        }
+    ];
 
     return `
         <div class="cq-card">
@@ -450,17 +463,18 @@ function htmlRuta(p, est) {
 }
 
 // Detalle de cada movimiento
-function detalleEvento(e) {
+function detalleEvento(p, e) {
     switch (e.tipo) {
-        case "registro":     return `Estado procesal al registrarlo: <strong>${esc(e.estadoProcesal)}</strong>`;
-        case "envio":        return "Se solicitó al Consejo Seccional su distribución a un despacho de descongestión.";
-        case "asignacion":
-        case "reasignacion": return `Despacho asignado: <strong>${esc(e.despachoDestino)}</strong>`;
-        case "devolucion":   return `Motivo: <strong>${esc(e.motivo)}</strong>. El Consejo Seccional asignará el proceso a otro despacho.`;
-        case "actuacion":    return `Estado procesal: <strong>${esc(e.estadoProcesal)}</strong>` +
-                                    (e.proximaActuacion ? ` · Próxima actuación estimada: <strong>${formatoFecha(e.proximaActuacion)}</strong>` : "");
-        case "finalizacion": return `Forma de terminación: <strong>${esc(e.formaTerminacion)}</strong>`;
-        default:             return "";
+        case "medida":             return `${esc(p.medida.acuerdo)} · vigencia ${esc(p.medida.vigencia)}. Despacho origen: <strong>${esc(p.despachoOrigen)}</strong> ➔ despacho destino: <strong>${esc(p.despachoDestino)}</strong>.`;
+        case "registro":           return `Estado procesal al registrarlo: <strong>${esc(e.estadoProcesal)}</strong>`;
+        case "envio":              return e.nota ? esc(e.nota) : "Se envió al Consejo Seccional para que verifique el cumplimiento de la medida.";
+        case "devolucion_consejo": return `Motivo: <strong>${esc(e.motivo)}</strong> El despacho origen debe corregir y enviar de nuevo.`;
+        case "aprobacion":         return `El Consejo Seccional dio el visto bueno y notificó al despacho destino: <strong>${esc(e.despachoDestino)}</strong>`;
+        case "actuacion":          return `Estado procesal: <strong>${esc(e.estadoProcesal)}</strong>` +
+                                          (e.proximaActuacion ? ` · Próxima actuación estimada: <strong>${formatoFecha(e.proximaActuacion)}</strong>` : "");
+        case "devolucion_origen":  return `Motivo: <strong>${esc(e.motivo)}</strong>. El proceso regresó al despacho origen.`;
+        case "finalizacion":       return `Forma de terminación: <strong>${esc(e.formaTerminacion)}</strong>`;
+        default:                   return "";
     }
 }
 
@@ -483,7 +497,7 @@ function htmlTrazabilidad(p) {
                                 <span class="cq-evento-fecha">${formatoFecha(e.fecha)}</span>
                             </div>
                             <div class="cq-evento-actor">${t.rol}: ${esc(e.actor)}</div>
-                            <div class="cq-evento-detalle">${detalleEvento(e)}</div>
+                            <div class="cq-evento-detalle">${detalleEvento(p, e)}</div>
                         </div>
                     </li>`;
             }).join("")}
