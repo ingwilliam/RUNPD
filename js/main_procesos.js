@@ -1,8 +1,9 @@
 // =====================================================================
-// RUNPD - Registro de procesos del despacho permanente POR MEDIDA
-// Flujo: 1) el despacho selecciona la medida que configuró la UDAE
+// RUNPD - Registro de procesos del despacho origen POR MEDIDA
+// Flujo: 1) el despacho selecciona la medida que materializó el Consejo Seccional
 //        2) registra los procesos de esa medida hasta el número autorizado
-//        3) los envía al Consejo Seccional
+//        3) los envía directamente al Administrador del despacho destino de la medida
+//           (el Consejo Seccional recibe copia para supervisar y verificar)
 // Los datos vienen de js/data_procesos.js (constante dbProcesos)
 // =====================================================================
 
@@ -75,7 +76,7 @@ function textoAcuerdo(m) {
     return m ? `Acuerdo ${m.acuerdo.numero} de ${m.acuerdo.anio}` : "";
 }
 
-// Número de procesos que la UDAE autorizó a este despacho en la medida
+// Número de procesos que la medida autoriza a este despacho
 function cupoMedida(m) {
     return m.destinos.reduce((t, d) => t + Number(d.procesos), 0);
 }
@@ -91,6 +92,15 @@ function infoVigencia(m) {
     if (dias < 0)   return { clave: "vencida", texto: "Medida vencida", fondo: "#fee2e2", color: "#991b1b" };
     if (dias <= 60) return { clave: "por_vencer", texto: `Vence en ${dias} día(s)`, fondo: "#fef3c7", color: "#92400e" };
     return { clave: "vigente", texto: `Vigente hasta ${formatoFecha(m.fechaFin)}`, fondo: "#dcfce7", color: "#166534" };
+}
+
+// Destinos de la medida que aún no tienen administrador registrado por el Consejo
+function destinosSinAdmin(m) {
+    return m.destinos.filter(d => !d.administrador || !d.administrador.correo);
+}
+
+function nombresDestino(m) {
+    return m.destinos.map(d => d.nombre).join(", ");
 }
 
 function puedeRegistrar(m) {
@@ -138,7 +148,6 @@ function renderizarInfoDespacho() {
     if (!contenedor) return;
 
     const d = despachoActual;
-    const nombreCompletoAdmin = [d.adminPrimerNombre, d.adminSegundoNombre, d.adminPrimerApellido, d.adminSegundoApellido].filter(Boolean).join(" ");
 
     const dato = (etiqueta, valor) => `
         <div>
@@ -165,7 +174,7 @@ function renderizarInfoDespacho() {
                 </div>
             </div>
             <div style="background: #e6f4ea; color: var(--primary-green); padding: 0.45rem 0.85rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
-                📤 Destino de envío: Consejo Seccional de ${esc(consejoDestino())}
+                📊 Supervisa: Consejo Seccional de ${esc(consejoDestino())}
             </div>
         </div>
 
@@ -180,13 +189,6 @@ function renderizarInfoDespacho() {
                 ${dato("Municipio", esc(d.deptomunicipio))}
                 ${dato("Distrito", esc(d.distrito))}
                 ${dato("Circuito", esc(d.circuito))}`)}
-            ${bloque("👤 Administrador", `
-                ${dato("Primer nombre", esc(d.adminPrimerNombre))}
-                ${dato("Segundo nombre", esc(d.adminSegundoNombre))}
-                ${dato("Primer apellido", esc(d.adminPrimerApellido))}
-                ${dato("Segundo apellido", esc(d.adminSegundoApellido))}
-                <div style="grid-column: 1 / -1;">${dato("Correo institucional", d.adminCorreo
-                    ? `<a href="mailto:${esc(d.adminCorreo)}" style="color: var(--primary-green); text-decoration: none;">${esc(d.adminCorreo)}</a>` : "")}</div>`)}
         </div>`;
 }
 
@@ -214,7 +216,7 @@ function seleccionarMedida(id) {
     renderizarTodo();
 }
 
-// Resumen de la medida: lo que configuró la UDAE y el avance del despacho
+// Resumen de la medida: lo que materializó el Consejo Seccional, los administradores y el avance
 function renderizarResumenMedida() {
     const cont = document.getElementById("resumen-medida");
     const m = medidaActual();
@@ -246,20 +248,20 @@ function renderizarResumenMedida() {
                     <div><strong>${esc(textoAcuerdo(m))}</strong> ${m.resolucion ? `· Resolución ${esc(m.resolucion.numero)} de ${m.resolucion.anio}` : ""}</div>
                     <div style="color: var(--text-muted);">Vigencia: ${formatoFecha(m.fechaInicio)} al ${formatoFecha(m.fechaFin)}
                         <span style="font-size: 0.7rem; font-weight: 700; padding: 0.1rem 0.45rem; border-radius: 12px; background: ${v.fondo}; color: ${v.color}; margin-left: 0.3rem;">${v.texto}</span></div>
-                    <div style="color: var(--text-muted);">Destino: ${m.destinos.map(d => esc(d.nombre)).join(", ")}</div>
                 </div>
                 <div style="display: flex; gap: 0.5rem; border-left: 1px solid #e2e8f0; padding-left: 0.75rem;">
-                    ${cifra(cupo, "Autorizados por la UDAE", "var(--text-main)")}
+                    ${cifra(cupo, "Autorizados en la medida", "var(--text-main)")}
                     ${cifra(registrados, "Registrados", "#0369a1")}
-                    ${cifra(enviados, "Enviados al Consejo", "var(--primary-green)")}
+                    ${cifra(enviados, "Enviados al destino", "var(--primary-green)")}
                     ${cifra(faltan, "Por registrar", faltan ? "#b45309" : "var(--primary-green)")}
                 </div>
             </div>
+            ${tarjetasAdministradores(m)}
             <div style="height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 0.8rem;">
                 <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? "var(--primary-green)" : "#0ea5e9"};"></div>
             </div>
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
-                ${registrados} de ${cupo} procesos registrados${pendientes ? ` · <strong style="color: #b45309;">${pendientes} pendiente(s) de enviar al Consejo</strong>` : ""}
+                ${registrados} de ${cupo} procesos registrados${pendientes ? ` · <strong style="color: #b45309;">${pendientes} pendiente(s) de enviar al despacho destino</strong>` : ""}
                 ${v.clave === "vencida" ? ` · <strong style="color: #991b1b;">La medida venció: no admite nuevos registros.</strong>` : (faltan ? "" : ` · <strong style="color: var(--primary-green);">Ya registró todos los procesos autorizados.</strong>`)}
             </div>
         </div>`;
@@ -269,7 +271,27 @@ function renderizarResumenMedida() {
     btn.disabled = !puedeRegistrar(m);
     btn.style.opacity = btn.disabled ? "0.5" : "1";
     btn.title = btn.disabled ? "No hay cupo disponible en esta medida" : "";
-    document.getElementById("btn-abrir-envio").textContent = pendientes ? `📤 Enviar ${pendientes} al Consejo Seccional` : "📤 Enviar al Consejo Seccional";
+    document.getElementById("btn-abrir-envio").textContent = pendientes ? `📤 Enviar ${pendientes} al despacho destino` : "📤 Enviar al despacho destino";
+}
+
+// Origen (usted) ➔ destino, con el administrador autorizado de cada uno en esta medida
+function tarjetasAdministradores(m) {
+    const tarjeta = (rol, colorBorde, colorFondo, despacho, a, nota) => `
+        <div style="flex: 1; min-width: 240px; background: ${colorFondo}; border: 1px solid #e2e8f0; border-left: 4px solid ${colorBorde}; border-radius: 6px; padding: 0.55rem 0.75rem; font-size: 0.78rem;">
+            <div style="font-size: 0.66rem; font-weight: 700; color: ${colorBorde}; text-transform: uppercase; letter-spacing: 0.3px;">${rol}</div>
+            <div style="font-weight: 700; color: var(--text-main);">${esc(despacho)}</div>
+            ${a && a.correo
+                ? `<div style="margin-top: 0.2rem;">👤 ${esc(a.nombre)}</div>
+                   <div style="color: var(--text-muted);">✉️ ${esc(a.correo)} · 📱 ${esc(a.celular)}</div>`
+                : `<div style="margin-top: 0.2rem; color: #991b1b; font-weight: 600;">⚠️ El Consejo Seccional aún no registra su administrador</div>`}
+            ${nota ? `<div style="font-size: 0.7rem; color: var(--text-muted); margin-top: 0.2rem;">${nota}</div>` : ""}
+        </div>`;
+    return `
+        <div style="display: flex; align-items: stretch; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem;">
+            ${tarjeta("Despacho origen · usted", "#0369a1", "#f0f9ff", nombreDelDespacho(), m.administradorOrigen, "Autorizado para registrar y enviar")}
+            <div style="display: flex; align-items: center; color: var(--primary-green); font-weight: 800; font-size: 1.1rem;">➔</div>
+            ${m.destinos.map(d => tarjeta("Despacho destino · recibe el envío", "#b45309", "#fff7ed", d.nombre, d.administrador, "Único autorizado para gestionar los procesos")).join("")}
+        </div>`;
 }
 
 // ---------------------------------------------------------------------
@@ -347,7 +369,7 @@ function verDetalle(id) {
             <p style="margin: 0 0 0.3rem 0;"><strong>Medida de descongestión:</strong> ${esc(textoAcuerdo(obtenerMedida(p.medidaId)))}</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Estado del proceso:</strong> ${esc(p.estadoProceso)}</p>
             <p style="margin: 0 0 0.3rem 0;"><strong>Última actuación:</strong> ${formatoFecha(p.fechaActuacion)}</p>
-            ${p.fechaEnvio ? `<p style="margin: 0 0 0.3rem 0;"><strong>Enviado al Consejo:</strong> ${formatoFecha(p.fechaEnvio)}</p>` : ""}
+            ${p.fechaEnvio ? `<p style="margin: 0 0 0.3rem 0;"><strong>Enviado al despacho destino:</strong> ${formatoFecha(p.fechaEnvio)}${p.enviadoA ? ` · ${esc(p.enviadoA)}` : ""}</p>` : ""}
             ${p.notaEnvio ? `<p style="margin: 0 0 0.3rem 0;"><strong>Nota de envío:</strong> ${esc(p.notaEnvio)}</p>` : ""}
             <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 0.6rem 0;">
             <p style="margin: 0;"><strong>Demandante(s):</strong></p>${partes(p.demandantes)}
@@ -401,7 +423,7 @@ function abrirNuevoProceso() {
         mostrarDialogoAlerta("No puede registrar más procesos",
             infoVigencia(m).clave === "vencida"
                 ? "La medida está vencida y no admite nuevos registros."
-                : `Ya registró los ${cupoMedida(m)} procesos autorizados por la UDAE en esta medida.`, "ℹ️");
+                : `Ya registró los ${cupoMedida(m)} procesos autorizados en esta medida.`, "ℹ️");
         return;
     }
     document.getElementById("form-proceso").reset();
@@ -561,7 +583,7 @@ function eliminarProceso(id) {
 }
 
 // ---------------------------------------------------------------------
-// Enviar al Consejo Seccional (procesos pendientes de la medida seleccionada)
+// Enviar al Administrador del despacho destino (procesos pendientes de la medida)
 // ---------------------------------------------------------------------
 function abrirEnvio() {
     const m = medidaActual();
@@ -570,8 +592,21 @@ function abrirEnvio() {
         mostrarDialogoAlerta("Sin procesos pendientes", "Esta medida no tiene procesos pendientes de envío.", "ℹ️");
         return;
     }
+    if (destinosSinAdmin(m).length) {
+        mostrarDialogoAlerta("Falta el administrador del destino",
+            `El Consejo Seccional de ${consejoDestino()} aún no registra el administrador de ${destinosSinAdmin(m).map(d => d.nombre).join(", ")} en esta medida. No es posible enviar los procesos hasta que lo registre.`, "⚠️");
+        return;
+    }
 
-    document.getElementById("envio-titulo").textContent = `📤 Enviar al Consejo Seccional de ${consejoDestino()} · ${textoAcuerdo(m)}`;
+    document.getElementById("envio-titulo").textContent = `📤 Enviar al despacho destino · ${textoAcuerdo(m)}`;
+    document.getElementById("envio-destinatario").innerHTML = m.destinos.map(d => `
+        <div style="background: #fff7ed; border: 1px solid #fed7aa; border-left: 4px solid #b45309; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem;">
+            <div style="font-size: 0.68rem; font-weight: 700; color: #b45309; text-transform: uppercase;">Se enviará a</div>
+            <div style="font-weight: 700; color: var(--text-main);">${esc(d.nombre)}</div>
+            <div>👤 <strong>${esc(d.administrador.nombre)}</strong> · Administrador del despacho en esta medida</div>
+            <div style="color: var(--text-muted);">✉️ ${esc(d.administrador.correo)} · 📱 ${esc(d.administrador.celular)}</div>
+            <div style="color: var(--text-muted); font-size: 0.72rem; margin-top: 0.2rem;">Con copia al Consejo Seccional de ${esc(consejoDestino())} para supervisión.</div>
+        </div>`).join("");
     document.getElementById("check-todos").checked = true;
     document.getElementById("nota_envio").value = "";
     document.getElementById("cuerpo-envio").innerHTML = pendientes.map(p => `
@@ -615,6 +650,7 @@ function confirmarEnvio() {
             p.fechaEnvio = hoy();
             p.consejoSeccional = consejoDestino();
             p.despachoOrigen = nombreDelDespacho();
+            p.enviadoA = nombresDestino(m);
             p.notaEnvio = nota;
             procesosEnviados.push({
                 medida: textoAcuerdo(m),
@@ -632,10 +668,11 @@ function confirmarEnvio() {
     cerrarModal("modal-envio");
     renderizarTodo();
 
-    // Datos para la plantilla del correo al Consejo Seccional
+    // Datos para la plantilla del correo al Administrador del despacho destino (copia al Consejo)
     const payload = {
         nombreDespacho: nombreDelDespacho(),
         codigoDespacho: despachoActual.codigoDespacho,
+        administradorOrigen: m.administradorOrigen,
         consejoSeccional: consejoDestino(),
         fechaEnvio: hoy(),
         nota: nota,
@@ -651,7 +688,7 @@ function confirmarEnvio() {
     };
     const ventana = window.open(`email_crear_procesos_permanantes.html?data=${encodeURIComponent(JSON.stringify(payload))}`, "_blank");
 
-    let mensaje = `Se enviaron ${procesosEnviados.length} proceso(s) del ${textoAcuerdo(m)} al Consejo Seccional de ${consejoDestino()} para su distribución.`;
+    let mensaje = `Se enviaron ${procesosEnviados.length} proceso(s) del ${textoAcuerdo(m)} a ${m.destinos.map(d => `${d.administrador.nombre} (${d.nombre})`).join(", ")}, con copia al Consejo Seccional de ${consejoDestino()}.`;
     if (!ventana) mensaje += " El navegador bloqueó la ventana del correo: permita las ventanas emergentes para este sitio.";
     mostrarDialogoAlerta("Procesos enviados", mensaje, "📤");
 }
@@ -668,7 +705,7 @@ document.addEventListener("keydown", e => {
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("texto-despacho").textContent =
-        `Seleccione la medida de descongestión configurada por la UDAE, registre sus procesos y envíelos al Consejo Seccional de ${consejoDestino()}.`;
+        `Seleccione la medida de descongestión materializada por el Consejo Seccional de ${consejoDestino()}, registre sus procesos y envíelos al administrador del despacho destino.`;
     renderizarInfoDespacho();
     llenarSelectorMedida();
     renderizarResumenMedida();

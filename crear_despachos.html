@@ -53,7 +53,7 @@
             <div class="content-header">
                 <div class="welcome-section" style="margin-bottom: 0;">
                     <h1 style="margin: 0 0 0.25rem 0;">Gestión y creación de despachos</h1>
-                    <p>Registro Único Nacional de Procesos de Descongestión — Crear, actualizar y administrar los despachos judiciales y sus administradores</p>
+                    <p>Registro Único Nacional de Procesos de Descongestión — Crear, actualizar y administrar los despachos judiciales</p>
                 </div>
                 <button class="btn-primary-action" onclick="abrirFormularioNuevo()">
                     ➕ Crear despacho
@@ -70,7 +70,7 @@
                 <div style="display: grid; grid-template-columns: 2fr repeat(4, 1fr) auto; gap: 0.75rem; align-items: end;">
                     <div class="form-group" style="margin: 0;">
                         <label for="filtro-busqueda">Buscar</label>
-                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Nombre, código, municipio o administrador" oninput="renderizarTabla()">
+                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Nombre, código o municipio" oninput="renderizarTabla()">
                     </div>
                     <div class="form-group" style="margin: 0;">
                         <label for="filtro-consejo">Consejo Seccional</label>
@@ -106,7 +106,6 @@
                             <th>Tipo de Despacho / Jurisdicción</th>
                             <th>Ubicación</th>
                             <th>Especialidad</th>
-                            <th>Administrador</th>
                             <th>Estado</th>
                             <th>Acciones</th>
                         </tr>
@@ -202,55 +201,9 @@
 
                 </div>
 
-                <!-- SECCIÓN 2: INFORMACIÓN DEL ADMINISTRADOR DEL DESPACHO -->
-                <div style="font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
-                    👤 Información del Administrador del Despacho
-                </div>
-                <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
-
-                    <div class="form-group">
-                        <label for="admin_primer_nombre">Primer Nombre</label>
-                        <input type="text" id="admin_primer_nombre" name="admin_primer_nombre" class="form-control" placeholder="Ej: Carlos" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin_segundo_nombre">Segundo Nombre</label>
-                        <input type="text" id="admin_segundo_nombre" name="admin_segundo_nombre" class="form-control" placeholder="Ej: Andrés">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin_primer_apellido">Primer Apellido</label>
-                        <input type="text" id="admin_primer_apellido" name="admin_primer_apellido" class="form-control" placeholder="Ej: Pérez" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin_segundo_apellido">Segundo Apellido</label>
-                        <input type="text" id="admin_segundo_apellido" name="admin_segundo_apellido" class="form-control" placeholder="Ej: Gómez">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin_correo">Correo Electrónico Institucional</label>
-                        <input type="email" id="admin_correo" name="admin_correo" class="form-control" placeholder="Ej: cperez@cendoj.ramajudicial.gov.co" required>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="admin_password">Contraseña Temporal</label>
-                        <div style="display: flex; gap: 0.5rem;">
-                            <input type="text" id="admin_password" name="admin_password" class="form-control" placeholder="Ej: Temp2026*" required>
-                            <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="generarPassword()" title="Generar una contraseña temporal">🎲 Generar</button>
-                        </div>
-                    </div>
-
-                </div>
-
                 <!-- Botones de Acción -->
                 <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1.5rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
                     <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;" onclick="ocultarFormulario()">Cancelar</button>
-
-                    <!-- Botón de Enviar Credenciales (solo visible al editar) -->
-                    <a href="email_credenciales.html" target="_blank" id="btn-enviar-credenciales" class="btn btn-secondary" style="display: none; padding: 0.75rem 1.5rem; text-decoration: none; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
-                        ✉️ Enviar Credenciales de Acceso
-                    </a>
 
                     <!-- Botón de Guardar -->
                     <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; font-size: 0.95rem;">

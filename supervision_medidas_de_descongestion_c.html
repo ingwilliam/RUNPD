@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Supervisión y Verificación de Medidas - Consejo Seccional - PEYGI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body class="app-body">
+
+    <!-- Barra Superior -->
+    <header class="app-header">
+        <div class="navbar-brand">
+            <button class="menu-toggle">☰</button>
+            <span>Sistema de Planeación Estratégica y Gestión Institucional - PEYGI</span>
+        </div>
+        <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
+            <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #7c3aed;">
+                <span style="background: #ede9fe; color: #6d28d9; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Consejo Seccional</span>
+                <span style="font-weight: 600;">CALDAS</span>
+            </div>
+            <div class="navbar-user"><span>👤 ▾</span></div>
+        </div>
+    </header>
+
+    <div class="app-layout">
+        <aside class="app-sidebar">
+            <a href="index.html" style="text-decoration: none; color: inherit;"><div class="sidebar-icon active" title="Inicio">🏠</div></a>
+            <div class="sidebar-icon" title="Menú">☰</div>
+            <div class="sidebar-icon" title="Opciones">⚙️</div>
+        </aside>
+
+        <main class="app-main">
+            <!-- Breadcrumbs -->
+            <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
+                <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
+                    <li><a href="modulo_c.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li><a href="funcionalidades_c.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li style="color: #cbd5e1;">/</li>
+                    <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Supervisión y Verificación de Medidas</li>
+                </ol>
+            </nav>
+
+            <div class="content-header">
+                <div class="welcome-section" style="margin-bottom: 0;">
+                    <h1>Supervisión y verificación de medidas de descongestión</h1>
+                    <p>Desde la materialización hasta la finalización, consulte los reportes por medida y por proceso para supervisar y verificar el cumplimiento de las medidas adoptadas.</p>
+                </div>
+                <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="window.print()">🖨️ Imprimir</button>
+            </div>
+
+            <!-- Indicadores generales -->
+            <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;"></div>
+
+            <!-- Pestañas de reportes -->
+            <div style="display: flex; gap: 0.25rem; border-bottom: 2px solid #e2e8f0; margin-bottom: 1rem;">
+                <button type="button" id="tab-medidas" class="tab-reporte" onclick="cambiarReporte('medidas')">📜 Reporte por medida</button>
+                <button type="button" id="tab-procesos" class="tab-reporte" onclick="cambiarReporte('procesos')">📋 Reporte por proceso</button>
+            </div>
+
+            <!-- REPORTE POR MEDIDA -->
+            <section id="reporte-medidas">
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem;">
+                    <div style="font-size: 0.85rem; color: var(--text-muted);">Estado de cumplimiento de cada medida materializada por el Consejo Seccional. Haga clic en <strong>Ver reporte</strong> para su verificación y trazabilidad.</div>
+                    <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="descargarReporteMedidas()">⬇️ Descargar reporte (Excel)</button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Medida</th>
+                                <th>Vigencia</th>
+                                <th>Registro de procesos</th>
+                                <th>En el destino</th>
+                                <th>Finalización</th>
+                                <th>Alertas</th>
+                                <th>Cumplimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-medidas"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- REPORTE POR PROCESO -->
+            <section id="reporte-procesos" style="display: none;">
+                <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 0.85rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="display: grid; grid-template-columns: 2fr 1.3fr 1.3fr 1.3fr auto; gap: 0.75rem; align-items: end;">
+                        <div class="form-group" style="margin: 0;">
+                            <label for="filtro-busqueda">Buscar</label>
+                            <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Radicado, partes o despacho" oninput="renderizarProcesos()">
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label for="filtro-medida">Medida</label>
+                            <select id="filtro-medida" class="form-control" onchange="renderizarProcesos()"></select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label for="filtro-despacho">Despacho</label>
+                            <select id="filtro-despacho" class="form-control" onchange="renderizarProcesos()"></select>
+                        </div>
+                        <div class="form-group" style="margin: 0;">
+                            <label for="filtro-estado">Estado del proceso</label>
+                            <select id="filtro-estado" class="form-control" onchange="renderizarProcesos()"></select>
+                        </div>
+                        <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1rem;" onclick="limpiarFiltros()">✕ Limpiar</button>
+                    </div>
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+                    <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+                    <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="descargarReporteProcesos()">⬇️ Descargar reporte (Excel)</button>
+                </div>
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Radicado / Partes</th>
+                                <th>Medida</th>
+                                <th>Despacho origen ➔ destino</th>
+                                <th>Estado procesal</th>
+                                <th>Estado en la medida</th>
+                                <th>Último movimiento</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-procesos"></tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MODAL: REPORTE DE LA MEDIDA -->
+    <div id="modal-medida" class="modal-overlay">
+        <div class="modal-card" style="max-width: 1000px; width: 96%;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <div>
+                    <h2 id="medida-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;"></h2>
+                    <div id="medida-subtitulo" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;"></div>
+                </div>
+                <button type="button" onclick="cerrarModal('modal-medida')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <div id="medida-contenido" style="max-height: 68vh; overflow-y: auto;"></div>
+            <div style="display: flex; justify-content: flex-end; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                <button type="button" class="btn btn-secondary" id="btn-descargar-medida">⬇️ Descargar procesos de la medida</button>
+                <button type="button" class="btn btn-secondary" id="btn-ver-procesos">📋 Ver en el reporte por proceso</button>
+                <button type="button" class="btn-primary-action" onclick="cerrarModal('modal-medida')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: TRAZABILIDAD DEL PROCESO -->
+    <div id="modal-proceso" class="modal-overlay">
+        <div class="modal-card" style="max-width: 760px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
+                <div>
+                    <h2 id="proceso-titulo" style="font-size: 1.1rem; color: var(--text-main); font-weight: 600; margin: 0;"></h2>
+                    <div id="proceso-subtitulo" style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;"></div>
+                </div>
+                <button type="button" onclick="cerrarModal('modal-proceso')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
+            </div>
+            <div id="proceso-contenido" style="max-height: 70vh; overflow-y: auto;"></div>
+            <div style="display: flex; justify-content: flex-end; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
+                <button type="button" class="btn-primary-action" onclick="cerrarModal('modal-proceso')">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .tab-reporte { background: none; border: none; border-bottom: 3px solid transparent; margin-bottom: -2px; padding: 0.6rem 1rem; font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--text-muted); cursor: pointer; }
+        .tab-reporte.activa { color: #6d28d9; border-bottom-color: #7c3aed; }
+        @media print {
+            .app-header, .app-sidebar, nav[aria-label="breadcrumb"], .btn, .btn-action, .tab-reporte:not(.activa) { display: none !important; }
+        }
+    </style>
+
+    <script src="js/data_supervision.js"></script>
+    <script src="js/main_supervision.js"></script>
+</body>
+</html>

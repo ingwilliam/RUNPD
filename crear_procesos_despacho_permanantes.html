@@ -19,7 +19,7 @@
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
                 <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
-                <span style="font-weight: 600;">Despacho Permanente</span>
+                <span style="font-weight: 600;">Despacho Origen</span>
             </div>
             <div class="navbar-user"><span>👤 ▾</span></div>
         </div>
@@ -75,7 +75,7 @@
                         Registre los procesos de la medida
                     </div>
                     <div style="display: flex; gap: 0.75rem;">
-                        <button id="btn-abrir-envio" class="btn btn-secondary" style="padding: 0.6rem 1.1rem; font-size: 0.9rem; white-space: nowrap;" onclick="abrirEnvio()">📤 Enviar al Consejo Seccional</button>
+                        <button id="btn-abrir-envio" class="btn btn-secondary" style="padding: 0.6rem 1.1rem; font-size: 0.9rem; white-space: nowrap;" onclick="abrirEnvio()">📤 Enviar al despacho destino</button>
                         <button id="btn-registrar" class="btn-primary-action" style="white-space: nowrap;" onclick="abrirNuevoProceso()">➕ Registrar proceso</button>
                     </div>
                 </div>
@@ -171,13 +171,16 @@
         </div>
     </div>
 
-    <!-- LAYER / VENTANA MODAL PARA ENVIAR AL CONSEJO SECCIONAL -->
+    <!-- LAYER / VENTANA MODAL PARA ENVIAR AL DESPACHO DESTINO -->
     <div id="modal-envio" class="modal-overlay">
         <div class="modal-card" style="max-width: 800px; width: 95%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <h2 id="envio-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📤 Enviar procesos al Consejo Seccional</h2>
+                <h2 id="envio-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📤 Enviar procesos al despacho destino</h2>
                 <button type="button" onclick="cerrarModal('modal-envio')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
             </div>
+
+            <!-- A quién se envía: administrador del despacho destino en la medida -->
+            <div id="envio-destinatario" style="margin-bottom: 0.75rem;"></div>
 
             <div style="background: #f0f9ff; border: 1px solid #bae6fd; color: #0c4a6e; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin-bottom: 1rem;">
                 ℹ️ Marque los procesos que desea enviar. Una vez enviados <strong>no podrá editarlos ni eliminarlos</strong>.
@@ -198,7 +201,7 @@
             </div>
 
             <div class="form-group">
-                <label for="nota_envio">Nota para el Consejo Seccional (opcional)</label>
+                <label for="nota_envio">Nota para el despacho destino (opcional)</label>
                 <input type="text" id="nota_envio" class="form-control" maxlength="500" placeholder="Ej: procesos priorizados por antigüedad">
             </div>
 

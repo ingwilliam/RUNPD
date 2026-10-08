@@ -1,24 +1,17 @@
 // =====================================================================
-// RUNPD - Medidas de descongestión (UDAE)
+// RUNPD - Medidas de descongestión (Consejo Seccional)
+// Solo el Consejo Seccional materializa medidas, con base en el Acuerdo y/o
+// Resolución del Consejo Superior de la Judicatura. Los despachos ya existen:
+// los garantiza la UDAE en "Gestión y Creación de Despachos".
+// Por cada medida, el Consejo registra la información del Administrador de cada
+// despacho origen y destino: es el único autorizado en esa medida para registrar
+// (origen) o gestionar (destino) los procesos.
 // Los despachos de descongestión vienen de js/data.js (dbDatos.despachos).
-// expedidaPor: "UDAE" o "CONSEJO".
-//   - UDAE: acuerdo de la medida + resolución de creación de cargos (opcional).
-//   - CONSEJO: acuerdo de redistribución del Consejo Seccional de la medida, con el
-//     requisito obligatorio del acuerdo de creación de despachos de la UDAE
-//     (acuerdoCreacion). No lleva resolución porque no crea despachos.
-// La resolución de creación de cargos es OPCIONAL y no se relaciona con despachos:
-// los despachos se crean antes en "Gestión y Creación de Despachos".
-// Aquí se agregan despachos PERMANENTES de ejemplo (origen de los procesos);
-// en el sistema real saldrían de "Gestión y Creación de Despachos".
 // =====================================================================
 const dbMedidas = {
 
-    // Entidades que pueden expedir una medida: la UDAE o un Consejo Seccional
-    consejosSeccionales: [
-        "ANTIOQUIA", "ATLÁNTICO", "BOGOTÁ", "BOLÍVAR", "BOYACÁ - CASANARE", "CALDAS", "CAQUETÁ", "CAUCA",
-        "CESAR", "CHOCÓ", "CÓRDOBA", "CUNDINAMARCA", "HUILA", "LA GUAJIRA", "MAGDALENA", "META",
-        "NARIÑO", "NORTE DE SANTANDER", "QUINDÍO", "RISARALDA", "SANTANDER", "SUCRE", "TOLIMA", "VALLE DEL CAUCA"
-    ],
+    // Consejo Seccional que usa la pantalla (rol actual)
+    consejoActual: "CALDAS",
 
     despachosPermanentesEjemplo: [
         { id: 101, tipo: "Permanente", consejoseccional: "CALDAS", deptomunicipio: "MANIZALES", especialidad: "LABORAL", codigoDespacho: "170014105002", adminCorreo: "j02lpmmanizales@cendoj.ramajudicial.gov.co", nombreDespacho: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES", estado: "Activo" },
@@ -41,7 +34,6 @@ const dbMedidas = {
     medidas: [
         {
             id: 1,
-            expedidaPor: "UDAE",
             acuerdo: { numero: "PCSJA26-11234", anio: 2026, archivo: "PCSJA26-11234.pdf" },
             consejoseccional: "CALDAS",
             fechaInicio: "2026-01-15",
@@ -53,59 +45,16 @@ const dbMedidas = {
             distribuciones: [
                 { origenId: 101, destinoId: 5, procesos: 40, trasladados: 25 },
                 { origenId: 102, destinoId: 5, procesos: 30, trasladados: 27 }
-            ]
-        },
-        {
-            id: 2,
-            expedidaPor: "UDAE",
-            acuerdo: { numero: "PCSJA26-11050", anio: 2026, archivo: "PCSJA26-11050.pdf" },
-            consejoseccional: "ANTIOQUIA",
-            fechaInicio: "2026-01-01",
-            fechaFin: "2026-12-31",
-            descripcion: "Medida de descongestión para la especialidad civil en Medellín.",
-            fechaRegistro: "2025-12-20",
-            notificacion: { fecha: "2025-12-22", envios: 2 },
-            resolucion: { numero: "CSJANTR26-012", anio: 2026, archivo: "CSJANTR26-012.pdf" },
-            distribuciones: [
-                { origenId: 103, destinoId: 1, procesos: 50, trasladados: 12 },
-                { origenId: 104, destinoId: 1, procesos: 35, trasladados: 0 }
-            ]
-        },
-        {
-            id: 3,
-            expedidaPor: "UDAE",
-            acuerdo: { numero: "PCSJA25-12890", anio: 2025, archivo: "PCSJA25-12890.pdf" },
-            consejoseccional: "TOLIMA",
-            fechaInicio: "2026-01-01",
-            fechaFin: "2026-11-15",
-            descripcion: "",
-            fechaRegistro: "2025-12-15",
-            notificacion: { fecha: "2025-12-16", envios: 1 },
-            resolucion: { numero: "CSJTOR25-210", anio: 2025, archivo: "CSJTOR25-210.pdf" },
-            distribuciones: [
-                { origenId: 106, destinoId: 6, procesos: 20, trasladados: 18 }
-            ]
-        },
-        {
-            id: 4,
-            expedidaPor: "CONSEJO",
-            acuerdoCreacion: { numero: "PCSJA25-12755", anio: 2025 },
-            acuerdo: { numero: "PCSJA26-11400", anio: 2026, archivo: "PCSJA26-11400.pdf" },
-            consejoseccional: "BOGOTÁ",
-            fechaInicio: "2026-02-01",
-            fechaFin: "2026-12-31",
-            descripcion: "Prórroga de la medida para el juzgado laboral transitorio de Bogotá.",
-            fechaRegistro: "2026-01-25",
-            notificacion: null, // aún no se ha notificado a los despachos
-            resolucion: null, // opcional: esta medida no tiene resolución de creación de cargos
-            distribuciones: [
-                { origenId: 105, destinoId: 2, procesos: 60, trasladados: 10 }
-            ]
+            ],
+            // Administrador del despacho en esta medida (clave: id del despacho)
+            administradores: {
+                101: { primerNombre: "Luis", segundoNombre: "Fernando", primerApellido: "Giraldo", segundoApellido: "Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821", password: "Temp2026*Lq8m" },
+                102: { primerNombre: "Ana", segundoNombre: "María", primerApellido: "Ospina", segundoApellido: "Valencia", correo: "aospinav@cendoj.ramajudicial.gov.co", celular: "3127784410", password: "Temp2026*Xw3n" },
+                5:   { primerNombre: "Laura", segundoNombre: "", primerApellido: "Giraldo", segundoApellido: "Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390", password: "Temp2026*Pk7r" }
+            }
         },
         {
             id: 5,
-            expedidaPor: "CONSEJO",
-            acuerdoCreacion: { numero: "PCSJA26-11234", anio: 2026 },
             acuerdo: { numero: "PCSJA26-11870", anio: 2026, archivo: "PCSJA26-11870.pdf" },
             consejoseccional: "CALDAS",
             fechaInicio: "2026-07-01",
@@ -116,23 +65,32 @@ const dbMedidas = {
             resolucion: null,
             distribuciones: [
                 { origenId: 101, destinoId: 5, procesos: 15, trasladados: 0 }
-            ]
+            ],
+            administradores: {
+                101: { primerNombre: "Luis", segundoNombre: "Fernando", primerApellido: "Giraldo", segundoApellido: "Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821", password: "Temp2026*Mn4t" },
+                5:   { primerNombre: "Laura", segundoNombre: "", primerApellido: "Giraldo", segundoApellido: "Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390", password: "Temp2026*Rb9e" }
+            }
         },
         {
             id: 6,
-            expedidaPor: "UDAE",
             acuerdo: { numero: "PCSJA26-11502", anio: 2026, archivo: "PCSJA26-11502.pdf" },
             consejoseccional: "CALDAS",
             fechaInicio: "2026-03-01",
             fechaFin: "2026-12-31",
             descripcion: "Medida de descongestión para la especialidad civil en Caldas.",
             fechaRegistro: "2026-02-20",
-            notificacion: { fecha: "2026-02-22", envios: 1 },
+            notificacion: null,
             resolucion: { numero: "CSJCAR26-031", anio: 2026, archivo: "CSJCAR26-031.pdf" },
             distribuciones: [
                 { origenId: 108, destinoId: 111, procesos: 10, trasladados: 4 },
                 { origenId: 109, destinoId: 112, procesos: 6,  trasladados: 0 }
-            ]
+            ],
+            // Falta el administrador del Juzgado 02 de Descongestión Civil (se ve como pendiente)
+            administradores: {
+                108: { primerNombre: "Jorge", segundoNombre: "Iván", primerApellido: "Cárdenas", segundoApellido: "Mejía", correo: "jcardenasm@cendoj.ramajudicial.gov.co", celular: "3206671245", password: "Temp2026*Hy2d" },
+                111: { primerNombre: "Marcela", segundoNombre: "", primerApellido: "Zuluaga", segundoApellido: "Ríos", correo: "mzuluagar@cendoj.ramajudicial.gov.co", celular: "3148820017", password: "Temp2026*Vc6s" },
+                109: { primerNombre: "Diego", segundoNombre: "Alejandro", primerApellido: "Patiño", segundoApellido: "", correo: "dpatino@cendoj.ramajudicial.gov.co", celular: "3112093384", password: "Temp2026*Gt5w" }
+            }
         }
     ]
 };

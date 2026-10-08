@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción y Seguimiento de Procesos - Despacho de Descongestión - PEYGI</title>
+    <title>Recepción y Seguimiento de Procesos - Despacho Destino - PEYGI</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -19,7 +19,7 @@
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
                 <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
-                <span style="font-weight: 600;">Despacho de Descongestión</span>
+                <span style="font-weight: 600;">Despacho Destino</span>
             </div>
             <div class="navbar-user"><span>👤 ▾</span></div>
         </div>
@@ -39,7 +39,7 @@
                 <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
                     <li><a href="modulo_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
                     <li style="color: #cbd5e1;">/</li>
-                    <li><a href="funcionalidades_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li><a href="funcionalidades_despacho_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
                     <li style="color: #cbd5e1;">/</li>
                     <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Recepción y Seguimiento de Procesos</li>
                 </ol>
@@ -48,51 +48,58 @@
             <div class="content-header">
                 <div class="welcome-section" style="margin-bottom: 0;">
                     <h1>Recepción y Seguimiento de Procesos</h1>
-                    <p>Consulte los procesos que el Consejo Seccional aprobó para su despacho en cada medida de descongestión, registre cada actuación y controle la fecha de la próxima actuación.</p>
+                    <p id="texto-despacho"></p>
                 </div>
             </div>
 
-            <!-- Despacho y medidas de descongestión en las que es destino -->
-            <div id="tarjeta-medida" style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                <!-- Dinámico vía JS -->
-            </div>
+            <!-- Despacho -->
+            <div id="info-despacho" style="background: #ffffff; border: 1px solid #e2e8f0; border-left: 5px solid #b45309; border-radius: 8px; padding: 0.9rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);"></div>
 
-            <!-- Aviso de pendientes -->
-            <div id="aviso-pendientes" style="display: none; background: #fef9c3; border: 1px solid #fde047; border-left: 5px solid #eab308; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 1.25rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
-                <!-- Dinámico vía JS -->
-            </div>
-
-            <!-- Indicadores (clic para filtrar) -->
-            <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin-bottom: 1.25rem;">
-                <!-- Dinámico vía JS -->
-            </div>
-
-            <!-- Búsqueda -->
-            <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
-                <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; flex: 1;">
-                    <input type="search" id="filtro-busqueda" class="form-control" style="max-width: 380px;" placeholder="🔍 Buscar por código, demandante o demandado" oninput="renderizarTabla()">
-                    <select id="filtro-medida" class="form-control" style="max-width: 300px;" onchange="renderizarTodo()"></select>
+            <!-- PASO 1: SELECCIONAR LA MEDIDA -->
+            <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">1</span>
+                    Seleccione la medida de descongestión
                 </div>
-                <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+                <select id="selector-medida" class="form-control" style="max-width: 560px;" onchange="seleccionarMedida(this.value)"></select>
+                <div id="resumen-medida" style="margin-top: 0.9rem;"></div>
             </div>
 
-            <!-- Tabla de procesos asignados -->
-            <div class="data-table-container">
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th>Código Proceso</th>
-                            <th>Partes</th>
-                            <th>Medida / Origen</th>
-                            <th>Estado Procesal Actual</th>
-                            <th>Próxima Actuación</th>
-                            <th>Acciones</th>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpo-tabla-procesos">
-                        <!-- Dinámico vía JS -->
-                    </tbody>
-                </table>
+            <!-- PASO 2: PROCESOS DE LA MEDIDA -->
+            <div id="paso-procesos" style="display: none;">
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
+                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">2</span>
+                    Gestione los procesos de la medida
+                </div>
+
+                <!-- Aviso de pendientes -->
+                <div id="aviso-pendientes" style="display: none; background: #fef9c3; border: 1px solid #fde047; border-left: 5px solid #eab308; border-radius: 8px; padding: 0.9rem 1.1rem; margin-bottom: 1rem; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;"></div>
+
+                <!-- Indicadores (clic para filtrar) -->
+                <div id="indicadores" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 0.85rem; margin-bottom: 1rem;"></div>
+
+                <!-- Búsqueda -->
+                <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 0.75rem; margin-bottom: 0.75rem;">
+                    <input type="search" id="filtro-busqueda" class="form-control" style="max-width: 420px;" placeholder="🔍 Buscar por código, demandante o demandado" oninput="renderizarTabla()">
+                    <div id="texto-filtro" style="font-size: 0.8rem; color: var(--text-muted);"></div>
+                </div>
+
+                <!-- Tabla de procesos de la medida -->
+                <div class="data-table-container">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Código Proceso</th>
+                                <th>Partes</th>
+                                <th>Despacho Origen</th>
+                                <th>Estado Procesal Actual</th>
+                                <th>Próxima Actuación</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody id="cuerpo-tabla-procesos"></tbody>
+                    </table>
+                </div>
             </div>
         </main>
     </div>
@@ -139,6 +146,7 @@
                 <div id="act-aviso-medida" style="display: none; background: #fef3c7; border: 1px solid #fcd34d; color: #92400e; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin-bottom: 0.75rem;"></div>
                 <div id="act-aviso-final" style="display: none; background: #dcfce7; border: 1px solid #86efac; color: #166534; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin-bottom: 0.75rem;">
                     🏁 Al finalizar, el proceso quedará <strong>cerrado</strong> y no se podrán registrar nuevas actuaciones.
+                    <span id="act-aviso-final-destino"></span>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
@@ -149,11 +157,11 @@
         </div>
     </div>
 
-    <!-- MODAL: DEVOLVER AL CONSEJO SECCIONAL -->
+    <!-- MODAL: DEVOLVER AL DESPACHO ORIGEN -->
     <div id="modal-devolver" class="modal-overlay">
         <div class="modal-card" style="max-width: 650px; width: 95%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.5rem;">
-                <h2 style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">↩ Devolver proceso al Consejo Seccional</h2>
+                <h2 style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">↩ Devolver proceso al despacho origen</h2>
                 <button onclick="cerrarModal('modal-devolver')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
             </div>
 
@@ -164,7 +172,7 @@
                 <div id="dev-motivos" style="display: grid; gap: 0.5rem; margin-bottom: 1rem;"></div>
 
                 <div class="form-group">
-                    <label for="dev-observacion">Observación para el Consejo Seccional</label>
+                    <label for="dev-observacion">Observación para el despacho origen</label>
                     <textarea id="dev-observacion" class="form-control" rows="3" maxlength="500" required placeholder="Explique brevemente el motivo de la devolución"></textarea>
                 </div>
 
@@ -172,7 +180,7 @@
 
                 <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 0.75rem;">
                     <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-devolver')">Cancelar</button>
-                    <button type="submit" class="btn-primary-action">↩ Devolver al Consejo</button>
+                    <button type="submit" class="btn-primary-action">↩ Devolver al despacho origen</button>
                 </div>
             </form>
         </div>

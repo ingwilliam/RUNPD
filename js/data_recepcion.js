@@ -1,7 +1,10 @@
 // =====================================================================
-// RUNPD - Datos del prototipo: recepción y seguimiento en el despacho de descongestión
-// Los procesos llegan cuando el Consejo Seccional APRUEBA el envío del despacho
-// permanente, dentro de una medida de descongestión. La vigencia es de cada medida.
+// RUNPD - Datos del prototipo: recepción y seguimiento en el despacho destino
+// Los procesos llegan cuando el despacho origen los ENVÍA directamente, dentro de
+// una medida de descongestión materializada por el Consejo Seccional.
+// La vigencia es de cada medida. Cada medida trae el administrador autorizado del
+// despacho destino (usted) y el de cada despacho origen (a quien se notifica la
+// devolución o la finalización de sus procesos).
 // =====================================================================
 const dbRecepcion = {
     // Despacho de descongestión que recibe (destino en el plan de distribución de las medidas)
@@ -12,10 +15,37 @@ const dbRecepcion = {
         consejoSeccional: "CALDAS"
     },
 
-    // Medidas en las que el despacho es destino (autorizados = procesos que puede recibir)
+    // Medidas en las que el despacho es destino
+    // origenes[].procesos = procesos que la medida autoriza recibir de ese despacho origen
     medidas: [
-        { id: 1, acuerdo: { numero: "PCSJA26-11234", anio: 2026 }, fechaInicio: "2026-01-15", fechaFin: "2026-12-31", autorizados: 70 },
-        { id: 5, acuerdo: { numero: "PCSJA26-11870", anio: 2026 }, fechaInicio: "2026-07-01", fechaFin: "2027-03-31", autorizados: 15 }
+        {
+            id: 1,
+            acuerdo: { numero: "PCSJA26-11234", anio: 2026 },
+            resolucion: { numero: "CSJCAR26-045", anio: 2026 },
+            fechaInicio: "2026-01-15",
+            fechaFin: "2026-12-31",
+            descripcion: "Medida de descongestión para la especialidad laboral en Manizales.",
+            administradorDestino: { nombre: "Laura Giraldo Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390" },
+            origenes: [
+                { nombre: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES", procesos: 40,
+                  administrador: { nombre: "Luis Fernando Giraldo Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821" } },
+                { nombre: "JUZGADO 003 LABORAL DEL CIRCUITO DE MANIZALES", procesos: 30,
+                  administrador: { nombre: "Ana María Ospina Valencia", correo: "aospinav@cendoj.ramajudicial.gov.co", celular: "3127784410" } }
+            ]
+        },
+        {
+            id: 5,
+            acuerdo: { numero: "PCSJA26-11870", anio: 2026 },
+            resolucion: null,
+            fechaInicio: "2026-07-01",
+            fechaFin: "2027-03-31",
+            descripcion: "Ampliación de la medida laboral para procesos en estado de fallo.",
+            administradorDestino: { nombre: "Laura Giraldo Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390" },
+            origenes: [
+                { nombre: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES", procesos: 15,
+                  administrador: { nombre: "Luis Fernando Giraldo Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821" } }
+            ]
+        }
     ],
 
     catalogos: {
@@ -57,7 +87,7 @@ const dbRecepcion = {
         ]
     },
 
-    // Procesos recibidos (aprobados por el Consejo Seccional)
+    // Procesos recibidos de los despachos origen
     procesos: [
         {
             id: 901,
@@ -168,7 +198,28 @@ const dbRecepcion = {
             estado: "devuelto",
             devolucion: { fecha: "2026-05-22", motivo: "Error de traslado", observacion: "El proceso es de especialidad civil, no laboral." },
             actuaciones: [
-                { tipo: "devolucion", fecha: "2026-05-22", estadoProceso: "Devuelto al Consejo Seccional – Error de traslado", proximaActuacion: "", observacion: "El proceso es de especialidad civil, no laboral." }
+                { tipo: "devolucion", fecha: "2026-05-22", estadoProceso: "Devuelto al despacho origen – Error de traslado", proximaActuacion: "", observacion: "El proceso es de especialidad civil, no laboral." }
+            ]
+        },
+        {
+            id: 3,
+            medidaId: 5,
+            codigo: "05001400300320230045600",
+            estadoProceso: "En estado de fallo",
+            fechaActuacion: "2026-03-02",
+            link: "",
+            observaciones: "Alegatos surtidos. Pendiente proferir sentencia.",
+            demandantes: [{ tipo: "juridica", nombre: "BANCOLOMBIA S.A.", correo: "judicial@bancolombia.com.co" }],
+            demandados: [
+                { tipo: "natural", primerNombre: "Martha", segundoNombre: "Lucía", primerApellido: "Henao", segundoApellido: "Vélez", nombre: "", correo: "mhenao@correo.com" },
+                { tipo: "natural", primerNombre: "Andrés", segundoNombre: "", primerApellido: "Henao", segundoApellido: "Vélez", nombre: "", correo: "ahenao@correo.com" }
+            ],
+            despachoOrigen: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
+            fechaRecepcion: "2026-09-20",
+            visto: true,
+            estado: "tramite",
+            actuaciones: [
+                { tipo: "actuacion", fecha: "2026-09-23", estadoProceso: "Auto que asume el conocimiento", proximaActuacion: "2026-10-01", observacion: "" }
             ]
         }
     ]

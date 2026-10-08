@@ -1,33 +1,30 @@
 // =====================================================================
 // RUNPD - Portada: grafo interactivo del flujo
-// Camino A (UDAE): emite el acuerdo, valida y crea despachos, crea la medida.
-// Camino B (Consejo Seccional): con el acuerdo de creación de despachos de la
-// UDAE emite el acuerdo de redistribución y crea la medida.
-// Luego: despacho origen → Consejo supervisa → despacho destino → ciudadano.
+// Inicio: el Consejo Superior de la Judicatura expide el Acuerdo y/o la Resolución;
+// la UDAE garantiza que los despachos existan (los crea si no existen) y, con base
+// en el Acuerdo, el Consejo Seccional materializa la medida en el sistema.
+// Luego: despacho origen → despacho destino → finalización. El Consejo Seccional
+// supervisa y verifica el cumplimiento con reportes por medida y por proceso.
 // =====================================================================
 const PASOS_FLUJO = [
-    { id: "udae", actor: "Camino A · UDAE", titulo: "Emite el acuerdo de la medida",
-      desc: "La UDAE expide el acuerdo de la medida de descongestión y, cuando se requieren despachos nuevos, la resolución de creación.", link: "#rol-udae" },
-    { id: "existe", actor: "Camino A · UDAE · decisión", titulo: "¿El despacho origen y el destino ya existen en el sistema?",
-      desc: "Solo la UDAE hace esta validación. NO existen: primero los crea. SÍ existen: continúa directo a crear la medida.", link: "#rol-udae" },
-    { id: "crear", actor: "Camino A · UDAE", titulo: "Crea los despachos que faltan",
-      desc: "Crea el despacho con medida permanente o transitoria y su administrador, y le envía las credenciales. Luego crea la medida.", link: "#rol-udae" },
-    { id: "requisito", actor: "Camino B · requisito obligatorio", titulo: "Acuerdo de creación de despachos de la UDAE",
-      desc: "Antes de crear una medida, el Consejo Seccional debe contar sí o sí con el acuerdo de la UDAE que crea los despachos con medidas permanentes y transitorias.", link: "#rol-consejo-medida" },
-    { id: "consejo_acuerdo", actor: "Camino B · Consejo Seccional", titulo: "Emite el acuerdo de redistribución",
-      desc: "Con los despachos ya creados por la UDAE, el Consejo Seccional expide el acuerdo de redistribución de procesos.", link: "#rol-consejo-medida" },
-    { id: "medida", actor: "UDAE o Consejo Seccional", titulo: "Crea la medida de descongestión en el sistema",
-      desc: "Registra el acuerdo y configura la medida: despacho origen ➔ despacho destino, número de procesos y vigencia. Se notifica al despacho origen.", link: "#paso-1" },
-    { id: "origen", actor: "Despacho origen con medida de descongestión", titulo: "Crea y envía los procesos",
-      desc: "Selecciona la medida, crea cada proceso con sus partes hasta completar el total autorizado y los envía al Consejo Seccional.", link: "#rol-origen" },
-    { id: "consejo", actor: "Consejo Seccional · supervisa", titulo: "Supervisa y verifica el cumplimiento",
-      desc: "Verifica que los procesos enviados cumplan lo adoptado en la medida de descongestión.", link: "#rol-consejo" },
-    { id: "aprueba", actor: "Consejo Seccional · decisión", titulo: "¿Cumple criterios?",
-      desc: "Sí: da el visto bueno y notifica al despacho destino. No: devuelve el envío al despacho origen con el motivo, para que lo corrija.", link: "#rol-consejo" },
+    { id: "csj", actor: "Inicio · Consejo Superior de la Judicatura", titulo: "Expide el Acuerdo y/o la Resolución",
+      desc: "Todo inicia cuando el Consejo Superior de la Judicatura expide el Acuerdo y/o la Resolución de creación de despachos que da origen a la medida de descongestión.", link: "#rol-csj" },
+    { id: "udae", actor: "UDAE · garantiza", titulo: "Garantiza que los despachos estén creados",
+      desc: "Con el Acuerdo y/o la Resolución, la UDAE se asegura de que los despachos origen y destino existan en el sistema, para que el Consejo Seccional pueda materializar la medida.", link: "#rol-udae" },
+    { id: "existe", actor: "UDAE · decisión", titulo: "¿Existen los despachos origen y destino?",
+      desc: "Solo la UDAE hace esta validación. SÍ existen: el Consejo Seccional puede materializar la medida. NO existen: la UDAE primero los crea.", link: "#rol-udae" },
+    { id: "crear", actor: "UDAE", titulo: "Crea los despachos que no existen",
+      desc: "Crea el despacho con medida permanente o transitoria. Así queda listo para que el Consejo Seccional materialice la medida.", link: "#rol-udae" },
+    { id: "materializa", actor: "Consejo Seccional · materializa", titulo: "Materializa la medida de descongestión",
+      desc: "Con base en el Acuerdo, registra la medida en el sistema: despacho origen ➔ despacho destino, número de procesos y vigencia. Por cada despacho origen y destino ingresa la información del Administrador del Despacho, único autorizado para registrar (origen) o gestionar (destino) los procesos. Se notifica a los despachos.", link: "#rol-consejo-medida" },
+    { id: "origen", actor: "Despacho origen con medida de descongestión", titulo: "Registra y envía los procesos",
+      desc: "El Administrador del Despacho origen, único autorizado en la medida, la selecciona, registra cada proceso con sus partes hasta completar el total autorizado y los envía directamente al despacho destino.", link: "#rol-origen" },
     { id: "destino", actor: "Despacho destino con medida de descongestión", titulo: "Gestiona los procesos",
-      desc: "Registra las actuaciones de cada proceso y, según el caso, los finaliza o los devuelve al despacho origen.", link: "#rol-destino" },
-    { id: "ciudadano", actor: "Ciudadano", titulo: "Consulta pública",
-      desc: "Con el número de radicación consulta el estado del proceso y su trazabilidad de origen a destino.", link: "#rol-ciudadano" }
+      desc: "El Administrador del Despacho destino, único autorizado en la medida, recibe los procesos del despacho origen y registra sus actuaciones. Si un proceso no corresponde o no alcanza a terminarse, lo devuelve al despacho origen.", link: "#rol-destino" },
+    { id: "finaliza", actor: "Despacho destino", titulo: "Finaliza el proceso",
+      desc: "Registra la forma de terminación del proceso (sentencia ejecutoriada, conciliación, desistimiento, etc.) y se notifica a las partes.", link: "#rol-destino" },
+    { id: "supervision", actor: "Consejo Seccional · supervisa y verifica", titulo: "Supervisa y verifica el cumplimiento de la medida",
+      desc: "Desde la materialización hasta la finalización, la herramienta le muestra al Consejo Seccional reportes por medida y por proceso para supervisar y verificar el cumplimiento de las medidas adoptadas.", link: "#rol-supervision" }
 ];
 
 (function () {

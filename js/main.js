@@ -22,10 +22,6 @@ function esActivo(item) {
     return item.estado === "Activo" || item.estado === true;
 }
 
-function nombreAdministrador(item) {
-    return [item.adminPrimerNombre, item.adminSegundoNombre, item.adminPrimerApellido, item.adminSegundoApellido].filter(Boolean).join(" ");
-}
-
 function cerrarModal(modalId) {
     const modal = document.getElementById(modalId);
     if (modal) modal.classList.remove("visible");
@@ -177,7 +173,7 @@ function cumpleFiltros(item) {
     if (filtroKpi === "descongestion" && item.tipo !== "Descongestión") return false;
 
     if (!q) return true;
-    const texto = normalizar([item.nombreDespacho, item.codigoDespacho, item.deptomunicipio, item.consejoseccional, nombreAdministrador(item), item.adminCorreo].join(" "));
+    const texto = normalizar([item.nombreDespacho, item.codigoDespacho, item.deptomunicipio, item.consejoseccional].join(" "));
     return texto.includes(q);
 }
 
@@ -194,7 +190,7 @@ function renderizarTabla() {
         `Mostrando <strong>${lista.length}</strong> de ${dbDatos.despachos.length} despacho(s)`;
 
     if (lista.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
             No hay despachos que coincidan con los filtros. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
@@ -222,10 +218,6 @@ function renderizarTabla() {
                     <span style="color: var(--text-muted); font-size: 0.72rem;">Distrito ${esc(item.distrito)} · Circuito ${esc(item.circuito)}</span>
                 </td>
                 <td style="font-size: 0.8rem;">${esc(item.especialidad)}</td>
-                <td style="font-size: 0.8rem;">
-                    ${esc(nombreAdministrador(item))}<br>
-                    <span style="color: var(--text-muted); font-size: 0.72rem;">${esc(item.adminCorreo)}</span>
-                </td>
                 <td><span class="badge-status ${activo ? "active" : "inactive"}">${activo ? "Activo" : "Inactivo"}</span></td>
                 <td>
                     <div class="action-buttons" style="flex-direction: column; align-items: stretch;">
@@ -244,40 +236,12 @@ function limpiarBuscadoresFormulario() {
     document.querySelectorAll('#form-despacho input[type="search"]').forEach(i => i.value = "");
 }
 
-function generarPassword() {
-    const caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
-    let aleatorio = "";
-    for (let i = 0; i < 4; i++) aleatorio += caracteres[Math.floor(Math.random() * caracteres.length)];
-    document.getElementById("admin_password").value = `Temp${new Date().getFullYear()}*${aleatorio}`;
-}
-
-// Enlace a la plantilla de credenciales con los datos del despacho
-function enlaceCredenciales(item) {
-    const datos = {
-        nombreDespacho: item.nombreDespacho,
-        codigoDespacho: item.codigoDespacho,
-        tipo: item.tipo,
-        tipoDespacho: item.tipodespacho,
-        jurisdiccion: item.jurisdiccion,
-        especialidad: item.especialidad,
-        municipio: item.deptomunicipio,
-        consejoSeccional: item.consejoseccional,
-        distrito: item.distrito,
-        circuito: item.circuito,
-        administrador: nombreAdministrador(item),
-        correo: item.adminCorreo,
-        password: item.adminPassword
-    };
-    return `email_credenciales.html?data=${encodeURIComponent(JSON.stringify(datos))}`;
-}
-
 // ---------------------------------------------------------------------
 // Abrir el formulario vacío para crear
 // ---------------------------------------------------------------------
 function abrirFormularioNuevo() {
     document.getElementById("despacho-id").value = "";
     document.getElementById("form-titulo").textContent = "📝 Crear despacho";
-    document.getElementById("btn-enviar-credenciales").style.display = "none";
 
     document.getElementById("form-despacho").reset();
     limpiarBuscadoresFormulario();
@@ -300,22 +264,10 @@ function abrirFormularioEditar(id) {
     document.getElementById("form-titulo").textContent = `✏️ Editar: ${despacho.nombreDespacho}`;
     document.getElementById("btn-guardar").textContent = "💾 Guardar cambios";
 
-    // Al editar se puede (re)enviar las credenciales
-    const btnCredenciales = document.getElementById("btn-enviar-credenciales");
-    btnCredenciales.style.display = "inline-flex";
-    btnCredenciales.href = enlaceCredenciales(despacho);
-
     llenarSelects(despacho);
 
     document.getElementById("codigo_despacho").value = despacho.codigoDespacho || "";
     document.getElementById("nombre_despacho").value = despacho.nombreDespacho || "";
-
-    document.getElementById("admin_primer_nombre").value = despacho.adminPrimerNombre || "";
-    document.getElementById("admin_segundo_nombre").value = despacho.adminSegundoNombre || "";
-    document.getElementById("admin_primer_apellido").value = despacho.adminPrimerApellido || "";
-    document.getElementById("admin_segundo_apellido").value = despacho.adminSegundoApellido || "";
-    document.getElementById("admin_correo").value = despacho.adminCorreo || "";
-    document.getElementById("admin_password").value = despacho.adminPassword || "";
 
     document.getElementById("modal-despacho").classList.add("visible");
 }
@@ -325,7 +277,7 @@ function ocultarFormulario() {
 }
 
 // ---------------------------------------------------------------------
-// Guardar o actualizar el despacho (incluye la información del administrador)
+// Guardar o actualizar el despacho
 // ---------------------------------------------------------------------
 function guardarDespacho(event) {
     event.preventDefault();
@@ -343,13 +295,7 @@ function guardarDespacho(event) {
         especialidad: valor("especialidad"),
         tipo: valor("tipo"),
         codigoDespacho: valor("codigo_despacho"),
-        nombreDespacho: valor("nombre_despacho"),
-        adminPrimerNombre: valor("admin_primer_nombre"),
-        adminSegundoNombre: valor("admin_segundo_nombre"),
-        adminPrimerApellido: valor("admin_primer_apellido"),
-        adminSegundoApellido: valor("admin_segundo_apellido"),
-        adminCorreo: valor("admin_correo"),
-        adminPassword: valor("admin_password")
+        nombreDespacho: valor("nombre_despacho")
     };
 
     const duplicado = dbDatos.despachos.find(d => d.codigoDespacho === datos.codigoDespacho && d.id !== datos.id);
@@ -373,15 +319,7 @@ function guardarDespacho(event) {
     if (id) {
         mostrarDialogoAlerta("Cambios guardados", `Se actualizó la información de ${datos.nombreDespacho}.`);
     } else {
-        // Al crear un despacho, se ofrece enviar de inmediato las credenciales al administrador
-        mostrarDialogoConfirmacion(
-            "Despacho creado",
-            `${datos.nombreDespacho} quedó creado y activo. ¿Desea enviar ahora las credenciales de acceso a ${nombreAdministrador(datos)}?`,
-            () => window.open(enlaceCredenciales(datos), "_blank"),
-            "✅",
-            "✉️ Enviar credenciales",
-            "Más tarde"
-        );
+        mostrarDialogoAlerta("Despacho creado", `${datos.nombreDespacho} quedó creado y activo.`);
     }
 }
 
@@ -396,8 +334,8 @@ function toggleInactivar(id) {
     mostrarDialogoConfirmacion(
         estadoActual ? "¿Inactivar el despacho?" : "¿Activar el despacho?",
         estadoActual
-            ? `${despacho.nombreDespacho} quedará inactivo y su administrador no podrá ingresar al sistema.`
-            : `${despacho.nombreDespacho} volverá a estar activo y su administrador podrá ingresar al sistema.`,
+            ? `${despacho.nombreDespacho} quedará inactivo.`
+            : `${despacho.nombreDespacho} volverá a estar activo.`,
         () => {
             despacho.estado = estadoActual ? "Inactivo" : "Activo";
             renderizarTabla();

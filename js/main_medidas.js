@@ -1,9 +1,10 @@
 // =====================================================================
-// RUNPD - Gestión de Medidas de Descongestión
-// Cada medida la expide la UDAE (camino A) o un Consejo Seccional (camino B).
-// Cada medida tiene: acuerdo (número, año, PDF), vigencia, resolución de creación
-// de cargos OPCIONAL (número, año, PDF) y un plan de distribución de procesos
-// (despacho origen → despacho destino → número de procesos).
+// RUNPD - Materialización de Medidas de Descongestión (Consejo Seccional)
+// Solo el Consejo Seccional materializa medidas, con base en el Acuerdo del
+// Consejo Superior de la Judicatura. Cada medida tiene: acuerdo (número, año, PDF),
+// vigencia, resolución de creación de cargos OPCIONAL, plan de distribución
+// (despacho origen → despacho destino → número de procesos) y el Administrador
+// de cada despacho origen y destino (único autorizado en la medida).
 // Datos: js/data.js (dbDatos) + js/data_medidas.js (dbMedidas). Sin localStorage.
 // =====================================================================
 
@@ -63,22 +64,35 @@ function textoResolucion(r) {
     return r ? `Resolución ${r.numero} de ${r.anio}` : "";
 }
 
-function esConsejo(m) {
-    return m.expedidaPor === "CONSEJO";
+const CONSEJO = dbMedidas.consejoActual;
+const DOMINIO_INSTITUCIONAL = "@cendoj.ramajudicial.gov.co";
+
+function nombreAdmin(a) {
+    return a ? [a.primerNombre, a.segundoNombre, a.primerApellido, a.segundoApellido].filter(Boolean).join(" ") : "";
 }
 
-function textoExpedida(m) {
-    return esConsejo(m) ? `Consejo Seccional de ${m.consejoseccional}` : "UDAE";
+// Despachos de la medida con su rol (origen / destino), sin repetir
+function despachosConRol(distribuciones) {
+    const lista = [];
+    distribuciones.forEach(r => {
+        [["origenId", "Origen"], ["destinoId", "Destino"]].forEach(([campo, rol]) => {
+            const id = Number(r[campo]);
+            if (!id) return;
+            const ya = lista.find(x => x.id === id);
+            if (ya) { if (!ya.roles.includes(rol)) ya.roles.push(rol); }
+            else lista.push({ id, roles: [rol] });
+        });
+    });
+    return lista;
 }
 
-function chipExpedida(m) {
-    return esConsejo(m)
-        ? chip(`📜 Consejo Seccional`, "#ede9fe", "#6d28d9")
-        : chip("🏢 UDAE", "#dcfce7", "#166534");
+function adminCompleto(a) {
+    return !!(a && a.primerNombre && a.primerApellido && a.correo && a.celular && a.password);
 }
 
-function entidadSeleccionada() {
-    return document.querySelector('input[name="expedida-por"]:checked').value;
+function conteoAdmins(m) {
+    const despachos = despachosConRol(m.distribuciones);
+    return { total: despachos.length, registrados: despachos.filter(d => adminCompleto((m.administradores || {})[d.id])).length };
 }
 
 function totalPlaneado(m) {
@@ -156,8 +170,7 @@ function renderizarIndicadores() {
 
     const tarjetas = [
         { clave: "todos",      icono: "📜", valor: lista.length,         texto: "Medidas registradas",            color: "var(--primary-green)" },
-        { clave: "exp_udae",   icono: "🏢", valor: lista.filter(m => !esConsejo(m)).length, texto: "Expedidas por la UDAE", color: "#166534" },
-        { clave: "exp_consejo", icono: "📜", valor: lista.filter(esConsejo).length, texto: "Expedidas por Consejos Seccionales", color: "#7c3aed" },
+        { clave: "sin_admin",  icono: "👤", valor: lista.filter(m => { const c = conteoAdmins(m); return c.registrados < c.total; }).length, texto: "Con administradores pendientes", color: "#dc2626" },
         { clave: "vigente",    icono: "✅", valor: cuenta("vigente"),    texto: "Vigentes",                       color: "#16a34a" },
         { clave: "por_vencer", icono: "⏰", valor: cuenta("por_vencer"), texto: "Por vencer (≤ 60 días)",         color: "#f59e0b" },
         { clave: "sin_notificar", icono: "✉️", valor: lista.filter(m => !m.notificacion).length, texto: "Sin notificar a los despachos", color: "#b45309" },
@@ -181,64 +194,35 @@ function renderizarIndicadores() {
 function aplicarFiltroKpi(clave) {
     filtroKpi = filtroKpi === clave ? "todos" : clave;
     document.getElementById("filtro-vigencia").value = "";
-    if (filtroKpi === "exp_udae" || filtroKpi === "exp_consejo") document.getElementById("filtro-expedida").value = "";
     renderizarTabla();
 }
 
 function llenarFiltros() {
-    const consejos = dbMedidas.consejosSeccionales;
-    const select = document.getElementById("filtro-consejo");
-    const actual = select.value;
-    select.innerHTML = `<option value="">Todos</option>` + consejos.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
-    select.value = actual;
-
-    const exp = document.getElementById("filtro-expedida");
-    const actualExp = exp.value;
-    exp.innerHTML = `<option value="">Todas</option>
-        <option value="UDAE">🏢 UDAE</option>
-        <option value="CONSEJO">📜 Cualquier Consejo Seccional</option>
-        <optgroup label="Un Consejo Seccional">${consejos.map(c => `<option value="CONSEJO:${esc(c)}">Consejo Seccional de ${esc(c)}</option>`).join("")}</optgroup>`;
-    exp.value = actualExp;
+    // El Consejo Seccional solo ve sus medidas: no hay filtros de entidad
 }
 
 function limpiarFiltros() {
-    ["filtro-busqueda", "filtro-expedida", "filtro-consejo", "filtro-vigencia"].forEach(id => document.getElementById(id).value = "");
+    ["filtro-busqueda", "filtro-vigencia"].forEach(id => document.getElementById(id).value = "");
     filtroKpi = "todos";
     renderizarTabla();
 }
 
 function cumpleFiltros(m) {
     const q = normalizar(document.getElementById("filtro-busqueda").value);
-    const consejo = document.getElementById("filtro-consejo").value;
     const vigencia = document.getElementById("filtro-vigencia").value;
-    const expedida = document.getElementById("filtro-expedida").value;
     const clave = infoVigencia(m).clave;
 
-    if (expedida === "UDAE" && esConsejo(m)) return false;
-    if (expedida === "CONSEJO" && !esConsejo(m)) return false;
-    if (expedida.startsWith("CONSEJO:") && !(esConsejo(m) && m.consejoseccional === expedida.slice(8))) return false;
-    if (filtroKpi === "exp_udae") return !esConsejo(m) && cumpleBusqueda(m, consejo, vigencia, clave);
-    if (filtroKpi === "exp_consejo") return esConsejo(m) && cumpleBusqueda(m, consejo, vigencia, clave);
-
-    if (consejo && m.consejoseccional !== consejo) return false;
+    if (m.consejoseccional !== CONSEJO) return false;
     if (vigencia && clave !== vigencia) return false;
     if (filtroKpi === "sin_notificar") { if (m.notificacion) return false; }
+    else if (filtroKpi === "sin_admin") { const c = conteoAdmins(m); if (c.registrados >= c.total) return false; }
     else if (filtroKpi !== "todos" && clave !== filtroKpi) return false;
     if (!q) return true;
 
-    const texto = [m.acuerdo.numero, m.descripcion, textoExpedida(m),
-        m.resolucion ? m.resolucion.numero : "", m.acuerdoCreacion ? m.acuerdoCreacion.numero : "",
-        ...m.distribuciones.map(r => `${nombreDespacho(r.origenId)} ${nombreDespacho(r.destinoId)}`)].join(" ");
+    const texto = [m.acuerdo.numero, m.descripcion, m.resolucion ? m.resolucion.numero : "",
+        ...m.distribuciones.map(r => `${nombreDespacho(r.origenId)} ${nombreDespacho(r.destinoId)}`),
+        ...Object.values(m.administradores || {}).map(a => `${nombreAdmin(a)} ${a.correo}`)].join(" ");
     return normalizar(texto).includes(q);
-}
-
-// Filtros comunes (consejo, vigencia y búsqueda) para los indicadores de entidad
-function cumpleBusqueda(m, consejo, vigencia, clave) {
-    if (consejo && m.consejoseccional !== consejo) return false;
-    if (vigencia && clave !== vigencia) return false;
-    const q = normalizar(document.getElementById("filtro-busqueda").value);
-    if (!q) return true;
-    return normalizar([m.acuerdo.numero, m.descripcion, textoExpedida(m)].join(" ")).includes(q);
 }
 
 // ---------------------------------------------------------------------
@@ -247,12 +231,13 @@ function cumpleBusqueda(m, consejo, vigencia, clave) {
 function renderizarTabla() {
     renderizarIndicadores();
     const tbody = document.getElementById("cuerpo-tabla");
-    const lista = dbMedidas.medidas.filter(cumpleFiltros).sort((a, b) => b.fechaInicio.localeCompare(a.fechaInicio));
+    const propias = dbMedidas.medidas.filter(m => m.consejoseccional === CONSEJO);
+    const lista = propias.filter(cumpleFiltros).sort((a, b) => b.fechaInicio.localeCompare(a.fechaInicio));
 
-    document.getElementById("texto-filtro").innerHTML = `Mostrando <strong>${lista.length}</strong> de ${dbMedidas.medidas.length} medida(s)`;
+    document.getElementById("texto-filtro").innerHTML = `Mostrando <strong>${lista.length}</strong> de ${propias.length} medida(s) del Consejo Seccional de ${CONSEJO}`;
 
     if (!lista.length) {
-        tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+        tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
             No hay medidas con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
@@ -269,27 +254,26 @@ function renderizarTabla() {
                     <div style="font-size: 0.72rem; margin-top: 0.2rem;">${textoNotificacion(m)}</div>
                     ${m.descripcion ? `<div style="font-size: 0.75rem; color: var(--text-main); margin-top: 0.25rem;">${esc(m.descripcion)}</div>` : ""}
                 </td>
-                <td style="font-size: 0.78rem; min-width: 130px;">
-                    ${chipExpedida(m)}
-                    ${esConsejo(m) ? `<div style="font-size: 0.72rem; color: #6d28d9; margin-top: 0.25rem;">de ${esc(m.consejoseccional)}</div>` : ""}
-                </td>
-                <td style="font-size: 0.8rem;">${esc(m.consejoseccional)}</td>
                 <td style="font-size: 0.8rem; white-space: nowrap;">
                     ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)}
                     <div style="margin-top: 0.3rem;">${chip(v.texto, v.fondo, v.color)}</div>
                 </td>
                 <td style="font-size: 0.78rem;">
-                    ${esConsejo(m)
-                        ? `<span style="font-size: 0.7rem; color: #6d28d9; font-weight: 700;">REQUISITO</span><br><strong>Acuerdo de creación ${esc(m.acuerdoCreacion.numero)} de ${m.acuerdoCreacion.anio}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">Expedido por la UDAE</div>`
-                        : m.resolucion
-                            ? `<strong>${esc(textoResolucion(m.resolucion))}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">📎 ${esc(m.resolucion.archivo)}</div>`
-                            : `<span style="color: var(--text-muted);">Sin resolución</span>`}
+                    ${m.resolucion
+                        ? `<strong>${esc(textoResolucion(m.resolucion))}</strong><div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">📎 ${esc(m.resolucion.archivo)}</div>`
+                        : `<span style="color: var(--text-muted);">Sin resolución</span>`}
                 </td>
                 <td style="font-size: 0.8rem; min-width: 200px;">
                     <strong>${m.distribuciones.length}</strong> distribución(es) · <strong>${planeados}</strong> proceso(s)<br>
                     <span style="color: var(--text-muted); font-size: 0.72rem;">Hacia ${destinos.length} despacho(s) de descongestión</span>
                     ${barraAvance(totalTrasladado(m), planeados)}
                 </td>
+                <td style="font-size: 0.8rem; min-width: 140px;">${(() => {
+                    const c = conteoAdmins(m);
+                    return c.registrados === c.total
+                        ? chip(`👤 ${c.registrados} de ${c.total} registrados`, "#dcfce7", "#166534")
+                        : `${chip(`👤 ${c.registrados} de ${c.total} registrados`, "#fee2e2", "#991b1b")}<div style="font-size: 0.72rem; color: #991b1b; margin-top: 0.25rem;">Faltan ${c.total - c.registrados}: complételos en Editar</div>`;
+                })()}</td>
                 <td>
                     <div class="action-buttons" style="flex-direction: column; align-items: stretch;">
                         <button class="btn-action edit" style="white-space: nowrap;" onclick="verMedida(${m.id})">🔍 Ver detalle</button>
@@ -312,7 +296,7 @@ function verMedida(id) {
 
     document.getElementById("detalle-titulo").textContent = `📜 ${textoAcuerdo(m)}`;
     document.getElementById("detalle-subtitulo").innerHTML =
-        `${chipExpedida(m)} Expedida por <strong>${esc(textoExpedida(m))}</strong> · Consejo Seccional de <strong>${esc(m.consejoseccional)}</strong> · Vigencia ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)} · ${chip(v.texto, v.fondo, v.color)}<br>${textoNotificacion(m)}`;
+        `Materializada por el Consejo Seccional de <strong>${esc(m.consejoseccional)}</strong> · Vigencia ${formatoFecha(m.fechaInicio)} → ${formatoFecha(m.fechaFin)} · ${chip(v.texto, v.fondo, v.color)}<br>${textoNotificacion(m)}`;
 
     // Totales por destino
     const porDestino = {};
@@ -325,24 +309,19 @@ function verMedida(id) {
     document.getElementById("detalle-contenido").innerHTML = `
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
-                <div style="font-size: 0.8rem; font-weight: 700; color: ${esConsejo(m) ? "#7c3aed" : "var(--primary-green)"}; margin-bottom: 0.4rem;">📜 ${esConsejo(m) ? "Acuerdo de redistribución del Consejo Seccional" : "Acuerdo de la UDAE"}</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">📜 Acuerdo del Consejo Superior de la Judicatura</div>
                 <div><strong>Número:</strong> ${esc(m.acuerdo.numero)}</div>
                 <div><strong>Año de expedición:</strong> ${m.acuerdo.anio}</div>
                 <div><strong>Adjunto:</strong> <a href="#" onclick="return false;" style="color: #0284c7;">📎 ${esc(m.acuerdo.archivo || "Sin adjunto")}</a></div>
                 ${m.descripcion ? `<div style="margin-top: 0.3rem; color: var(--text-muted);">${esc(m.descripcion)}</div>` : ""}
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
-                ${esConsejo(m) ? `
-                <div style="font-size: 0.8rem; font-weight: 700; color: #7c3aed; margin-bottom: 0.4rem;">📄 Requisito: acuerdo de creación de despachos (UDAE)</div>
-                <div><strong>Número:</strong> ${esc(m.acuerdoCreacion.numero)}</div>
-                <div><strong>Año de expedición:</strong> ${m.acuerdoCreacion.anio}</div>
-                <div style="margin-top: 0.3rem; color: var(--text-muted);">El Consejo Seccional no crea despachos: usa los creados por la UDAE en este acuerdo.</div>` : `
                 <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">🏛️ Resolución de creación de cargos</div>
                 ${m.resolucion ? `
                     <div><strong>Número:</strong> ${esc(m.resolucion.numero)}</div>
                     <div><strong>Año de expedición:</strong> ${m.resolucion.anio}</div>
                     <div><strong>Adjunto:</strong> <a href="#" onclick="return false;" style="color: #0284c7;">📎 ${esc(m.resolucion.archivo)}</a></div>`
-                  : `<span style="color: var(--text-muted);">La medida no cuenta con resolución de creación de cargos.</span>`}`}
+                  : `<span style="color: var(--text-muted);">La medida no cuenta con resolución de creación de cargos.</span>`}
             </div>
         </div>
 
@@ -372,7 +351,27 @@ function verMedida(id) {
                     ${barraAvance(t.trasladados, t.procesos)}
                 </div>`).join("")}
         </div>
-        <div style="margin-top: 0.85rem; font-size: 0.85rem;"><strong>Total de la medida:</strong> ${planeados} proceso(s) autorizados · ${totalTrasladado(m)} trasladados.</div>`;
+        <div style="margin-top: 0.85rem; font-size: 0.85rem;"><strong>Total de la medida:</strong> ${planeados} proceso(s) autorizados · ${totalTrasladado(m)} trasladados.</div>
+
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin: 1.25rem 0 0.5rem;">👤 Administradores de los despachos en esta medida</div>
+        <div class="data-table-container">
+            <table class="data-table">
+                <thead><tr><th>Despacho</th><th>Rol</th><th>Administrador</th><th>Correo institucional</th><th>Celular</th></tr></thead>
+                <tbody>
+                    ${despachosConRol(m.distribuciones).map(d => {
+                        const a = (m.administradores || {})[d.id];
+                        return `
+                        <tr>
+                            <td style="font-size: 0.8rem;">${esc(nombreDespacho(d.id))}</td>
+                            <td>${d.roles.map(rol => chip(rol, rol === "Origen" ? "#e0f2fe" : "#ffedd5", rol === "Origen" ? "#0369a1" : "#9a3412")).join(" ")}</td>
+                            ${adminCompleto(a)
+                                ? `<td style="font-size: 0.8rem; font-weight: 600;">${esc(nombreAdmin(a))}</td><td style="font-size: 0.8rem;">${esc(a.correo)}</td><td style="font-size: 0.8rem; white-space: nowrap;">${esc(a.celular)}</td>`
+                                : `<td colspan="3">${chip("⚠️ Pendiente de registrar", "#fee2e2", "#991b1b")}</td>`}
+                        </tr>`;
+                    }).join("")}
+                </tbody>
+            </table>
+        </div>`;
 
     document.getElementById("detalle-acciones").innerHTML = `
         <button type="button" class="btn btn-secondary" onclick="cerrarModal('modal-detalle'); abrirEditarMedida(${m.id});">✏️ Editar medida</button>
@@ -390,36 +389,31 @@ function llenarSelectsFormulario() {
     const opcionesAnio = anios.map(a => `<option value="${a}">${a}</option>`).join("");
     document.getElementById("acuerdo-anio").innerHTML = opcionesAnio;
     document.getElementById("resolucion-anio").innerHTML = opcionesAnio;
-    document.getElementById("creacion-anio").innerHTML = opcionesAnio;
-    document.getElementById("consejo").innerHTML = `<option value="" disabled selected>Seleccione una opción...</option>` +
-        dbMedidas.consejosSeccionales.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join("");
+    document.getElementById("consejo").value = CONSEJO;
 }
 
 function despachosDelConsejo(tipo) {
-    const consejo = document.getElementById("consejo").value;
     return dbDatos.despachos
-        .filter(d => d.tipo === tipo && d.estado !== "Inactivo" && (!consejo || d.consejoseccional === consejo))
+        .filter(d => d.tipo === tipo && d.estado !== "Inactivo" && d.consejoseccional === CONSEJO)
         .sort((a, b) => a.nombreDespacho.localeCompare(b.nombreDespacho));
 }
 
 function opcionesDespacho(tipo, seleccionado) {
     const lista = despachosDelConsejo(tipo);
-    if (!lista.length) return `<option value="">${document.getElementById("consejo").value ? "No hay despachos de este tipo en el Consejo" : "Seleccione primero el Consejo Seccional"}</option>`;
+    if (!lista.length) return `<option value="">No hay despachos de este tipo en el Consejo</option>`;
     return `<option value="" disabled ${seleccionado ? "" : "selected"}>Seleccione un despacho...</option>` +
         lista.map(d => `<option value="${d.id}" ${Number(seleccionado) === d.id ? "selected" : ""}>${esc(d.nombreDespacho)}</option>`).join("");
 }
 
 function abrirNuevaMedida() {
-    borrador = { acuerdoArchivo: "", resolucionArchivo: "", distribuciones: [{ origenId: "", destinoId: "", procesos: "", trasladados: 0 }] };
+    borrador = { acuerdoArchivo: "", resolucionArchivo: "", administradores: {}, distribuciones: [{ origenId: "", destinoId: "", procesos: "", trasladados: 0 }] };
     document.getElementById("form-medida").reset();
     document.getElementById("medida-id").value = "";
-    document.getElementById("form-titulo").textContent = "📝 Crear medida de descongestión";
-    document.getElementById("btn-guardar").textContent = "💾 Crear medida";
+    document.getElementById("form-titulo").textContent = "📝 Materializar medida de descongestión";
+    document.getElementById("btn-guardar").textContent = "💾 Materializar medida";
     llenarSelectsFormulario();
     document.getElementById("acuerdo-archivo-actual").textContent = "Ningún archivo seleccionado.";
-    document.querySelector('input[name="expedida-por"][value="UDAE"]').checked = true;
     mostrarResolucion(null);
-    cambiarEntidad();
     renderizarDistribuciones();
     actualizarResumenVigencia();
     abrirModal("modal-medida");
@@ -428,7 +422,7 @@ function abrirNuevaMedida() {
 function abrirEditarMedida(id) {
     const m = dbMedidas.medidas.find(x => x.id === id);
     if (!m) return;
-    borrador = JSON.parse(JSON.stringify({ acuerdoArchivo: m.acuerdo.archivo, resolucionArchivo: m.resolucion ? m.resolucion.archivo : "", distribuciones: m.distribuciones }));
+    borrador = JSON.parse(JSON.stringify({ acuerdoArchivo: m.acuerdo.archivo, resolucionArchivo: m.resolucion ? m.resolucion.archivo : "", administradores: m.administradores || {}, distribuciones: m.distribuciones }));
 
     document.getElementById("form-medida").reset();
     document.getElementById("medida-id").value = m.id;
@@ -438,49 +432,14 @@ function abrirEditarMedida(id) {
 
     document.getElementById("acuerdo-numero").value = m.acuerdo.numero;
     document.getElementById("acuerdo-anio").value = m.acuerdo.anio;
-    document.getElementById("consejo").value = m.consejoseccional;
     document.getElementById("fecha-inicio").value = m.fechaInicio;
     document.getElementById("fecha-fin").value = m.fechaFin;
     document.getElementById("descripcion").value = m.descripcion || "";
     document.getElementById("acuerdo-archivo-actual").innerHTML = `📎 Archivo actual: <strong>${esc(m.acuerdo.archivo)}</strong> (puede reemplazarlo)`;
-    document.querySelector(`input[name="expedida-por"][value="${esConsejo(m) ? "CONSEJO" : "UDAE"}"]`).checked = true;
-    document.getElementById("creacion-numero").value = m.acuerdoCreacion ? m.acuerdoCreacion.numero : "";
-    document.getElementById("creacion-anio").value = m.acuerdoCreacion ? m.acuerdoCreacion.anio : new Date().getFullYear();
     mostrarResolucion(m.resolucion);
-    cambiarEntidad();
     renderizarDistribuciones();
     actualizarResumenVigencia();
     abrirModal("modal-medida");
-}
-
-// UDAE (camino A) o Consejo Seccional (camino B): cambia títulos y secciones del formulario
-function cambiarEntidad() {
-    const consejo = entidadSeleccionada() === "CONSEJO";
-    document.getElementById("opcion-udae").style.borderColor = consejo ? "#e2e8f0" : "#166534";
-    document.getElementById("opcion-udae").style.background = consejo ? "#ffffff" : "#f0fdf4";
-    document.getElementById("opcion-consejo").style.borderColor = consejo ? "#7c3aed" : "#e2e8f0";
-    document.getElementById("opcion-consejo").style.background = consejo ? "#f5f3ff" : "#ffffff";
-
-    document.getElementById("titulo-acuerdo").textContent = consejo ? "📜 Acuerdo de redistribución del Consejo Seccional" : "📜 Acuerdo de la medida (UDAE)";
-    document.getElementById("label-consejo").textContent = consejo ? "Consejo Seccional que expide" : "Consejo Seccional de la medida";
-    document.getElementById("acuerdo-numero").placeholder = consejo ? "Ej: CSJCAA26-87" : "Ej: PCSJA26-11234";
-    document.getElementById("seccion-requisito").style.display = consejo ? "block" : "none";
-    document.getElementById("seccion-resolucion").style.display = consejo ? "none" : "block";
-    document.getElementById("creacion-numero").required = consejo;
-    if (consejo) {
-        document.getElementById("tiene-resolucion").checked = false;
-        cambiarResolucion();
-    }
-}
-
-// Al cambiar el Consejo, las listas de despachos se ajustan a ese Consejo
-function cambiarConsejo() {
-    const validos = id => !id || despachosDelConsejo("Permanente").concat(despachosDelConsejo("Descongestión")).some(d => d.id === Number(id));
-    borrador.distribuciones.forEach(r => {
-        if (!validos(r.origenId)) r.origenId = "";
-        if (!validos(r.destinoId)) r.destinoId = "";
-    });
-    renderizarDistribuciones();
 }
 
 function seleccionarArchivoAcuerdo(input) {
@@ -561,6 +520,7 @@ function renderizarDistribuciones() {
         }).join("");
 
     renderizarResumenDistribucion();
+    renderizarAdministradores();
 }
 
 function agregarDistribucion() {
@@ -595,6 +555,81 @@ function renderizarResumenDistribucion() {
         </div>`;
 }
 
+// --- Administradores de los despachos (uno por despacho origen y destino) ---
+function generarPassword() {
+    const c = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+    let s = "";
+    for (let i = 0; i < 4; i++) s += c[Math.floor(Math.random() * c.length)];
+    return `Temp${new Date().getFullYear()}*${s}`;
+}
+
+function campoAdmin(id, clave, etiqueta, requerido, tipo, placeholder, extra = "") {
+    const a = borrador.administradores[id] || {};
+    return `
+        <div class="form-group" style="margin-bottom: 0.6rem;">
+            <label>${etiqueta}${requerido ? "" : ' <span style="font-weight: 400; color: var(--text-muted);">(opcional)</span>'}</label>
+            <input type="${tipo}" class="form-control" value="${esc(a[clave] || "")}" placeholder="${placeholder}" ${extra}
+                   oninput="actualizarAdmin(${id}, '${clave}', this)">
+        </div>`;
+}
+
+function renderizarAdministradores() {
+    const cont = document.getElementById("lista-administradores");
+    const despachos = despachosConRol(borrador.distribuciones);
+    if (!despachos.length) {
+        cont.innerHTML = `<div style="font-size: 0.8rem; color: var(--text-muted); padding: 0.6rem 0.8rem; border: 1px dashed #cbd5e1; border-radius: 6px; margin-bottom: 1rem;">
+            Seleccione los despachos origen y destino en el plan de distribución para registrar sus administradores.</div>`;
+        return;
+    }
+    cont.innerHTML = despachos.map(d => {
+        const a = borrador.administradores[d.id] || {};
+        const completo = adminCompleto(a);
+        const esOrigen = d.roles.includes("Origen");
+        return `
+        <div style="border: 1px solid ${completo ? "#bbf7d0" : "#e2e8f0"}; border-left: 4px solid ${esOrigen ? "#0369a1" : "#b45309"}; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.75rem; background: #fcfcfd;">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.6rem;">
+                <div>
+                    <strong style="font-size: 0.85rem; color: var(--text-main);">${esc(nombreDespacho(d.id))}</strong>
+                    <div style="font-size: 0.72rem; color: var(--text-muted);">${esOrigen ? "Registrará los procesos de la medida" : "Gestionará los procesos de la medida"}</div>
+                </div>
+                <div style="display: flex; gap: 0.35rem; align-items: center;">
+                    ${d.roles.map(rol => chip(`Despacho ${rol.toLowerCase()}`, rol === "Origen" ? "#e0f2fe" : "#ffedd5", rol === "Origen" ? "#0369a1" : "#9a3412")).join("")}
+                    <span id="estado-admin-${d.id}">${completo ? chip("✔ Completo", "#dcfce7", "#166534") : chip("Pendiente", "#fef3c7", "#92400e")}</span>
+                </div>
+            </div>
+            <div class="form-grid" style="grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 0;">
+                ${campoAdmin(d.id, "primerNombre", "Primer Nombre", true, "text", "Ej: Carlos")}
+                ${campoAdmin(d.id, "segundoNombre", "Segundo Nombre", false, "text", "Ej: Andrés")}
+                ${campoAdmin(d.id, "primerApellido", "Primer Apellido", true, "text", "Ej: Pérez")}
+                ${campoAdmin(d.id, "segundoApellido", "Segundo Apellido", false, "text", "Ej: Gómez")}
+                ${campoAdmin(d.id, "correo", "Correo Electrónico Institucional", true, "email", "Ej: cperez" + DOMINIO_INSTITUCIONAL)}
+                ${campoAdmin(d.id, "celular", "Teléfono Celular", true, "tel", "Ej: 3001234567", 'inputmode="numeric" maxlength="10"')}
+                <div class="form-group" style="margin-bottom: 0.6rem; grid-column: 1 / -1;">
+                    <label>Contraseña Temporal</label>
+                    <div style="display: flex; gap: 0.5rem;">
+                        <input type="text" id="password-admin-${d.id}" class="form-control" value="${esc(a.password || "")}" placeholder="Ej: Temp2026*" oninput="actualizarAdmin(${d.id}, 'password', this)">
+                        <button type="button" class="btn btn-secondary" style="white-space: nowrap;" onclick="generarPasswordAdmin(${d.id})" title="Generar una contraseña temporal">🎲 Generar</button>
+                    </div>
+                </div>
+            </div>
+        </div>`;
+    }).join("");
+}
+
+function actualizarAdmin(id, clave, input) {
+    if (clave === "celular") input.value = input.value.replace(/\D/g, "").slice(0, 10);
+    borrador.administradores[id] = borrador.administradores[id] || {};
+    borrador.administradores[id][clave] = input.value.trim();
+    document.getElementById(`estado-admin-${id}`).innerHTML = adminCompleto(borrador.administradores[id])
+        ? chip("✔ Completo", "#dcfce7", "#166534") : chip("Pendiente", "#fef3c7", "#92400e");
+}
+
+function generarPasswordAdmin(id) {
+    const input = document.getElementById(`password-admin-${id}`);
+    input.value = generarPassword();
+    actualizarAdmin(id, "password", input);
+}
+
 // ---------------------------------------------------------------------
 // Notificación de la medida a los despachos involucrados
 // ---------------------------------------------------------------------
@@ -619,7 +654,7 @@ function notificarMedida(id, preguntar = true) {
     const enviar = () => {
         const payload = {
             reenvio,
-            expedidaPor: textoExpedida(m),
+            expedidaPor: `Consejo Seccional de ${m.consejoseccional}`,
             consejoSeccional: m.consejoseccional,
             acuerdo: m.acuerdo,
             resolucion: m.resolucion,
@@ -627,13 +662,19 @@ function notificarMedida(id, preguntar = true) {
             fechaFin: m.fechaFin,
             descripcion: m.descripcion,
             fechaEnvio: hoy(),
-            despachos: despachos.map(d => ({
-                id: d.id,
-                nombre: d.nombreDespacho,
-                codigo: d.codigoDespacho,
-                correo: d.adminCorreo || "",
-                tipo: d.tipo
-            })),
+            despachos: despachos.map(d => {
+                const a = (m.administradores || {})[d.id] || {};
+                return {
+                    id: d.id,
+                    nombre: d.nombreDespacho,
+                    codigo: d.codigoDespacho,
+                    correo: a.correo || "",
+                    administrador: nombreAdmin(a),
+                    celular: a.celular || "",
+                    password: a.password || "",
+                    tipo: d.tipo
+                };
+            }),
             distribuciones: m.distribuciones.map(r => ({
                 origenId: r.origenId,
                 origen: nombreDespacho(r.origenId),
@@ -652,10 +693,15 @@ function notificarMedida(id, preguntar = true) {
             (ventana ? "" : " El navegador bloqueó la ventana del correo: permita las ventanas emergentes para este sitio."), "✉️");
     };
 
+    const c = conteoAdmins(m);
+    if (c.registrados < c.total) {
+        mostrarDialogoAlerta("Faltan administradores", `Registre el administrador de los ${c.total - c.registrados} despacho(s) pendiente(s) antes de notificar la medida.`, "⚠️");
+        return;
+    }
     if (!preguntar) return enviar();
     mostrarDialogoConfirmacion(
         reenvio ? "¿Reenviar la notificación?" : "¿Notificar la medida?",
-        `Se enviará el ${textoAcuerdo(m)} y su plan de distribución a ${despachos.length} despacho(s) involucrado(s): ${despachos.map(d => d.nombreDespacho).join(", ")}.`,
+        `Se enviará el ${textoAcuerdo(m)}, su plan de distribución y las credenciales de acceso al administrador de cada despacho (${despachos.length}): ${despachos.map(d => d.nombreDespacho).join(", ")}.`,
         enviar,
         "✉️",
         reenvio ? "Sí, reenviar" : "Sí, notificar"
@@ -681,18 +727,9 @@ function guardarMedida(event) {
     if (!borrador.acuerdoArchivo) return alerta("Falta el acuerdo", "Adjunte el PDF del acuerdo de la medida.");
     if (fin <= inicio) return alerta("Revise la vigencia", "La fecha fin de la medida debe ser posterior a la fecha de inicio.");
 
-    // Camino B (Consejo): el acuerdo de creación de despachos de la UDAE es obligatorio
-    const expedidaPor = entidadSeleccionada();
-    let acuerdoCreacion = null;
-    if (expedidaPor === "CONSEJO") {
-        const numeroCreacion = document.getElementById("creacion-numero").value.trim();
-        if (!numeroCreacion) return alerta("Falta el requisito", "Indique el acuerdo de la UDAE de creación de despachos. Sin él, el Consejo Seccional no puede crear la medida.");
-        acuerdoCreacion = { numero: numeroCreacion, anio: Number(document.getElementById("creacion-anio").value) };
-    }
-
-    // Resolución de creación de cargos (solo UDAE, opcional): si se marca, número y PDF son obligatorios
+    // Resolución de creación de cargos (opcional): si se marca, número y PDF son obligatorios
     let resolucion = null;
-    if (expedidaPor === "UDAE" && document.getElementById("tiene-resolucion").checked) {
+    if (document.getElementById("tiene-resolucion").checked) {
         const numeroRes = document.getElementById("resolucion-numero").value.trim();
         if (!numeroRes) return alerta("Resolución incompleta", "Indique el número de la resolución de creación de cargos o desmarque la opción.");
         if (!borrador.resolucionArchivo) return alerta("Falta un adjunto", "Adjunte el PDF de la resolución de creación de cargos.");
@@ -712,15 +749,26 @@ function guardarMedida(event) {
         rutas.add(clave);
     }
 
+    // Administradores: uno completo por cada despacho origen y destino
+    const administradores = {};
+    for (const d of despachosConRol(borrador.distribuciones)) {
+        const a = borrador.administradores[d.id] || {};
+        const nombre = nombreDespacho(d.id);
+        if (!a.primerNombre || !a.primerApellido) return alerta("Administrador incompleto", `Indique el primer nombre y el primer apellido del administrador de ${nombre}.`);
+        if (!a.correo || !a.correo.toLowerCase().endsWith(DOMINIO_INSTITUCIONAL)) return alerta("Correo no institucional", `El correo del administrador de ${nombre} debe terminar en ${DOMINIO_INSTITUCIONAL}.`);
+        if (!/^3\d{9}$/.test(a.celular || "")) return alerta("Celular no válido", `El teléfono celular del administrador de ${nombre} debe tener 10 dígitos y empezar por 3.`);
+        if (!a.password || a.password.length < 8) return alerta("Contraseña temporal", `Genere o escriba una contraseña temporal de al menos 8 caracteres para el administrador de ${nombre}.`);
+        administradores[d.id] = { ...a };
+    }
+
     const datos = {
-        expedidaPor,
-        acuerdoCreacion,
         acuerdo: { numero, anio, archivo: borrador.acuerdoArchivo },
-        consejoseccional: document.getElementById("consejo").value,
+        consejoseccional: CONSEJO,
         fechaInicio: inicio,
         fechaFin: fin,
         descripcion: document.getElementById("descripcion").value.trim(),
         resolucion,
+        administradores,
         distribuciones: borrador.distribuciones.map(r => ({ origenId: Number(r.origenId), destinoId: Number(r.destinoId), procesos: Number(r.procesos), trasladados: Number(r.trasladados || 0) }))
     };
 
@@ -741,8 +789,8 @@ function guardarMedida(event) {
     const cantidad = despachosInvolucrados(medida).length;
 
     if (!id) {
-        mostrarDialogoConfirmacion("Medida creada",
-            `${resumen} ¿Desea notificar ahora a los ${cantidad} despacho(s) involucrado(s)?`,
+        mostrarDialogoConfirmacion("Medida materializada",
+            `${resumen} ¿Desea notificar ahora la medida y enviar las credenciales a los administradores de los ${cantidad} despacho(s)?`,
             () => notificarMedida(medida.id, false), "✅", "✉️ Enviar notificación", "Más tarde");
     } else if (medida.notificacion) {
         mostrarDialogoConfirmacion("Medida actualizada",

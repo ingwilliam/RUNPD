@@ -17,8 +17,8 @@
         </div>
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
-                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
-                <span style="font-weight: 600;">Administrador Central (UDAE)</span>
+                <span style="background: #ede9fe; color: #6d28d9; padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Consejo Seccional</span>
+                <span style="font-weight: 600;">CALDAS</span>
             </div>
             <div class="navbar-user"><span>👤 ▾</span></div>
         </div>
@@ -45,10 +45,10 @@
 
             <div class="content-header">
                 <div class="welcome-section" style="margin-bottom: 0;">
-                    <h1 style="margin: 0 0 0.25rem 0;">Gestión de medidas de descongestión</h1>
-                    <p>Registre las medidas expedidas por la UDAE o por los Consejos Seccionales, con su acuerdo y el plan de distribución de procesos.</p>
+                    <h1 style="margin: 0 0 0.25rem 0;">Materialización de medidas de descongestión</h1>
+                    <p>Con base en el Acuerdo del Consejo Superior de la Judicatura, materialice cada medida: plan de distribución de procesos y administrador de cada despacho origen y destino.</p>
                 </div>
-                <button class="btn-primary-action" onclick="abrirNuevaMedida()">➕ Crear medida de descongestión</button>
+                <button class="btn-primary-action" style="white-space: nowrap;" onclick="abrirNuevaMedida()">➕ Materializar medida</button>
             </div>
 
             <!-- Indicadores -->
@@ -56,18 +56,10 @@
 
             <!-- Filtros -->
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1rem 1.25rem; margin-bottom: 1rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                <div style="display: grid; grid-template-columns: 2fr 1.2fr 1fr 1fr auto; gap: 0.75rem; align-items: end;">
+                <div style="display: grid; grid-template-columns: 2fr 1fr auto; gap: 0.75rem; align-items: end;">
                     <div class="form-group" style="margin: 0;">
                         <label for="filtro-busqueda">Buscar</label>
-                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Número de acuerdo o de resolución, o nombre de despacho" oninput="renderizarTabla()">
-                    </div>
-                    <div class="form-group" style="margin: 0;">
-                        <label for="filtro-expedida">Expedida por</label>
-                        <select id="filtro-expedida" class="form-control" onchange="renderizarTabla()"></select>
-                    </div>
-                    <div class="form-group" style="margin: 0;">
-                        <label for="filtro-consejo">Consejo Seccional</label>
-                        <select id="filtro-consejo" class="form-control" onchange="renderizarTabla()"></select>
+                        <input type="search" id="filtro-busqueda" class="form-control" placeholder="🔍 Acuerdo, resolución, despacho o administrador" oninput="renderizarTabla()">
                     </div>
                     <div class="form-group" style="margin: 0;">
                         <label for="filtro-vigencia">Vigencia</label>
@@ -90,11 +82,10 @@
                     <thead>
                         <tr>
                             <th>Medida (Acuerdo)</th>
-                            <th>Expedida por</th>
-                            <th>Consejo Seccional</th>
                             <th>Vigencia</th>
-                            <th>Resolución / Requisito</th>
+                            <th>Resolución</th>
                             <th>Plan de Distribución</th>
+                            <th>Administradores</th>
                             <th>Acciones</th>
                         </tr>
                     </thead>
@@ -108,38 +99,17 @@
     <div id="modal-medida" class="modal-overlay">
         <div class="modal-card" style="max-width: 1000px; width: 96%;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem;">
-                <h2 id="form-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📝 Crear medida de descongestión</h2>
+                <h2 id="form-titulo" style="font-size: 1.15rem; color: var(--text-main); font-weight: 600; margin: 0;">📝 Materializar medida de descongestión</h2>
                 <button type="button" onclick="cerrarModal('modal-medida')" style="background: none; border: none; font-size: 1.25rem; cursor: pointer; color: var(--text-muted);">✕</button>
             </div>
 
             <form id="form-medida" onsubmit="guardarMedida(event)">
                 <input type="hidden" id="medida-id">
 
-                <!-- QUIÉN EXPIDE LA MEDIDA -->
-                <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 1.25rem;">
-                    <div style="font-size: 0.85rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.6rem;">¿Quién expide el acuerdo de la medida?</div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem;">
-                        <label id="opcion-udae" style="display: flex; gap: 0.6rem; align-items: flex-start; border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.65rem 0.8rem; cursor: pointer; background: #ffffff;">
-                            <input type="radio" name="expedida-por" value="UDAE" checked onchange="cambiarEntidad()" style="margin-top: 0.2rem; accent-color: #166534;">
-                            <span style="font-size: 0.82rem;">
-                                <strong style="color: #166534;">🏢 UDAE · Camino A</strong><br>
-                                <span style="color: var(--text-muted);">Acuerdo de la medida y, si aplica, resolución de creación de cargos.</span>
-                            </span>
-                        </label>
-                        <label id="opcion-consejo" style="display: flex; gap: 0.6rem; align-items: flex-start; border: 2px solid #e2e8f0; border-radius: 8px; padding: 0.65rem 0.8rem; cursor: pointer; background: #ffffff;">
-                            <input type="radio" name="expedida-por" value="CONSEJO" onchange="cambiarEntidad()" style="margin-top: 0.2rem; accent-color: #7c3aed;">
-                            <span style="font-size: 0.82rem;">
-                                <strong style="color: #7c3aed;">📜 Consejo Seccional · Camino B</strong><br>
-                                <span style="color: var(--text-muted);">Acuerdo de redistribución. Requiere el acuerdo de creación de despachos de la UDAE.</span>
-                            </span>
-                        </label>
-                    </div>
-                </div>
-
                 <!-- SECCIÓN 1: ACUERDO -->
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
                     <span style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">1</span>
-                    <span id="titulo-acuerdo">📜 Acuerdo de la medida (UDAE)</span>
+                    📜 Acuerdo del Consejo Superior de la Judicatura
                 </div>
                 <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1rem;">
                     <div class="form-group">
@@ -151,8 +121,8 @@
                         <select id="acuerdo-anio" class="form-control" required></select>
                     </div>
                     <div class="form-group">
-                        <label for="consejo" id="label-consejo">Consejo Seccional de la medida</label>
-                        <select id="consejo" class="form-control" required onchange="cambiarConsejo()"></select>
+                        <label for="consejo">Consejo Seccional</label>
+                        <input type="text" id="consejo" class="form-control" readonly style="background: #f1f5f9; font-weight: 600;">
                     </div>
                     <div class="form-group">
                         <label for="fecha-inicio">Vigencia de la medida (inicio)</label>
@@ -174,28 +144,7 @@
                 </div>
                 <div id="resumen-vigencia" style="display: none; border-radius: 6px; padding: 0.6rem 0.8rem; font-size: 0.8rem; margin: -0.25rem 0 1.25rem 0;"></div>
 
-                <!-- SECCIÓN 2 (CONSEJO): REQUISITO OBLIGATORIO -->
-                <div id="seccion-requisito" style="display: none;">
-                    <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: #7c3aed; margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
-                        <span style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: #7c3aed; color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">2</span>
-                        📄 Requisito: acuerdo de creación de despachos de la UDAE <span style="font-weight: 400; color: #b91c1c; font-size: 0.78rem;">(obligatorio)</span>
-                    </div>
-                    <div style="background: #fef3c7; border: 1px solid #fde68a; color: #92400e; border-radius: 6px; padding: 0.55rem 0.8rem; font-size: 0.78rem; margin-bottom: 0.75rem;">
-                        El Consejo Seccional no crea despachos. Indique el acuerdo de la UDAE que creó los despachos con medidas permanentes y transitorias que usará esta medida.
-                    </div>
-                    <div class="form-grid" style="grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 1.25rem; margin-bottom: 1.5rem;">
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="creacion-numero">Número del acuerdo de creación (UDAE)</label>
-                            <input type="text" id="creacion-numero" class="form-control" placeholder="Ej: PCSJA25-12755" oninput="this.value = this.value.toUpperCase()">
-                        </div>
-                        <div class="form-group" style="margin-bottom: 0;">
-                            <label for="creacion-anio">Año de expedición</label>
-                            <select id="creacion-anio" class="form-control"></select>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- SECCIÓN 2 (UDAE): RESOLUCIÓN DE CREACIÓN DE CARGOS (OPCIONAL) -->
+                <!-- SECCIÓN 2: RESOLUCIÓN DE CREACIÓN DE CARGOS (OPCIONAL) -->
                 <div id="seccion-resolucion">
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
                     <span style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">2</span>
@@ -237,15 +186,25 @@
                 </div>
                 <div style="background: #f0f9ff; border: 1px solid #bae6fd; color: #0c4a6e; border-radius: 6px; padding: 0.55rem 0.8rem; font-size: 0.78rem; margin-bottom: 0.75rem;">
                     ℹ️ Defina cuántos procesos se autoriza trasladar de cada despacho origen a cada despacho destino con medida de descongestión. Puede agregar varias distribuciones.
-                    Los despachos deben estar creados previamente en <a href="gestion_despachos.html" target="_blank" style="color: #0369a1; font-weight: 600;">Gestión y Creación de Despachos</a>.
+                    Los despachos ya fueron garantizados por la UDAE en <em>Gestión y Creación de Despachos</em>.
                 </div>
                 <div id="lista-distribuciones"></div>
-                <div id="resumen-distribucion" style="margin: 0.75rem 0 1rem;"></div>
+                <div id="resumen-distribucion" style="margin: 0.75rem 0 1.5rem;"></div>
+
+                <!-- SECCIÓN 4: ADMINISTRADORES DE LOS DESPACHOS -->
+                <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.9rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.75rem; border-bottom: 2px solid #e2e8f0; padding-bottom: 0.3rem;">
+                    <span style="width: 1.5rem; height: 1.5rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.75rem;">4</span>
+                    👤 Información del Administrador del Despacho
+                </div>
+                <div style="background: #fef3c7; border: 1px solid #fde68a; color: #92400e; border-radius: 6px; padding: 0.55rem 0.8rem; font-size: 0.78rem; margin-bottom: 0.75rem;">
+                    Registre el administrador de cada despacho de la medida. Es el <strong>único autorizado</strong>: en el despacho origen para registrar los procesos y en el despacho destino para gestionarlos.
+                </div>
+                <div id="lista-administradores"></div>
 
                 <!-- Botones -->
                 <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; border-top: 1px solid #e2e8f0; padding-top: 1rem;">
                     <button type="button" class="btn btn-secondary" style="padding: 0.75rem 1.5rem;" onclick="cerrarModal('modal-medida')">Cancelar</button>
-                    <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; font-size: 0.95rem;">💾 Crear medida</button>
+                    <button type="submit" id="btn-guardar" class="btn-primary-action" style="padding: 0.75rem 1.75rem; font-size: 0.95rem;">💾 Materializar medida</button>
                 </div>
             </form>
         </div>

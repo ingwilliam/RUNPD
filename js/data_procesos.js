@@ -1,7 +1,8 @@
 // =====================================================================
-// RUNPD - Datos del prototipo: registro de procesos del despacho permanente
-// El despacho permanente registra los procesos que trasladará DENTRO de las
-// medidas de descongestión en las que participa como origen (ver data_medidas.js).
+// RUNPD - Datos del prototipo: registro de procesos del despacho origen
+// El despacho origen registra los procesos que trasladará DENTRO de las medidas
+// de descongestión que materializó el Consejo Seccional (ver data_medidas.js) y
+// los envía directamente al Administrador del despacho destino de la medida.
 // =====================================================================
 const dbProcesos = {
     // Catálogos
@@ -24,11 +25,10 @@ const dbProcesos = {
     // Estado del proceso dentro del flujo de descongestión (clases de main.css)
     estadosEnvio: {
         pendiente:   { label: "Pendiente de envío", clase: "badge badge-muted" },
-        enviado:     { label: "Enviado al Consejo", clase: "badge badge-success" },
-        distribuido: { label: "Distribuido",        clase: "badge-status active" }
+        enviado:     { label: "Enviado al despacho destino", clase: "badge badge-success" }
     },
 
-    // Despacho PERMANENTE que registra (es origen en el plan de distribución de las medidas)
+    // Despacho ORIGEN que registra (el administrador se define en cada medida)
     despachoActual: {
         id: 101,
         consejoseccional: "CALDAS",
@@ -41,16 +41,13 @@ const dbProcesos = {
         tipo: "Permanente",
         codigoDespacho: "170014105002",
         nombreDespacho: "JUZGADO 002 LABORAL MUNICIPAL DE MANIZALES",
-        estado: "Activo",
-        adminPrimerNombre: "Luis",
-        adminSegundoNombre: "Fernando",
-        adminPrimerApellido: "Giraldo",
-        adminSegundoApellido: "Restrepo",
-        adminCorreo: "j02lpmmanizales@cendoj.ramajudicial.gov.co"
+        estado: "Activo"
     },
 
     // Medidas de descongestión en las que este despacho participa como ORIGEN.
-    // cupo = procesos que el plan de distribución autoriza trasladar desde este despacho.
+    // destinos[].procesos = procesos que la medida autoriza trasladar a ese destino.
+    // administradorOrigen = quien está autorizado en esta medida para registrar y enviar.
+    // destinos[].administrador = único autorizado en el destino para gestionar los procesos.
     medidas: [
         {
             id: 1,
@@ -60,8 +57,13 @@ const dbProcesos = {
             fechaInicio: "2026-01-15",
             fechaFin: "2026-12-31",
             descripcion: "Medida de descongestión para la especialidad laboral en Manizales.",
+            administradorOrigen: { nombre: "Luis Fernando Giraldo Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821" },
             destinos: [
-                { nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 40 }
+                {
+                    nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
+                    procesos: 40,
+                    administrador: { nombre: "Laura Giraldo Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390" }
+                }
             ]
         },
         {
@@ -72,8 +74,13 @@ const dbProcesos = {
             fechaInicio: "2026-07-01",
             fechaFin: "2027-03-31",
             descripcion: "Ampliación de la medida laboral para procesos en estado de fallo.",
+            administradorOrigen: { nombre: "Luis Fernando Giraldo Restrepo", correo: "lgiraldor@cendoj.ramajudicial.gov.co", celular: "3104567821" },
             destinos: [
-                { nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES", procesos: 15 }
+                {
+                    nombre: "JUZGADO 801 LABORAL MUNICIPAL TRANSITORIO DE MANIZALES",
+                    procesos: 15,
+                    administrador: { nombre: "Laura Giraldo Henao", correo: "lgiraldo@cendoj.ramajudicial.gov.co", celular: "3015562390" }
+                }
             ]
         }
     ],
