@@ -1,0 +1,131 @@
+{
+  "_ayuda": "Ejemplo de referencia. Las claves que empiezan con _ se ignoran. Una sección omitida o null conserva el texto guía de la plantilla. Los textos largos son listas de párrafos: '- ' al inicio crea una viñeta y **texto** va en negrita. frecuencia: diario | ocasional | definida | a_solicitud. 'capturas' (en cada historia) y 'capturas_generales' incrustan PNG: [{'archivo': 'hu/capturas/....png', 'titulo': '...', 'ancho_in': 6}]; si el archivo no existe se avisa y se omite. Responsables: lider_funcional = Líder Funcional; gerente_interno = Líder del producto; equipo_lider_funcional = Equipo funcional; lider_desarrollo = Equipo de desarrollo; si no se indican, van como 'Por definir'. Cada historia usa en 'como' un rol tomado del HTML y 'usuarios_identificacion' lista todos los roles de la pantalla, uno por viñeta.",
+
+  "archivo": "consulta_ciudadano",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "09/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Consulta ciudadana de procesos",
+    "lider_funcional": "Por definir",
+    "equipo_lider_funcional": "Por definir",
+    "gerente_interno": "Por definir",
+    "lider_desarrollo": "Por definir",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Consulta ciudadano"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere una pantalla pública que permita al ciudadano consultar el estado de un proceso ingresando su número de radicado."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** el ciudadano visualiza el estado actual del proceso consultado.",
+    "- Propósito: ofrecer un canal de consulta autónomo y disponible en línea.",
+    "- Beneficios: reduce las consultas presenciales y telefónicas en los despachos."
+  ],
+
+  "justificacion": [
+    "Actualmente la consulta del estado de los procesos depende de la atención directa en el despacho. La funcionalidad hace parte del módulo de consulta ciudadana."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Formulario de búsqueda por número de radicado.",
+    "- Visualización del resultado y mensajes de validación.",
+    "**No incluye:**",
+    "- Descarga de documentos del proceso.",
+    "- Autenticación del ciudadano."
+  ],
+
+  "epica": {
+    "codigo": "EP01",
+    "nombre": "Consulta ciudadana",
+    "descripcion": [
+      "Agrupa las funcionalidades que permiten a los ciudadanos consultar información de los procesos sin iniciar sesión."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Consultar proceso por número de radicado",
+      "como": "Ciudadano",
+      "quiero": "consultar un proceso ingresando su número de radicado",
+      "para": "conocer su estado sin desplazarme al despacho",
+      "descripcion": [
+        "**Descripción:** la pantalla presenta un campo obligatorio para el número de radicado y el botón Consultar.",
+        "- Entrada: número de radicado (numérico, obligatorio).",
+        "- Salida: datos básicos del proceso y su estado actual."
+      ],
+      "precondiciones": [
+        "- El proceso debe estar registrado en el sistema."
+      ],
+      "criterios": [
+        {
+          "nombre": "Consulta exitosa",
+          "dado": "que el ciudadano ingresa un número de radicado existente,",
+          "cuando": "presiona el botón Consultar,",
+          "entonces": "el sistema muestra los datos básicos y el estado del proceso."
+        },
+        {
+          "nombre": "Campo obligatorio",
+          "dado": "que el campo de radicado está vacío,",
+          "cuando": "presiona el botón Consultar,",
+          "entonces": "el sistema muestra el mensaje \"Ingrese el número de radicado\" y no realiza la búsqueda."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/consulta_ciudadano_full.png", "titulo": "Formulario de consulta por número de radicado", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Informar proceso no encontrado",
+      "como": "Ciudadano",
+      "quiero": "recibir un mensaje claro cuando el radicado no exista",
+      "para": "verificar el dato ingresado",
+      "descripcion": [
+        "**Descripción:** si la búsqueda no arroja resultados, el sistema informa que no se encontró el proceso."
+      ],
+      "criterios": [
+        {
+          "nombre": "Radicado inexistente",
+          "dado": "que el ciudadano ingresa un radicado que no existe,",
+          "cuando": "presiona el botón Consultar,",
+          "entonces": "el sistema muestra el mensaje \"No se encontró el proceso\"."
+        }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/consulta_ciudadano_full.png", "titulo": "Pantalla completa de la consulta ciudadana", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Ciudadano:** usuario externo, sin autenticación, uso ocasional."
+  ],
+  "frecuencia": "diario",
+  "acceso": { "web": "Sí", "externo": "Sí", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Despachos judiciales.",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- ¿Qué datos del proceso se deben mostrar al ciudadano?",
+    "- ¿Se debe incluir un captcha en el formulario?"
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "09/10/2026", "descripcion": "Versión inicial" }
+}

@@ -1,0 +1,300 @@
+{
+  "_ayuda": "Historia de usuario de crear_procesos_despacho_permanantes.html (Registro de procesos por medida de descongestión, Despacho Origen). Las claves que empiezan con _ se ignoran.",
+
+  "archivo": "crear_procesos_despacho_permanantes",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "13/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Registro y envío de procesos por medida de descongestión (Despacho Origen)",
+    "lider_funcional": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "equipo_lider_funcional": "Camilo Alejandro Romero Laiton (cromerol@cendoj.ramajudicial.gov.co), Luis Carlos Mendivil Blanquicet (lmendivb@cendoj.ramajudicial.gov.co) y José Fernando Castro Roa (jcastroroa@cendoj.ramajudicial.gov.co)",
+    "gerente_interno": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "lider_desarrollo": "Jaime Alberto Silva Rodriguez (jsilvar@cendoj.ramajudicial.gov.co) y William Alexander Barbosa Fuentes (wbarbosf@cendoj.ramajudicial.gov.co)",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Registro de procesos / Despacho Origen"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere una pantalla para que el Administrador del Despacho (despacho origen), único autorizado en la medida de descongestión, seleccione la medida materializada por el Consejo Seccional, registre los procesos con sus partes (demandantes y demandados) hasta completar el número autorizado y los envíe directamente al administrador del despacho destino.",
+    "El envío se realiza con copia al Consejo Seccional para que supervise y verifique el cumplimiento de la medida."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** los procesos registrados quedan enviados al administrador del despacho destino dentro del número autorizado por la medida, con copia al Consejo Seccional.",
+    "- Propósito: trasladar a los despachos de descongestión los procesos autorizados por el Acuerdo.",
+    "- Beneficios: concentra en el administrador autorizado el registro y el envío, respeta el máximo autorizado y deja constancia para la supervisión del Consejo Seccional."
+  ],
+
+  "justificacion": [
+    "La medida de descongestión materializada por el Consejo Seccional define cuántos procesos puede trasladar el despacho origen y quién es el administrador autorizado en la medida. El despacho origen requiere una pantalla para, dentro de esa medida, registrar los procesos con sus partes y enviarlos directamente al administrador del despacho destino, sin pasar por intermediarios, con copia al Consejo Seccional para la supervisión. La funcionalidad hace parte del módulo de registro de procesos del RUNPD."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Selección de la medida de descongestión con su resumen (acuerdo, resolución, vigencia, administradores y avance).",
+    "- Registro, edición y eliminación de procesos pendientes con sus partes (demandantes y demandados).",
+    "- Control del número de procesos autorizados por la medida (cupo).",
+    "- Búsqueda de procesos por código, demandante o demandado y consulta del detalle del proceso.",
+    "- Envío de los procesos pendientes al administrador del despacho destino, con nota opcional y notificación por correo con copia al Consejo Seccional.",
+    "**No incluye:**",
+    "- Materialización de la medida de descongestión (Consejo Seccional) ni validación y creación de despachos (Administrador Central - UDAE).",
+    "- Recepción y gestión de los procesos en el despacho destino (módulo Recepción y Seguimiento de Procesos).",
+    "- Devolución de procesos por parte del despacho destino.",
+    "- Autenticación y gestión de usuarios en el prototipo."
+  ],
+
+  "epica": {
+    "codigo": "EP04",
+    "nombre": "Registro y envío de procesos (Despacho Origen)",
+    "descripcion": [
+      "Agrupa las funcionalidades del Administrador del Despacho (despacho origen), único autorizado en la medida de descongestión: selecciona la medida materializada por el Consejo Seccional, registra los procesos con sus partes hasta completar el número autorizado y los envía directamente al administrador del despacho destino, con copia al Consejo Seccional para la supervisión."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Seleccionar la medida de descongestión",
+      "como": "Administrador del Despacho (despacho origen)",
+      "quiero": "seleccionar la medida de descongestión en la que mi despacho participa como origen",
+      "para": "conocer cuántos procesos debo registrar y a qué administrador de despacho destino enviarlos",
+      "descripcion": [
+        "**Descripción:** la pantalla muestra la información del despacho origen (jurisdicción, tipo, especialidad, ubicación y código) y el paso 1 presenta el selector con las medidas en las que el despacho es origen, cada una con su cupo ('Acuerdo ... — N proceso(s) a registrar'). Al seleccionar una medida, el resumen muestra el acuerdo y la resolución, la vigencia con su estado (Vigente, Por vencer, Vencida o Inicia el ...), las cifras (autorizados, registrados, enviados y por registrar), las tarjetas de los administradores autorizados (origen ➔ destinos) y la barra de avance."
+      ],
+      "precondiciones": [
+        "- El Consejo Seccional materializó la medida de descongestión.",
+        "- El despacho origen tiene una medida asignada."
+      ],
+      "criterios": [
+        {
+          "nombre": "Selección de la medida",
+          "dado": "que el despacho tiene medidas de descongestión asignadas,",
+          "cuando": "el administrador selecciona una medida del selector,",
+          "entonces": "el sistema habilita el paso de registro y muestra el resumen de la medida con su cupo y su estado de vigencia."
+        },
+        {
+          "nombre": "Una sola medida",
+          "dado": "que el despacho tiene una sola medida asignada,",
+          "cuando": "la pantalla se carga,",
+          "entonces": "el sistema la selecciona automáticamente."
+        },
+        {
+          "nombre": "Sin medidas",
+          "dado": "que el despacho no tiene medidas de descongestión asignadas,",
+          "cuando": "la pantalla se carga,",
+          "entonces": "el selector queda deshabilitado con el mensaje 'Su despacho no tiene medidas de descongestión asignadas'."
+        },
+        {
+          "nombre": "Administradores de la medida",
+          "dado": "que se selecciona una medida,",
+          "cuando": "el sistema muestra el resumen,",
+          "entonces": "presenta el administrador autorizado del despacho origen y el de cada despacho destino; si el Consejo Seccional aún no registra el administrador de un destino, lo advierte."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/crear_procesos_despacho_permanantes_full.png", "titulo": "Pantalla de registro de procesos por medida con selección de la medida", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Registrar un proceso con sus partes",
+      "como": "Administrador del Despacho (despacho origen)",
+      "quiero": "registrar un proceso con sus datos y sus partes (demandantes y demandados)",
+      "para": "incluirlo en la medida de descongestión hasta completar el número autorizado",
+      "descripcion": [
+        "**Descripción:** el botón 'Registrar proceso' abre el formulario modal dentro de la medida seleccionada; el encabezado indica 'Proceso N de M autorizados'. Se capturan: código del proceso (23 dígitos, con contador), estado del proceso (catálogo de estados), fecha de última actuación (obligatoria, no posterior a hoy), link del proceso (opcional) y observaciones (opcional, máximo 1.000 caracteres). Para demandantes y demandados se agrega una o varias partes, de tipo persona natural (nombres y apellidos) o jurídica (nombre o razón social), todas con correo electrónico obligatorio."
+      ],
+      "precondiciones": [
+        "- Hay una medida seleccionada con cupo disponible."
+      ],
+      "criterios": [
+        {
+          "nombre": "Registro exitoso",
+          "dado": "que la medida tiene cupo disponible,",
+          "cuando": "el administrador diligencia los campos obligatorios y guarda,",
+          "entonces": "el sistema registra el proceso en la medida con estado 'Pendiente de envío' y muestra 'Proceso registrado' indicando cuántos faltan por registrar."
+        },
+        {
+          "nombre": "Código del proceso",
+          "dado": "que el administrador escribe el código del proceso,",
+          "cuando": "ingresa caracteres,",
+          "entonces": "el sistema solo admite dígitos hasta completar 23 y muestra el contador de dígitos."
+        },
+        {
+          "nombre": "Código repetido",
+          "dado": "que el administrador guarda un proceso,",
+          "cuando": "el código ya está registrado en otro proceso,",
+          "entonces": "el sistema muestra el mensaje 'Código repetido' y no guarda."
+        },
+        {
+          "nombre": "Partes del proceso",
+          "dado": "que el administrador registra las partes,",
+          "cuando": "agrega demandantes o demandados (persona natural o jurídica),",
+          "entonces": "el sistema exige al menos una de cada una con sus campos obligatorios (primer nombre y primer apellido, o razón social, y correo electrónico)."
+        }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Registrar hasta el número de procesos autorizado",
+      "como": "Administrador del Despacho (despacho origen)",
+      "quiero": "registrar procesos hasta completar el número autorizado por la medida",
+      "para": "respetar el máximo de procesos que el Acuerdo autoriza trasladar",
+      "descripcion": [
+        "**Descripción:** el número de procesos autorizados (cupo) corresponde a lo que la medida autoriza trasladar a los despachos destino. El formulario indica 'Proceso N de M autorizados' y el resumen de la medida muestra los procesos registrados frente a los autorizados y cuántos faltan."
+      ],
+      "precondiciones": [
+        "- Hay una medida seleccionada."
+      ],
+      "criterios": [
+        {
+          "nombre": "Cupo disponible",
+          "dado": "que la medida no ha completado su cupo,",
+          "cuando": "el administrador registra procesos,",
+          "entonces": "el sistema los admite e informa cuántos faltan por registrar."
+        },
+        {
+          "nombre": "Cupo completo",
+          "dado": "que se registraron todos los procesos autorizados,",
+          "cuando": "el administrador intenta registrar otro,",
+          "entonces": "el sistema muestra 'No puede registrar más procesos' y el botón de registro queda deshabilitado."
+        },
+        {
+          "nombre": "Medida vencida",
+          "dado": "que la medida está vencida,",
+          "cuando": "el administrador intenta registrar un proceso,",
+          "entonces": "el sistema indica que la medida venció y no admite nuevos registros."
+        },
+        {
+          "nombre": "Numeración del proceso",
+          "dado": "que el administrador abre el formulario de registro,",
+          "cuando": "la medida ya tiene procesos registrados,",
+          "entonces": "el encabezado muestra 'Proceso N de M autorizados' con el número del proceso que va a registrar."
+        }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Consultar, editar y eliminar los procesos registrados",
+      "como": "Administrador del Despacho (despacho origen)",
+      "quiero": "buscar, ver, editar o eliminar los procesos registrados en la medida",
+      "para": "corregir la información de los procesos antes de enviarlos al despacho destino",
+      "descripcion": [
+        "**Descripción:** la tabla del paso 2 lista los procesos de la medida con las columnas Código Proceso, Partes (demandantes y demandados), Estado Proceso, Última Actuación (con los días transcurridos), Link, Estado (Pendiente de envío o Enviado, con fecha) y Acciones. El botón sobre el código abre el detalle del proceso (medida, estado, actuación, partes, observaciones, link y, si aplica, fecha y nota de envío). Solo los procesos pendientes se pueden editar o eliminar; los enviados solo se consultan."
+      ],
+      "precondiciones": [
+        "- Hay una medida seleccionada y al menos un proceso registrado."
+      ],
+      "criterios": [
+        {
+          "nombre": "Búsqueda de procesos",
+          "dado": "que el administrador escribe en el campo Buscar,",
+          "cuando": "ingresa el código, un demandante o un demandado,",
+          "entonces": "el sistema filtra la tabla sin distinguir tildes ni mayúsculas."
+        },
+        {
+          "nombre": "Editar un proceso pendiente",
+          "dado": "que un proceso está 'Pendiente de envío',",
+          "cuando": "el administrador lo edita y guarda,",
+          "entonces": "el sistema actualiza el proceso y muestra 'Proceso actualizado'."
+        },
+        {
+          "nombre": "Eliminar un proceso pendiente",
+          "dado": "que un proceso está 'Pendiente de envío',",
+          "cuando": "el administrador lo elimina y confirma,",
+          "entonces": "el sistema lo quita de la medida con un aviso de que la acción no se puede deshacer."
+        },
+        {
+          "nombre": "Procesos enviados bloqueados",
+          "dado": "que un proceso fue enviado al despacho destino,",
+          "cuando": "se lista en la tabla,",
+          "entonces": "solo permite ver el detalle y se muestra bloqueado (no editable ni eliminable)."
+        }
+      ]
+    },
+    {
+      "codigo": "HU05",
+      "nombre": "Enviar los procesos al despacho destino",
+      "como": "Administrador del Despacho (despacho origen)",
+      "quiero": "enviar los procesos registrados directamente al administrador del despacho destino",
+      "para": "trasladarlos dentro de la medida con copia al Consejo Seccional",
+      "descripcion": [
+        "**Descripción:** el botón 'Enviar al despacho destino' abre el modal de envío con los procesos pendientes de la medida marcados por defecto, el destinatario (administrador del despacho destino, único autorizado para gestionarlos) y la nota opcional para el destino (máximo 500 caracteres). El sistema advierte que los procesos enviados no se podrán editar ni eliminar. Al confirmar, los procesos pasan a estado 'Enviado' con su fecha, se genera la notificación por correo al administrador del despacho destino (con la relación de procesos recibidos y la acción requerida) con copia al Consejo Seccional, y el sistema muestra 'Procesos enviados'."
+      ],
+      "precondiciones": [
+        "- La medida tiene al menos un proceso pendiente de envío.",
+        "- El Consejo Seccional registró el administrador del despacho destino en la medida."
+      ],
+      "criterios": [
+        {
+          "nombre": "Envío exitoso",
+          "dado": "que hay procesos pendientes y el administrador del destino está registrado,",
+          "cuando": "el administrador marca los procesos y presiona 'Enviar procesos',",
+          "entonces": "el sistema los marca como 'Enviado' con su fecha, genera la notificación al administrador del despacho destino con copia al Consejo Seccional y muestra el mensaje 'Procesos enviados'."
+        },
+        {
+          "nombre": "Sin procesos pendientes",
+          "dado": "que la medida no tiene procesos pendientes de envío,",
+          "cuando": "el administrador intenta enviar,",
+          "entonces": "el sistema muestra 'Sin procesos pendientes'."
+        },
+        {
+          "nombre": "Falta el administrador del destino",
+          "dado": "que el Consejo Seccional aún no registra el administrador del despacho destino,",
+          "cuando": "el administrador intenta enviar los procesos,",
+          "entonces": "el sistema muestra 'Falta el administrador del destino' e impide el envío."
+        },
+        {
+          "nombre": "Selección de procesos",
+          "dado": "que el modal de envío está abierto,",
+          "cuando": "el administrador desmarca todos los procesos y presiona Enviar,",
+          "entonces": "el sistema muestra 'Seleccione procesos' y no envía; el contador siempre muestra los procesos seleccionados."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/crear_procesos_despacho_permanantes_full.png", "titulo": "Pantalla del despacho origen con el paso de registro de procesos", "ancho_in": 6 }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/crear_procesos_despacho_permanantes_full.png", "titulo": "Pantalla completa de registro de procesos por medida (Despacho Origen)", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Administrador del Despacho (despacho origen):** rol de la pantalla; único autorizado en la medida para registrar los procesos y enviarlos al despacho destino.",
+    "- **Administrador del despacho destino:** recibe los procesos enviados; único autorizado para gestionarlos hasta su terminación.",
+    "- **Administrador del Consejo Seccional:** recibe copia del envío para supervisar y verificar el cumplimiento de la medida."
+  ],
+  "frecuencia": "ocasional",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Despachos judiciales (origen y destino).",
+    "- Consejos Seccionales.",
+    "- Consejo Superior de la Judicatura.",
+    "- Unidad de Desarrollo y Análisis Estadístico (UDAE).",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- Cuando la medida tiene varios despachos destino, ¿el envío se dirige a todos a la vez o se selecciona el destino? En el prototipo el envío va a todos los destinos de la medida. Por definir.",
+    "- ¿El envío puede ser parcial (varios lotes) o debe enviarse el total autorizado? El prototipo permite envíos parciales. Por definir.",
+    "- ¿Existe un plazo para completar el cupo de la medida antes del envío? Por definir.",
+    "- ¿La notificación llega únicamente al administrador del destino con copia al Consejo Seccional, o incluye más destinatarios? Por definir.",
+    "- ¿El código del proceso es siempre el número de radicado de 23 dígitos? En el prototipo se valida así. Por definir.",
+    "- ¿La fecha de última actuación puede ser anterior al inicio de la medida? El prototipo solo impide fechas futuras. Por definir.",
+    "- ¿Un proceso enviado puede devolverse o anularse desde esta pantalla? El prototipo lo bloquea y la devolución corresponde al despacho destino. Por definir."
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "13/10/2026", "descripcion": "Versión inicial" }
+}

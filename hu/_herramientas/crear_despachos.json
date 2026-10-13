@@ -1,0 +1,289 @@
+{
+  "_ayuda": "Historia de usuario de crear_despachos.html (gestión y creación de despachos, Administrador Central - UDAE). Las claves que empiezan con _ se ignoran.",
+
+  "archivo": "crear_despachos",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "09/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Gestión y creación de despachos judiciales (Administrador Central - UDAE)",
+    "lider_funcional": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "equipo_lider_funcional": "Camilo Alejandro Romero Laiton (cromerol@cendoj.ramajudicial.gov.co), Luis Carlos Mendivil Blanquicet (lmendivb@cendoj.ramajudicial.gov.co) y José Fernando Castro Roa (jcastroroa@cendoj.ramajudicial.gov.co)",
+    "gerente_interno": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "lider_desarrollo": "Jaime Alberto Silva Rodriguez (jsilvar@cendoj.ramajudicial.gov.co) y William Alexander Barbosa Fuentes (wbarbosf@cendoj.ramajudicial.gov.co)",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Administración de despachos / UDAE"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere una pantalla para que el Administrador Central (UDAE) administre los despachos judiciales: consultarlos, crearlos, actualizar su información y activarlos o inactivarlos.",
+    "La UDAE es la única que valida y crea despachos: con el Acuerdo y/o la Resolución del Consejo Superior de la Judicatura verifica si existen los despachos origen y destino y crea los que no existan, para que el Consejo Seccional pueda materializar la medida de descongestión."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** la UDAE garantiza que los despachos origen y destino del Acuerdo y/o la Resolución existan en el sistema.",
+    "- Propósito: centralizar en el Administrador Central la validación y creación de despachos.",
+    "- Beneficios: asegura que el Consejo Seccional materialice la medida sobre despachos existentes y evita registros duplicados."
+  ],
+
+  "justificacion": [
+    "El proceso de descongestión exige que los despachos existan antes de materializar una medida. El Administrador Central (UDAE) es el único autorizado para validarlos y crearlos, por lo que requiere una pantalla que le permita verificar la existencia, crear los faltantes y mantener actualizada la información de los despachos. La funcionalidad hace parte del módulo de administración de despachos del RUNPD."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Consulta y filtrado de despachos (búsqueda, consejo seccional, especialidad, tipo y estado).",
+    "- Creación y edición de despachos con sus datos de ubicación, jurisdicción, especialidad y tipo (Permanente o Descongestión).",
+    "- Activación e inactivación de despachos.",
+    "- Indicadores de despachos registrados, activos, inactivos, permanentes y de descongestión.",
+    "**No incluye:**",
+    "- Recepción o cargue del Acuerdo y/o la Resolución del Consejo Superior (llega por fuera de esta pantalla).",
+    "- Materialización de la medida de descongestión (Consejo Seccional).",
+    "- Registro o gestión de procesos."
+  ],
+
+  "epica": {
+    "codigo": "EP02",
+    "nombre": "Administración de despachos (UDAE)",
+    "descripcion": [
+      "Agrupa las funcionalidades del Administrador Central (UDAE) para validar y crear despachos judiciales: recibe el Acuerdo y/o la Resolución del Consejo Superior de la Judicatura, verifica si existen los despachos origen y destino y crea los que no existan."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Registrar un despacho",
+      "como": "Administrador Central (UDAE)",
+      "quiero": "crear despachos judiciales con su información",
+      "para": "garantizar que existan los despachos origen y destino requeridos por el Acuerdo",
+      "descripcion": [
+        "**Descripción:** el botón 'Crear despacho' abre un formulario modal con los datos del despacho: jurisdicción, tipo de despacho, municipio, consejo seccional, distrito, circuito, especialidad, tipo (Permanente o Descongestión), código del despacho y nombre del despacho.",
+        "- Entrada: diligenciamiento de los campos obligatorios del formulario.",
+        "- Salida: el despacho queda registrado con estado Activo."
+      ],
+      "precondiciones": [
+        "- El Administrador Central (UDAE) está en la pantalla de gestión y creación de despachos."
+      ],
+      "criterios": [
+        {
+          "nombre": "Creación exitosa",
+          "dado": "que la UDAE presiona 'Crear despacho',",
+          "cuando": "diligencia los campos obligatorios y presiona Guardar,",
+          "entonces": "el sistema registra el despacho con estado Activo y muestra el mensaje 'Despacho creado'."
+        },
+        {
+          "nombre": "Campos obligatorios",
+          "dado": "que el formulario de despacho está abierto,",
+          "cuando": "la UDAE intenta guardar con algún campo obligatorio vacío,",
+          "entonces": "el sistema no registra el despacho y señala los campos requeridos."
+        },
+        {
+          "nombre": "Código único",
+          "dado": "que la UDAE ingresa el código de un despacho,",
+          "cuando": "el código ya está registrado en otro despacho,",
+          "entonces": "el sistema muestra el mensaje 'Código repetido' con el nombre del despacho existente y no guarda."
+        },
+        {
+          "nombre": "Formato del código y del nombre",
+          "dado": "que la UDAE diligencia el código y el nombre del despacho,",
+          "cuando": "escribe el código,",
+          "entonces": "el sistema admite solo dígitos (máximo 20) y convierte el nombre del despacho a mayúsculas automáticamente."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/crear_despachos_full.png", "titulo": "Pantalla de gestión y creación de despachos", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Garantizar la existencia de los despachos origen y destino",
+      "como": "Administrador Central (UDAE)",
+      "quiero": "verificar si existen los despachos origen y destino del Acuerdo y crear los que no existan",
+      "para": "que el Consejo Seccional pueda materializar la medida de descongestión",
+      "descripcion": [
+        "**Descripción:** con el Acuerdo y/o la Resolución del Consejo Superior de la Judicatura, la UDAE valida si existen los despachos origen y destino; los que no existan los crea con el formulario.",
+        "- El tipo permite distinguir los despachos Permanentes de los de Descongestión."
+      ],
+      "precondiciones": [
+        "- El Consejo Superior de la Judicatura expidió el Acuerdo y/o la Resolución."
+      ],
+      "criterios": [
+        {
+          "nombre": "Verificación de existencia",
+          "dado": "que la UDAE recibe el Acuerdo y/o la Resolución,",
+          "cuando": "busca los despachos origen y destino en la pantalla,",
+          "entonces": "el sistema muestra los despachos que ya existen."
+        },
+        {
+          "nombre": "Creación de los faltantes",
+          "dado": "que un despacho origen o destino no existe,",
+          "cuando": "la UDAE lo crea con el formulario,",
+          "entonces": "el sistema lo registra y queda disponible para materializar la medida."
+        },
+        {
+          "nombre": "No duplicidad",
+          "dado": "que la UDAE crea un despacho,",
+          "cuando": "ya existe un despacho con el mismo código,",
+          "entonces": "el sistema impide la creación para evitar duplicados."
+        },
+        {
+          "nombre": "Tipo de la medida",
+          "dado": "que la UDAE registra un despacho,",
+          "cuando": "selecciona el tipo,",
+          "entonces": "el sistema lo clasifica como Permanente o Descongestión según el Acuerdo."
+        }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Actualizar la información de un despacho",
+      "como": "Administrador Central (UDAE)",
+      "quiero": "modificar los datos de un despacho existente",
+      "para": "mantener actualizada la información de los despachos",
+      "descripcion": [
+        "**Descripción:** el botón 'Editar' de la tabla abre el formulario con los datos del despacho seleccionado para su actualización."
+      ],
+      "precondiciones": [
+        "- El despacho está registrado en la tabla de despachos."
+      ],
+      "criterios": [
+        {
+          "nombre": "Apertura con datos",
+          "dado": "que la UDAE presiona Editar en un despacho,",
+          "cuando": "se abre el formulario,",
+          "entonces": "el sistema muestra los datos del despacho y el título 'Editar: <nombre del despacho>'."
+        },
+        {
+          "nombre": "Guardar cambios",
+          "dado": "que la UDAE modifica los datos del despacho,",
+          "cuando": "presiona 'Guardar cambios',",
+          "entonces": "el sistema actualiza el despacho y muestra el mensaje 'Cambios guardados'."
+        },
+        {
+          "nombre": "Código único al editar",
+          "dado": "que la UDAE cambia el código del despacho,",
+          "cuando": "el nuevo código coincide con otro despacho,",
+          "entonces": "el sistema muestra el mensaje 'Código repetido' y no guarda."
+        },
+        {
+          "nombre": "Conservar estado",
+          "dado": "que la UDAE guarda cambios de un despacho,",
+          "cuando": "el sistema actualiza el registro,",
+          "entonces": "conserva el estado (Activo o Inactivo) y los datos no editados del despacho."
+        }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Activar o inactivar un despacho",
+      "como": "Administrador Central (UDAE)",
+      "quiero": "activar o inactivar despachos",
+      "para": "reflejar si el despacho está disponible",
+      "descripcion": [
+        "**Descripción:** la tabla ofrece el botón 'Inactivar' (para despachos activos) o 'Activar' (para despachos inactivos). La acción se confirma en un diálogo antes de aplicarse."
+      ],
+      "precondiciones": [
+        "- El despacho está registrado en la tabla de despachos."
+      ],
+      "criterios": [
+        {
+          "nombre": "Confirmación",
+          "dado": "que la UDAE presiona Inactivar o Activar,",
+          "cuando": "se interpreta la acción,",
+          "entonces": "el sistema solicita confirmación indicando el nombre del despacho."
+        },
+        {
+          "nombre": "Inactivar",
+          "dado": "que se confirma inactivar el despacho,",
+          "cuando": "la acción se ejecuta,",
+          "entonces": "el despacho queda Inactivo y la tabla se actualiza."
+        },
+        {
+          "nombre": "Activar",
+          "dado": "que el despacho está Inactivo,",
+          "cuando": "se confirma activar el despacho,",
+          "entonces": "el despacho queda Activo y la tabla se actualiza."
+        },
+        {
+          "nombre": "Cierre con Escape",
+          "dado": "que hay un diálogo abierto,",
+          "cuando": "la UDAE presiona la tecla Escape,",
+          "entonces": "el sistema cierra el diálogo."
+        }
+      ]
+    },
+    {
+      "codigo": "HU05",
+      "nombre": "Consultar y filtrar los despachos",
+      "como": "Administrador Central (UDAE)",
+      "quiero": "buscar y filtrar los despachos registrados",
+      "para": "ubicar rápidamente los despachos que existen",
+      "descripcion": [
+        "**Descripción:** la pantalla presenta indicadores y una barra de filtros sobre la tabla de despachos. La tabla muestra las columnas Despacho, Tipo de Despacho / Jurisdicción, Ubicación, Especialidad, Estado y Acciones."
+      ],
+      "criterios": [
+        {
+          "nombre": "Búsqueda de texto",
+          "dado": "que la UDAE escribe en el campo Buscar,",
+          "cuando": "ingresa nombre, código o municipio,",
+          "entonces": "el sistema filtra la tabla sin distinguir tildes ni mayúsculas."
+        },
+        {
+          "nombre": "Filtros combinados",
+          "dado": "que la UDAE selecciona valores en los filtros,",
+          "cuando": "filtra por Consejo Seccional, Especialidad, Tipo o Estado,",
+          "entonces": "la tabla muestra solo los despachos que cumplen los criterios."
+        },
+        {
+          "nombre": "Indicadores",
+          "dado": "que la UDAE hace clic en una tarjeta de indicador,",
+          "cuando": "selecciona Despachos registrados, Activos, Inactivos, Permanentes o De descongestión,",
+          "entonces": "la tabla se filtra por ese indicador y, al hacer clic de nuevo, vuelve a mostrar todos."
+        },
+        {
+          "nombre": "Sin resultados y limpiar",
+          "dado": "que ningún despacho cumple los filtros,",
+          "cuando": "la tabla queda vacía,",
+          "entonces": "el sistema muestra el mensaje 'No hay despachos que coincidan con los filtros' con la opción de limpiar, y el botón Limpiar restablece todos los filtros."
+        }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/crear_despachos_full.png", "titulo": "Pantalla completa de gestión y creación de despachos", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Administrador Central (UDAE):** único rol que valida y crea despachos; consulta, crea, edita y activa o inactiva despachos judiciales."
+  ],
+  "frecuencia": "ocasional",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Unidad de Desarrollo y Análisis Estadístico (UDAE).",
+    "- Consejo Superior de la Judicatura.",
+    "- Consejos Seccionales.",
+    "- Despachos judiciales.",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- La recepción o cargue del Acuerdo y/o la Resolución del Consejo Superior, ¿se realiza en otra pantalla? Por definir.",
+    "- ¿El código del despacho tiene una estructura específica (por ejemplo, DANE del municipio + entidad + número)? En el prototipo solo se valida que sea numérico y de máximo 20 dígitos.",
+    "- ¿Un despacho inactivado puede reactivarse siempre o depende de la vigencia de la medida?",
+    "- ¿El tipo (Permanente o Descongestión) determina la vigencia o la fecha de finalización del despacho? Esta pantalla no captura fechas.",
+    "- Los datos del Administrador del Despacho (nombres, correo y contraseña) existen en los datos del prototipo, ¿se registran desde esta pantalla o desde la materialización de la medida?"
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "13/10/2026", "descripcion": "Versión inicial" }
+}

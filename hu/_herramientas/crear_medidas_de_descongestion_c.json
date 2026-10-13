@@ -1,0 +1,413 @@
+{
+  "_ayuda": "Historia de usuario de crear_medidas_de_descongestion_c.html (Materialización de medidas de descongestión, Administrador del Consejo Seccional). Las claves que empiezan con _ se ignoran.",
+
+  "archivo": "crear_medidas_de_descongestion_c",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "13/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Materialización de medidas de descongestión (Consejo Seccional)",
+    "lider_funcional": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "equipo_lider_funcional": "Camilo Alejandro Romero Laiton (cromerol@cendoj.ramajudicial.gov.co), Luis Carlos Mendivil Blanquicet (lmendivb@cendoj.ramajudicial.gov.co) y José Fernando Castro Roa (jcastroroa@cendoj.ramajudicial.gov.co)",
+    "gerente_interno": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "lider_desarrollo": "Jaime Alberto Silva Rodriguez (jsilvar@cendoj.ramajudicial.gov.co) y William Alexander Barbosa Fuentes (wbarbosf@cendoj.ramajudicial.gov.co)",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Medidas de descongestión / Consejo Seccional"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere una pantalla para que el Administrador del Consejo Seccional materialice las medidas de descongestión con base en el Acuerdo del Consejo Superior de la Judicatura: registre el acuerdo y su vigencia, la resolución de creación de cargos cuando aplique, el plan de distribución de procesos (despacho origen ➔ despacho destino y número de procesos) y la información del Administrador de cada despacho origen y destino.",
+    "Desde la misma pantalla el Consejo Seccional notifica la medida a los despachos involucrados y supervisa el avance del traslado de procesos hasta la finalización."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** la medida de descongestión queda materializada en PEYGI (RUNPD) y notificada a los despachos origen y destino, y su avance es visible para la supervisión.",
+    "- Propósito: registrar la medida adoptada por el Acuerdo y habilitar a los administradores de los despachos para registrar y gestionar los procesos.",
+    "- Beneficios: formaliza el plan de distribución, entrega las credenciales de acceso a los administradores y permite al Consejo Seccional hacer seguimiento al cumplimiento hasta la finalización."
+  ],
+
+  "justificacion": [
+    "El Acuerdo del Consejo Superior de la Judicatura define la medida de descongestión, pero es el Consejo Seccional el que la materializa en el sistema. Para que el plan de distribución se pueda ejecutar, el Consejo debe registrar el acuerdo y su vigencia, definir cuántos procesos se trasladan de cada despacho origen a cada despacho destino y designar al administrador de cada despacho, que es el único autorizado para registrar (origen) o gestionar (destino) los procesos. La misma pantalla notifica la medida a los despachos y permite supervisar el avance. La funcionalidad hace parte del módulo de medidas de descongestión del RUNPD."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Registro y edición de la medida: acuerdo (número, año, vigencia y adjunto PDF) y resolución de creación de cargos (opcional).",
+    "- Definición del plan de distribución de procesos por despacho origen ➔ destino y número de procesos.",
+    "- Registro de la información del Administrador de cada despacho origen y destino.",
+    "- Notificación de la medida a los despachos involucrados mediante correo con las credenciales de acceso.",
+    "- Consulta, filtrado, indicadores y detalle de las medidas con el avance de traslado.",
+    "**No incluye:**",
+    "- Validación y creación de los despachos origen y destino (Administrador Central - UDAE).",
+    "- Registro, gestión o recepción de los procesos por parte de los despachos.",
+    "- Registro de la forma de terminación del proceso y notificación a las partes (despachos).",
+    "- Autenticación y gestión de usuarios en el prototipo."
+  ],
+
+  "epica": {
+    "codigo": "EP03",
+    "nombre": "Medidas de descongestión (Consejo Seccional)",
+    "descripcion": [
+      "Agrupa las funcionalidades del Administrador del Consejo Seccional para materializar las medidas de descongestión con base en el Acuerdo del Consejo Superior de la Judicatura: registra el acuerdo y su vigencia, define el plan de distribución de procesos (despacho origen ➔ destino y número de procesos), registra la información del Administrador de cada despacho origen y destino, notifica a los despachos y supervisa el cumplimiento hasta la finalización."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Materializar la medida con el Acuerdo y su vigencia",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "registrar la medida de descongestión con el Acuerdo del Consejo Superior de la Judicatura y su vigencia",
+      "para": "formalizar en PEYGI la medida adoptada y habilitar su ejecución",
+      "descripcion": [
+        "**Descripción:** el botón 'Materializar medida' abre el formulario modal. La sección 1 captura el acuerdo: número del acto (obligatorio, se convierte a mayúsculas), año de expedición (obligatorio, lista de los últimos seis años), consejo seccional (precargado con el consejo de la sesión), vigencia de la medida (fecha inicio y fecha fin, obligatorias), adjunto PDF del acuerdo (obligatorio) y descripción u objeto (opcional, máximo 300 caracteres).",
+        "- Entrada: diligenciamiento de los datos del acuerdo y su vigencia.",
+        "- Salida: la medida queda registrada con el consejo seccional de la sesión (CALDAS) y el sistema ofrece notificarla."
+      ],
+      "precondiciones": [
+        "- El Administrador del Consejo Seccional está en la pantalla de Gestión de Medidas de Descongestión.",
+        "- Los despachos origen y destino ya existen (los garantiza la UDAE)."
+      ],
+      "criterios": [
+        {
+          "nombre": "Creación exitosa",
+          "dado": "que el administrador presiona 'Materializar medida',",
+          "cuando": "diligencia los campos obligatorios, adjunta el PDF del acuerdo y presiona 'Materializar medida',",
+          "entonces": "el sistema registra la medida y muestra el mensaje 'Medida materializada' ofreciendo notificarla."
+        },
+        {
+          "nombre": "Campos obligatorios",
+          "dado": "que el formulario de la medida está abierto,",
+          "cuando": "el administrador intenta guardar sin número, año, fechas de vigencia o adjunto del acuerdo,",
+          "entonces": "el sistema no registra la medida y señala los campos requeridos."
+        },
+        {
+          "nombre": "Acuerdo repetido",
+          "dado": "que el administrador registra un acuerdo,",
+          "cuando": "ya existe una medida con el mismo número y año,",
+          "entonces": "el sistema muestra el mensaje 'Acuerdo repetido' y no guarda."
+        },
+        {
+          "nombre": "Vigencia válida",
+          "dado": "que el administrador ingresa las fechas de vigencia,",
+          "cuando": "la fecha fin es anterior o igual a la fecha de inicio,",
+          "entonces": "el sistema muestra el mensaje 'Revise la vigencia' y no guarda."
+        }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Registrar la resolución de creación de cargos (opcional)",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "indicar si la medida cuenta con resolución de creación de cargos y registrar sus datos",
+      "para": "dejar constancia de los cargos creados para la medida cuando aplique",
+      "descripcion": [
+        "**Descripción:** la sección 2 es opcional. La casilla 'La medida cuenta con resolución de creación de cargos' habilita los campos número de la resolución (se convierte a mayúsculas), año de expedición y adjunto PDF. Si no se marca, el sistema indica 'Sin resolución de creación de cargos'."
+      ],
+      "precondiciones": [
+        "- El formulario de la medida está abierto."
+      ],
+      "criterios": [
+        {
+          "nombre": "Sin resolución",
+          "dado": "que la casilla de resolución está desmarcada,",
+          "cuando": "el administrador guarda la medida,",
+          "entonces": "el sistema registra la medida sin resolución de creación de cargos."
+        },
+        {
+          "nombre": "Con resolución",
+          "dado": "que el administrador marca la casilla de resolución,",
+          "cuando": "el sistema habilita los campos,",
+          "entonces": "exige el número, el año y el adjunto PDF de la resolución de creación de cargos."
+        },
+        {
+          "nombre": "Resolución incompleta",
+          "dado": "que la casilla de resolución está marcada,",
+          "cuando": "falta el número o el adjunto PDF de la resolución,",
+          "entonces": "el sistema muestra el mensaje 'Resolución incompleta' o 'Falta un adjunto' y no guarda."
+        }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Definir y validar el plan de distribución de procesos",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "definir cuántos procesos se trasladan de cada despacho origen a cada despacho destino",
+      "para": "establecer el máximo autorizado de la medida",
+      "descripcion": [
+        "**Descripción:** la sección 3 permite agregar distribuciones. Cada fila tiene despacho origen (despachos Permanentes del consejo), despacho destino (despachos de Descongestión del consejo) y número de procesos. Se pueden agregar o quitar filas y el sistema muestra en vivo el total del plan y los procesos por despacho de destino."
+      ],
+      "precondiciones": [
+        "- El formulario de la medida está abierto.",
+        "- Existen despachos Permanentes y de Descongestión del consejo seccional."
+      ],
+      "criterios": [
+        {
+          "nombre": "Agregar distribución",
+          "dado": "que el administrador presiona 'Agregar distribución',",
+          "cuando": "selecciona el despacho origen, el despacho destino e ingresa el número de procesos,",
+          "entonces": "el sistema incorpora la distribución al plan y la muestra numerada."
+        },
+        {
+          "nombre": "Múltiples distribuciones y total",
+          "dado": "que el plan tiene una o más distribuciones,",
+          "cuando": "el administrador agrega, modifica o quita filas,",
+          "entonces": "el sistema actualiza el total de procesos y el detalle por despacho de destino."
+        },
+        {
+          "nombre": "Distribución inválida",
+          "dado": "que una fila del plan está incompleta,",
+          "cuando": "falta el despacho origen o el destino, o el número de procesos no es un entero mayor que cero,",
+          "entonces": "el sistema muestra el mensaje 'Distribución incompleta' o 'Número de procesos' y no guarda."
+        },
+        {
+          "nombre": "Distribución repetida",
+          "dado": "que el administrador registra una distribución,",
+          "cuando": "repite un origen y un destino ya incluidos en el plan,",
+          "entonces": "el sistema muestra el mensaje 'Distribución repetida' e indica sumar los procesos en una sola fila."
+        }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Registrar y validar la información del Administrador del Despacho",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "registrar la información del administrador de cada despacho origen y destino",
+      "para": "designar al único autorizado para registrar (origen) o gestionar (destino) los procesos de la medida",
+      "descripcion": [
+        "**Descripción:** la sección 4 genera un bloque por cada despacho de la medida (origen y destino, sin repetir) e indica su rol. Para cada despacho se capturan primer nombre, segundo nombre (opcional), primer apellido, segundo apellido (opcional), correo electrónico institucional, teléfono celular y contraseña temporal. El sistema muestra 'Completo' o 'Pendiente' según los datos registrados."
+      ],
+      "precondiciones": [
+        "- El plan de distribución tiene despachos origen y destino definidos."
+      ],
+      "criterios": [
+        {
+          "nombre": "Campos obligatorios del administrador",
+          "dado": "que un bloque de administrador está incompleto,",
+          "cuando": "el administrador intenta guardar la medida,",
+          "entonces": "el sistema exige el primer nombre y el primer apellido y muestra 'Administrador incompleto' con el nombre del despacho."
+        },
+        {
+          "nombre": "Correo institucional",
+          "dado": "que el administrador ingresa el correo electrónico del despacho,",
+          "cuando": "el correo no termina en @cendoj.ramajudicial.gov.co,",
+          "entonces": "el sistema muestra el mensaje 'Correo no institucional' y no guarda."
+        },
+        {
+          "nombre": "Celular válido",
+          "dado": "que el administrador ingresa el teléfono celular,",
+          "cuando": "el número no tiene 10 dígitos o no empieza por 3,",
+          "entonces": "el sistema muestra el mensaje 'Celular no válido' y no guarda."
+        },
+        {
+          "nombre": "Contraseña temporal",
+          "dado": "que el administrador registra la contraseña temporal,",
+          "cuando": "la escribe o usa el botón 'Generar' y esta tiene menos de 8 caracteres,",
+          "entonces": "el sistema muestra 'Contraseña temporal' y no guarda."
+        }
+      ]
+    },
+    {
+      "codigo": "HU05",
+      "nombre": "Notificar la medida a los despachos involucrados",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "enviar la notificación de la medida a los despachos involucrados",
+      "para": "informarles el plan y entregar las credenciales de acceso a sus administradores",
+      "descripcion": [
+        "**Descripción:** el botón 'Notificar' (o 'Reenviar') envía la notificación al correo del administrador de cada despacho origen y destino. El correo (plantilla email_medida_descongestion.html) informa el acuerdo, la resolución, la vigencia, la participación del despacho en el plan y los próximos pasos, e incluye el botón de ingreso al sistema. Se genera un correo por cada despacho involucrado y se registra la fecha de la notificación."
+      ],
+      "precondiciones": [
+        "- La medida está materializada.",
+        "- Todos los despachos de la medida tienen su administrador registrado."
+      ],
+      "criterios": [
+        {
+          "nombre": "Notificación exitosa",
+          "dado": "que la medida tiene registrados todos los administradores,",
+          "cuando": "el administrador confirma la notificación,",
+          "entonces": "el sistema genera un correo por cada despacho involucrado y registra la fecha de notificación."
+        },
+        {
+          "nombre": "Administradores pendientes",
+          "dado": "que falta registrar el administrador de al menos un despacho,",
+          "cuando": "el administrador intenta notificar la medida,",
+          "entonces": "el sistema muestra el mensaje 'Faltan administradores' y no envía la notificación."
+        },
+        {
+          "nombre": "Reenvío",
+          "dado": "que la medida ya fue notificada,",
+          "cuando": "el administrador confirma el reenvío,",
+          "entonces": "el sistema envía una nueva notificación que reemplaza las anteriores y aumenta el contador de envíos."
+        },
+        {
+          "nombre": "Contenido del correo",
+          "dado": "que se notifica un despacho,",
+          "cuando": "el sistema genera el correo,",
+          "entonces": "este indica su participación (trasladará o recibirá procesos), el máximo autorizado por la medida y los próximos pasos según el tipo del despacho (Permanente o Descongestión)."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/email_medida_descongestion_full.png", "titulo": "Correo de notificación de la medida de descongestión al despacho", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU06",
+      "nombre": "Consultar, filtrar y supervisar las medidas",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "buscar y filtrar las medidas y ver sus indicadores",
+      "para": "ubicar rápidamente las medidas y supervisar su avance",
+      "descripcion": [
+        "**Descripción:** la pantalla muestra indicadores (medidas registradas, con administradores pendientes, vigentes, por vencer, sin notificar y avance de traslado) y una barra de filtros (búsqueda y vigencia). La tabla lista las medidas del consejo seccional con las columnas Medida (Acuerdo), Vigencia, Resolución, Plan de Distribución, Administradores y Acciones."
+      ],
+      "precondiciones": [
+        "- El Administrador del Consejo Seccional está en la pantalla de Gestión de Medidas de Descongestión."
+      ],
+      "criterios": [
+        {
+          "nombre": "Búsqueda de texto",
+          "dado": "que el administrador escribe en el campo Buscar,",
+          "cuando": "ingresa el acuerdo, la descripción, un despacho o un administrador,",
+          "entonces": "el sistema filtra la tabla sin distinguir tildes ni mayúsculas."
+        },
+        {
+          "nombre": "Filtro de vigencia",
+          "dado": "que el administrador selecciona un valor en el filtro de Vigencia,",
+          "cuando": "elige Vigentes, Por vencer (≤ 60 días), Programadas o Vencidas,",
+          "entonces": "la tabla muestra solo las medidas que se encuentran en ese estado."
+        },
+        {
+          "nombre": "Indicadores",
+          "dado": "que el administrador hace clic en una tarjeta de indicador,",
+          "cuando": "selecciona, por ejemplo, 'Con administradores pendientes' o 'Sin notificar a los despachos',",
+          "entonces": "la tabla se filtra por ese indicador y, al hacer clic de nuevo, vuelve a mostrar todas las medidas."
+        },
+        {
+          "nombre": "Sin resultados y limpiar",
+          "dado": "que ninguna medida cumple los filtros seleccionados,",
+          "cuando": "la tabla queda vacía,",
+          "entonces": "el sistema muestra el mensaje 'No hay medidas con los filtros seleccionados' con la opción de limpiar, y el botón Limpiar restablece todos los filtros."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/crear_medidas_de_descongestion_c_full.png", "titulo": "Listado de medidas de descongestión con indicadores y filtros", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU07",
+      "nombre": "Ver el detalle de la medida y su avance",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "consultar el detalle de una medida y el avance del traslado de procesos",
+      "para": "supervisar el cumplimiento de la medida hasta la finalización",
+      "descripcion": [
+        "**Descripción:** el botón 'Ver detalle' abre un modal con el acuerdo, la resolución (o su ausencia), el plan de distribución con el avance por distribución y el total por despacho de destino, y la tabla de administradores con su rol. Las barras de avance comparan los procesos trasladados con los autorizados."
+      ],
+      "precondiciones": [
+        "- La medida está registrada en la tabla de medidas."
+      ],
+      "criterios": [
+        {
+          "nombre": "Detalle de la medida",
+          "dado": "que el administrador presiona 'Ver detalle' en una medida,",
+          "cuando": "se abre el modal,",
+          "entonces": "el sistema muestra el acuerdo, la resolución (o su ausencia), la vigencia y el estado de vigencia."
+        },
+        {
+          "nombre": "Avance del plan",
+          "dado": "que la medida tiene distribuciones,",
+          "cuando": "se muestra el detalle,",
+          "entonces": "el sistema muestra, por cada distribución y por despacho de destino, los procesos trasladados frente a los autorizados."
+        },
+        {
+          "nombre": "Administradores de la medida",
+          "dado": "que la medida tiene despachos origen y destino,",
+          "cuando": "se muestra el detalle,",
+          "entonces": "el sistema lista cada despacho con su rol y los datos de su administrador, o el estado 'Pendiente de registrar'."
+        },
+        {
+          "nombre": "Acciones del detalle",
+          "dado": "que el detalle de la medida está abierto,",
+          "cuando": "el administrador presiona 'Editar medida', 'Notificar a los despachos' o 'Cerrar',",
+          "entonces": "el sistema ejecuta la acción correspondiente."
+        }
+      ]
+    },
+    {
+      "codigo": "HU08",
+      "nombre": "Editar una medida existente",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "modificar los datos de una medida ya registrada",
+      "para": "actualizar el acuerdo, el plan o los administradores antes o durante su ejecución",
+      "descripcion": [
+        "**Descripción:** el botón 'Editar' abre el formulario con los datos de la medida seleccionada. Si una distribución ya tiene procesos trasladados, no se puede quitar ni autorizar un número de procesos menor al ya trasladado."
+      ],
+      "precondiciones": [
+        "- La medida está registrada en la tabla de medidas."
+      ],
+      "criterios": [
+        {
+          "nombre": "Apertura con datos",
+          "dado": "que el administrador presiona 'Editar' en una medida,",
+          "cuando": "se abre el formulario,",
+          "entonces": "el sistema muestra los datos de la medida y el título 'Editar <acuerdo>'."
+        },
+        {
+          "nombre": "Guardar cambios",
+          "dado": "que el administrador modifica los datos de la medida,",
+          "cuando": "presiona 'Guardar cambios',",
+          "entonces": "el sistema actualiza la medida y muestra el mensaje 'Medida actualizada'."
+        },
+        {
+          "nombre": "Restricción por traslados",
+          "dado": "que una distribución de la medida ya tiene procesos trasladados,",
+          "cuando": "el administrador intenta quitarla o autorizar menos procesos de los trasladados,",
+          "entonces": "el sistema impide la acción y mantiene la distribución."
+        },
+        {
+          "nombre": "Reenviar notificación",
+          "dado": "que la medida ya fue notificada,",
+          "cuando": "el administrador guarda cambios,",
+          "entonces": "el sistema ofrece reenviar la notificación con los cambios a los despachos involucrados."
+        }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/crear_medidas_de_descongestion_c_full.png", "titulo": "Pantalla completa de materialización de medidas de descongestión", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Administrador del Consejo Seccional:** rol de la pantalla (Consejo Seccional de CALDAS en el prototipo); materializa, edita y notifica las medidas y supervisa su avance.",
+    "- **Administrador del Despacho:** recibe la notificación con las credenciales; es el único autorizado para registrar los procesos en el despacho origen y gestionarlos en el despacho destino."
+  ],
+  "frecuencia": "ocasional",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Consejo Superior de la Judicatura.",
+    "- Consejos Seccionales.",
+    "- Unidad de Desarrollo y Análisis Estadístico (UDAE).",
+    "- Despachos judiciales.",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- El plan de distribución restringe el despacho origen a los de tipo Permanente y el destino a los de tipo Descongestión, ¿es siempre así o se permiten otras combinaciones? Por definir.",
+    "- ¿Cómo y dónde se registra la finalización de la medida (por ejemplo, un acta de cierre) y quién la consigna? La pantalla solo muestra el avance del traslado. Por definir.",
+    "- ¿Un despacho puede ser origen y destino a la vez en la misma medida? El prototipo permite un solo administrador por despacho. Por definir.",
+    "- ¿La notificación se envía únicamente al correo del administrador registrado o también al correo institucional del despacho? Por definir.",
+    "- ¿Se permite eliminar o inactivar una medida? El prototipo no incluye esas acciones. Por definir.",
+    "- ¿La contraseña temporal debe cambiarse en el primer ingreso del administrador? El prototipo solo la incluye en la notificación. Por definir.",
+    "- ¿La UDAE interviene en alguna parte de esta pantalla? En el prototipo solo actúa el Consejo Seccional y la UDAE ya garantizó los despachos. Por definir."
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "13/10/2026", "descripcion": "Versión inicial" }
+}

@@ -1,0 +1,280 @@
+{
+  "_ayuda": "Historia de usuario de la portada index.html, enfocada en el flujo, los roles y las reglas de negocio del RUNPD. Las claves que empiezan con _ se ignoran.",
+
+  "archivo": "index",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "09/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Portada y flujo lógico del Registro Único Nacional de Procesos de Descongestión",
+    "lider_funcional": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "equipo_lider_funcional": "Camilo Alejandro Romero Laiton (cromerol@cendoj.ramajudicial.gov.co), Luis Carlos Mendivil Blanquicet (lmendivb@cendoj.ramajudicial.gov.co) y José Fernando Castro Roa (jcastroroa@cendoj.ramajudicial.gov.co)",
+    "gerente_interno": "Clara Milena Higuera Guio (cmhiguera@cendoj.ramajudicial.gov.co)",
+    "lider_desarrollo": "Jaime Alberto Silva Rodriguez (jsilvar@cendoj.ramajudicial.gov.co) y William Alexander Barbosa Fuentes (wbarbosf@cendoj.ramajudicial.gov.co)",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Portada / Flujo del proceso"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere presentar el flujo lógico del RUNPD de principio a fin, con los roles que interactúan con la herramienta y las reglas de negocio de cada etapa, de modo que todo el equipo funcional lo revise y lo apruebe en conjunto antes de construir los módulos.",
+    "La portada debe dejar claro el orden del proceso de descongestión, quién participa en cada paso y bajo qué reglas, y servir como referencia única del proceso y como punto de acceso a los módulos por rol del prototipo."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** el equipo funcional aprueba el flujo del RUNPD, los roles que interactúan con la herramienta y las reglas de negocio del proceso.",
+    "- Propósito: ofrecer una vista general navegable del flujo que permita comprender y validar el proceso, los actores y las reglas antes del desarrollo.",
+    "- Beneficios: valida el proceso completo con los responsables funcionales, unifica el entendimiento de los roles y evita construir módulos sobre un flujo o unas reglas no acordadas."
+  ],
+
+  "justificacion": [
+    "El Registro Único requiere explicar cómo fluye un proceso de descongestión, quiénes intervienen con la herramienta y qué reglas rigen cada etapa. Contar con el flujo, los roles y las reglas aprobados por el equipo funcional permite validar el proceso de principio a fin y sustenta la definición funcional de cada módulo. La funcionalidad hace parte de la portada del sistema."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Visualización del flujo del proceso en un grafo interactivo con detalle del paso activo.",
+    "- Descripción de los roles que interactúan con la herramienta y de las reglas de negocio por etapa.",
+    "- Presentación de los módulos por rol para su ingreso desde la portada.",
+    "- Revisión y aprobación del flujo, los roles y las reglas por parte del equipo funcional del RUNPD.",
+    "**No incluye:**",
+    "- Autenticación del usuario.",
+    "- Operaciones propias de cada módulo (creación de despachos, materialización de la medida, registro de procesos, actuaciones o reportes).",
+    "- Envío de notificaciones por correo desde la portada."
+  ],
+
+  "epica": {
+    "codigo": "EP01",
+    "nombre": "Flujo, roles y reglas de negocio del RUNPD",
+    "descripcion": [
+      "Agrupa la definición funcional del flujo del Registro Único Nacional de Procesos de Descongestión: las etapas del proceso, los roles que interactúan con la herramienta y las reglas de negocio, con el fin de que todo el equipo funcional los apruebe antes de construir los módulos."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Recorrer y comprender el flujo del proceso de descongestión",
+      "como": "Equipo funcional del RUNPD",
+      "quiero": "recorrer el flujo completo del proceso de descongestión",
+      "para": "entender el orden de las etapas y los actores antes de aprobarlo",
+      "descripcion": [
+        "**Descripción:** la portada presenta un grafo con los nodos del proceso (Consejo Superior de la Judicatura, UDAE, decisión de existencia de despachos, creación de despachos, Consejo Seccional, despacho origen, despacho destino, finalización y supervisión transversal) y un panel con el detalle del paso activo.",
+        "- Entrada: interacción del usuario sobre los nodos del grafo (mouse, foco o clic).",
+        "- Salida: resaltado del nodo activo y detalle del paso (número, actor, título y descripción) en el panel inferior."
+      ],
+      "precondiciones": [
+        "- Ninguna."
+      ],
+      "criterios": [
+        {
+          "nombre": "Carga del flujo",
+          "dado": "que el usuario abre la pantalla de inicio,",
+          "cuando": "finaliza la carga de la página,",
+          "entonces": "el sistema muestra el grafo con los nodos del proceso y activa el primer paso (Consejo Superior de la Judicatura) en el panel de detalle."
+        },
+        {
+          "nombre": "Detalle del paso activo",
+          "dado": "que el usuario pasa el mouse, enfoca o hace clic sobre un nodo,",
+          "cuando": "interactúa con el nodo,",
+          "entonces": "el sistema marca el nodo como activo y muestra en el panel el número, el actor, el título y la descripción del paso."
+        },
+        {
+          "nombre": "Recorrido automático",
+          "dado": "que el flujo se está mostrando y el usuario no interactúa,",
+          "cuando": "transcurre el intervalo de rotación configurado,",
+          "entonces": "el sistema resalta el siguiente paso del flujo y, al llegar al último, vuelve a comenzar por el primero."
+        },
+        {
+          "nombre": "Pausa por interacción",
+          "dado": "que el recorrido automático está activo,",
+          "cuando": "el usuario interactúa con un nodo,",
+          "entonces": "el sistema pausa temporalmente el recorrido automático antes de reanudarlo."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/index_flujo.png", "titulo": "Grafo interactivo del flujo del proceso de descongestión", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Identificar los roles que interactúan con la herramienta",
+      "como": "Equipo funcional del RUNPD",
+      "quiero": "conocer los roles que intervienen en cada etapa del proceso",
+      "para": "validar quién participa con la herramienta y qué le corresponde a cada uno",
+      "descripcion": [
+        "**Descripción:** la sección 'Recorra el prototipo' presenta los roles en el mismo orden del flujo e indica lo que hace cada uno.",
+        "- Consejo Superior de la Judicatura: expide el Acuerdo y/o la Resolución de creación de despachos y define la medida; actor externo que no ingresa al sistema.",
+        "- Administrador central (UDAE): única que valida y crea los despachos origen y destino.",
+        "- Administrador del consejo seccional: materializa la medida, ingresa la información del Administrador del Despacho y supervisa y verifica el cumplimiento.",
+        "- Administrador del Despacho: único autorizado; en el origen registra los procesos y en el destino los gestiona."
+      ],
+      "criterios": [
+        {
+          "nombre": "Rol Consejo Superior de la Judicatura",
+          "dado": "que el equipo funcional revisa los roles de la portada,",
+          "cuando": "consulta el inicio del flujo,",
+          "entonces": "el sistema identifica al Consejo Superior de la Judicatura como actor externo, responsable de expedir el Acuerdo y/o la Resolución, que no ingresa al sistema."
+        },
+        {
+          "nombre": "Rol UDAE",
+          "dado": "que el equipo funcional revisa los roles de la portada,",
+          "cuando": "consulta el paso de la UDAE,",
+          "entonces": "el sistema identifica a la UDAE como administrador central y única responsable de validar y crear los despachos origen y destino."
+        },
+        {
+          "nombre": "Rol Consejo Seccional",
+          "dado": "que el equipo funcional revisa los roles de la portada,",
+          "cuando": "consulta el paso del Consejo Seccional,",
+          "entonces": "el sistema lo identifica como el rol que materializa la medida, ingresa la información del Administrador del Despacho y supervisa y verifica el cumplimiento hasta la finalización."
+        },
+        {
+          "nombre": "Rol Administrador del Despacho",
+          "dado": "que el equipo funcional revisa los roles de la portada,",
+          "cuando": "consulta los pasos de los despachos origen y destino,",
+          "entonces": "el sistema identifica al Administrador del Despacho como el único autorizado para registrar los procesos en el origen y gestionarlos en el destino."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/index_roles.png", "titulo": "Sección Recorra el prototipo con los roles y módulos por paso", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Comprender las reglas de negocio del proceso",
+      "como": "Equipo funcional del RUNPD",
+      "quiero": "conocer las reglas de negocio que rigen cada etapa del proceso",
+      "para": "validar que la definición funcional es consistente con lo construido en conjunto",
+      "descripcion": [
+        "**Descripción:** el flujo y las etiquetas de sus aristas describen las reglas que rigen la transición entre etapas y las responsabilidades de cada rol."
+      ],
+      "criterios": [
+        {
+          "nombre": "Creación de despachos",
+          "dado": "que la UDAE verifica si existen los despachos origen y destino,",
+          "cuando": "los despachos no existen,",
+          "entonces": "el sistema muestra que la UDAE es la única que los crea y que el Consejo Seccional no crea despachos."
+        },
+        {
+          "nombre": "Autorización del Administrador del Despacho",
+          "dado": "que el flujo describe los despachos origen y destino,",
+          "cuando": "se revisa la etapa correspondiente,",
+          "entonces": "el sistema indica que el Administrador del Despacho es el único autorizado: en el origen para registrar los procesos y en el destino para gestionarlos."
+        },
+        {
+          "nombre": "Envío y devolución de procesos",
+          "dado": "que el flujo describe el traslado de los procesos,",
+          "cuando": "el despacho origen envía los procesos al despacho destino,",
+          "entonces": "el sistema muestra el envío origen ➔ destino y que el despacho destino puede devolver el proceso al despacho origen."
+        },
+        {
+          "nombre": "Finalización y notificación",
+          "dado": "que el flujo describe el cierre del proceso,",
+          "cuando": "se revisa la etapa de finalización,",
+          "entonces": "el sistema indica que se registra la forma de terminación del proceso y se notifica a las partes."
+        }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Aprobar el flujo, los roles y las reglas del RUNPD",
+      "como": "Equipo funcional del RUNPD",
+      "quiero": "aprobar el flujo, los roles y las reglas de negocio presentados",
+      "para": "cerrar la definición funcional antes de construir los módulos",
+      "descripcion": [
+        "**Descripción:** la portada es el insumo para que todo el equipo funcional revise y apruebe el flujo, los roles y las reglas de negocio del RUNPD construidos en conjunto.",
+        "- El mecanismo de registro de la aprobación dentro del sistema no está definido en el prototipo (por definir)."
+      ],
+      "criterios": [
+        {
+          "nombre": "Insumos para la aprobación",
+          "dado": "que el equipo funcional revisa la portada,",
+          "cuando": "recorre el flujo, los roles y las reglas de negocio,",
+          "entonces": "el sistema le presenta la información necesaria para emitir la aprobación de la definición funcional."
+        },
+        {
+          "nombre": "Registro de la aprobación",
+          "dado": "que el equipo funcional aprueba el flujo, los roles y las reglas,",
+          "cuando": "se consigna la aprobación,",
+          "entonces": "el sistema registra la aprobación de la definición funcional por definir (el prototipo no incluye el control de aprobación)."
+        }
+      ]
+    },
+    {
+      "codigo": "HU05",
+      "nombre": "Ingresar a los módulos por rol desde la portada",
+      "como": "Usuario de la herramienta",
+      "quiero": "ingresar al módulo del rol que me corresponde desde la pantalla de inicio",
+      "para": "operar la etapa del proceso asignada a mi rol",
+      "descripcion": [
+        "**Descripción:** la sección 'Recorra el prototipo' presenta los módulos con botones de ingreso por rol."
+      ],
+      "criterios": [
+        {
+          "nombre": "Ingreso como UDAE",
+          "dado": "que el usuario está en el paso de garantía de despachos,",
+          "cuando": "presiona el botón 'Ingresar como UDAE',",
+          "entonces": "el sistema navega a la pantalla del administrador central (index_admin.html)."
+        },
+        {
+          "nombre": "Ingreso al Consejo Seccional",
+          "dado": "que el usuario está en el paso de materialización o de supervisión,",
+          "cuando": "presiona el botón 'Ingresar al Consejo',",
+          "entonces": "el sistema navega a la pantalla del administrador del consejo seccional (index_admin_c.html)."
+        },
+        {
+          "nombre": "Ingreso al Despacho Origen",
+          "dado": "que el usuario está en el paso del despacho origen,",
+          "cuando": "presiona el botón 'Ingresar al Despacho Origen',",
+          "entonces": "el sistema navega a la pantalla del despacho origen (index_admin_p.html)."
+        },
+        {
+          "nombre": "Ingreso al Despacho Destino",
+          "dado": "que el usuario está en el paso del despacho destino,",
+          "cuando": "presiona el botón 'Ingresar al Despacho Destino',",
+          "entonces": "el sistema navega a la pantalla del despacho destino (index_admin_d.html)."
+        }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/index_full.png", "titulo": "Portada completa de index.html", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Equipo funcional del RUNPD:** revisa y aprueba el flujo, los roles y las reglas de negocio; uso ocasional.",
+    "- **Consejo Superior de la Judicatura:** actor externo que expide el Acuerdo y/o la Resolución y define la medida; no ingresa al sistema.",
+    "- **Administrador central (UDAE):** única que valida y crea los despachos origen y destino.",
+    "- **Administrador del consejo seccional:** materializa la medida, ingresa la información del Administrador del Despacho y supervisa y verifica el cumplimiento.",
+    "- **Administrador del Despacho:** único autorizado; registra los procesos en el origen y los gestiona en el destino.",
+    "- **Usuario de la herramienta:** ingresa a los módulos por rol desde la portada."
+  ],
+  "frecuencia": "ocasional",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Consejo Superior de la Judicatura.",
+    "- Consejos Seccionales.",
+    "- Unidad de Desarrollo y Análisis Estadístico (UDAE).",
+    "- Despachos judiciales.",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- ¿Cómo se registra la aprobación del flujo, los roles y las reglas de negocio, y quién la consigna?",
+    "- ¿La aprobación es un control dentro del sistema (por ejemplo, un estado aprobado) o una validación externa al prototipo?",
+    "- ¿Todos los roles requieren autenticación para ingresar a sus módulos o el acceso es libre en el prototipo?",
+    "- Las notificaciones por correo que menciona el flujo (por ejemplo, la notificación a los despachos al materializar la medida) ¿se gestionan en los módulos correspondientes y no en la portada?",
+    "- ¿Qué datos de contacto o ayuda deben mostrarse al usuario en la portada?"
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "2.0", "fecha": "13/10/2026", "descripcion": "Enfoque en el flujo, los roles y las reglas de negocio del RUNPD" }
+}
