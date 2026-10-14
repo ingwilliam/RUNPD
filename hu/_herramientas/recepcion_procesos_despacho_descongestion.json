@@ -1,0 +1,300 @@
+{
+  "archivo": "recepcion_procesos_despacho_descongestion",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "14/10/2026",
+    "nombre_proyecto": "RUNPD - Registro Único Nacional de Procesos de Descongestión (PEYGI)",
+    "requerimiento_aplicacion": "Recepción y seguimiento de procesos en el despacho de descongestión",
+    "lider_funcional": "Por definir",
+    "equipo_lider_funcional": "Por definir",
+    "gerente_interno": "Por definir",
+    "lider_desarrollo": "Por definir",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Por definir",
+    "modulo_hito": "Registro Único Nacional de Procesos de Descongestión"
+  },
+
+  "descripcion_necesidad": [
+    "Desarrollo sobre el módulo Registro Único Nacional de Procesos de Descongestión. El despacho de descongestión (despacho destino de la medida) requiere una pantalla para recibir los procesos que le envían los despachos origen dentro de una medida de descongestión y gestionarlos durante la vigencia de la medida: registrar cada actuación con su próxima actuación estimada, finalizarlos o devolverlos al despacho origen.",
+    "El **Administrador del Despacho de Descongestión** es el Administrador del Despacho y el único autorizado en la medida para gestionar los procesos recibidos; las notificaciones de finalización y devolución se dirigen únicamente al administrador del despacho origen correspondiente."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** los procesos enviados por los despachos origen quedan recibidos en el despacho de descongestión, con sus actuaciones registradas y la próxima actuación bajo control, hasta finalizarlos o devolverlos al despacho origen dentro de la vigencia de la medida.",
+    "- Propósito: centralizar la recepción y el seguimiento de los procesos de la medida en el despacho destino, con trazabilidad completa de cada gestión.",
+    "- Beneficios: evita el vencimiento de las próximas actuaciones (avisos y semáforo por proceso), mantiene informado al despacho origen (notificaciones de finalización y devolución) y da visibilidad del avance de la vigencia de la medida."
+  ],
+
+  "justificacion": [
+    "Actualmente el despacho de descongestión no cuenta con una herramienta que consolide, por medida, los procesos recibidos de los despachos origen, el control de la próxima actuación de cada proceso y la notificación al despacho origen cuando un proceso se finaliza o se devuelve. La funcionalidad hace parte del módulo Registro Único Nacional de Procesos de Descongestión (RUNPD)."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Selección de la medida de descongestión y consulta de su detalle (acuerdo, resolución, vigencia, despachos origen con su administrador, cifras y avance).",
+    "- Consulta de los procesos recibidos de la medida con indicadores-filtro, búsqueda y aviso de pendientes (nuevos, sin actuación, vencidos o por vencer).",
+    "- Detalle y trazabilidad de cada proceso (recepción, actuaciones, finalización o devolución).",
+    "- Registro de cada actuación con estado procesal, fecha y fecha estimada de la próxima actuación.",
+    "- Finalización del proceso con forma de terminación y notificación al administrador del despacho origen.",
+    "- Devolución del proceso al despacho origen con motivo, observación y notificación al administrador del despacho origen.",
+    "**No incluye:**",
+    "- Envío de correos a demandantes o demandados (las notificaciones van solo al administrador del despacho origen).",
+    "- La creación de la medida de descongestión y el envío de procesos desde el despacho origen (se gestionan en otras pantallas del módulo)."
+  ],
+
+  "epica": {
+    "codigo": "EP01",
+    "nombre": "Recepción y seguimiento de procesos del despacho de descongestión",
+    "descripcion": [
+      "Agrupa la recepción de los procesos que los despachos origen envían al despacho de descongestión dentro de una medida, el registro de sus actuaciones con el control de la próxima, y la finalización o devolución al despacho origen, durante la vigencia de la medida."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Seleccionar la medida y consultar su detalle y sus procesos",
+      "como": "Administrador del Despacho de Descongestión",
+      "quiero": "seleccionar la medida de descongestión y consultar su detalle y los procesos recibidos",
+      "para": "conocer la vigencia, los despachos origen autorizados y el estado de cada proceso antes de gestionarlo",
+      "descripcion": [
+        "**Descripción:** la pantalla identifica el despacho destino (nombre, código y Consejo Seccional que supervisa) y presenta en el paso 1 el selector de las medidas en las que el despacho es destino; al elegir una, el paso 2 muestra el detalle de la medida y habilita la gestión de sus procesos.",
+        "- Detalle de la medida: acuerdo y resolución, vigencia con días restantes, cifras de procesos autorizados, recibidos, en trámite, finalizados y devueltos, tarjetas de cada despacho origen con su administrador (destinatario de las notificaciones) y del despacho destino (único autorizado), y barra de avance de la vigencia.",
+        "- Lista de procesos: código, partes (demandantes y demandados), despacho origen con fecha de recepción, estado procesal actual, próxima actuación con su semáforo, y acciones.",
+        "- Entrada: medida (lista, obligatoria); búsqueda por código, demandante o demandado (texto, opcional).",
+        "- Salida: detalle de la medida, aviso de pendientes, indicadores y tabla de procesos filtrada."
+      ],
+      "precondiciones": [
+        "- El despacho debe estar asignado como destino de al menos una medida de descongestión con procesos enviados por los despachos origen."
+      ],
+      "criterios": [
+        {
+          "nombre": "Selección de la medida",
+          "dado": "que el administrador selecciona una medida en el selector del paso 1,",
+          "cuando": "el sistema presenta el paso 2,",
+          "entonces": "muestra el detalle de la medida (acuerdo, resolución, vigencia con días restantes, cifras, despachos origen con su administrador y despacho destino único autorizado) y la tabla de los procesos recibidos en la medida, con el texto \"Mostrando X de todos los procesos\"."
+        },
+        {
+          "nombre": "Despacho sin medidas",
+          "dado": "que el despacho no tiene medidas de descongestión asignadas,",
+          "cuando": "abre la pantalla,",
+          "entonces": "el selector queda deshabilitado con el mensaje \"Su despacho no tiene medidas de descongestión asignadas\" y no se habilita la gestión de procesos."
+        },
+        {
+          "nombre": "Aviso de pendientes",
+          "dado": "que en la medida hay procesos nuevos sin ver, sin actuación registrada, con la próxima actuación vencida o por vencer (7 días o menos), o de una medida ya finalizada,",
+          "cuando": "se selecciona la medida,",
+          "entonces": "se muestra el aviso \"Evite el vencimiento de la próxima actuación\" con el detalle de cada pendiente y el botón \"Ver procesos pendientes\" que filtra la tabla con esos procesos."
+        },
+        {
+          "nombre": "Filtros y búsqueda de procesos",
+          "dado": "que el administrador necesita ubicar procesos específicos,",
+          "cuando": "hace clic en un indicador (En trámite, Sin actuación registrada, Vencidas o por vencer, Finalizados, Devueltos al origen) o escribe en la búsqueda,",
+          "entonces": "la tabla se filtra por el estado seleccionado y por código, demandante o demandado, actualizando el conteo de procesos mostrados y ofreciendo el enlace \"Ver todos\" para quitar el filtro."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/recepcion_procesos_despacho_descongestion_full.png", "titulo": "Pantalla al abrirse: identificación del despacho destino y paso 1 de selección de la medida", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Consultar el detalle y la trazabilidad de un proceso recibido",
+      "como": "Administrador del Despacho de Descongestión",
+      "quiero": "consultar el detalle y la trazabilidad de un proceso recibido",
+      "para": "conocer su estado, sus partes y el historial de gestiones antes de actuar sobre él",
+      "descripcion": [
+        "**Descripción:** al presionar el código de un proceso se abre el modal \"Detalle y Trazabilidad del Proceso\" con la información completa del proceso y su línea de tiempo en el despacho.",
+        "- Detalle: estado procesal actual, medida con su vigencia, despacho origen y su administrador, última actuación en el origen, demandantes y demandados con su correo, observaciones del despacho origen y enlace al expediente en línea cuando existe.",
+        "- Trazabilidad: línea de tiempo con la recepción del proceso, cada actuación registrada en el despacho (con su próxima actuación y observación) y la finalización o devolución cuando aplique."
+      ],
+      "precondiciones": [
+        "- Haber seleccionado una medida y que exista al menos un proceso recibido en ella."
+      ],
+      "criterios": [
+        {
+          "nombre": "Detalle del proceso",
+          "dado": "que el administrador presiona el código de un proceso en la tabla,",
+          "cuando": "se abre el modal \"Detalle y Trazabilidad del Proceso\",",
+          "entonces": "muestra el estado procesal actual, la medida con su vigencia, el despacho origen con su administrador, la última actuación en el origen, los demandantes y demandados, las observaciones del origen y el enlace \"Ver expediente en línea (Rama Judicial)\" cuando el proceso lo tenga."
+        },
+        {
+          "nombre": "Trazabilidad en el despacho",
+          "dado": "que el proceso tiene gestiones registradas,",
+          "cuando": "se consulta su detalle,",
+          "entonces": "se presenta la línea de tiempo con la recepción del proceso (medida, origen y estado al recibir), cada actuación registrada en el despacho con su fecha, estado procesal, próxima actuación y observación, y el cierre por finalización o devolución cuando aplique."
+        },
+        {
+          "nombre": "Acciones según el estado",
+          "dado": "que el proceso está en trámite,",
+          "cuando": "se abre su detalle,",
+          "entonces": "se ofrecen las acciones \"Actualizar estado\", \"Devolver al origen\" y \"Finalizar\"; si el proceso está finalizado o devuelto, solo se ofrece cerrar el detalle."
+        },
+        {
+          "nombre": "Proceso nuevo",
+          "dado": "que un proceso recibido aún no ha sido consultado,",
+          "cuando": "se lista en la tabla,",
+          "entonces": "se resalta y muestra la etiqueta \"NUEVO\"; al abrir su detalle o gestionarlo, el proceso queda marcado como visto y pierde la etiqueta."
+        }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Registrar una actuación y controlar la próxima actuación",
+      "como": "Administrador del Despacho de Descongestión",
+      "quiero": "registrar cada actuación del proceso con la fecha estimada de la próxima actuación",
+      "para": "mantener actualizado el estado procesal y evitar el vencimiento de la próxima actuación",
+      "descripcion": [
+        "**Descripción:** el botón \"Actualizar\" de un proceso en trámite abre el modal \"Actualizar estado del proceso\" con el resumen del proceso y el formulario de la actuación.",
+        "- Entrada: nuevo estado procesal (lista obligatoria agrupada en \"Continuar el trámite\" y \"Cerrar el proceso\"), fecha de la actuación (fecha, obligatoria), fecha estimada de la próxima actuación (fecha, obligatoria) y observación (texto, opcional, máximo 500 caracteres).",
+        "- Salida: la actuación registrada en la trazabilidad del proceso; la tabla actualiza el estado procesal, la última actuación, la próxima actuación y su semáforo (Vencida hace X día(s), Vence en X día(s) o Vence hoy, En X días)."
+      ],
+      "precondiciones": [
+        "- El proceso debe estar recibido en la medida y en trámite (no finalizado ni devuelto)."
+      ],
+      "criterios": [
+        {
+          "nombre": "Registro exitoso",
+          "dado": "que el administrador diligencia el nuevo estado procesal, la fecha de la actuación y la fecha estimada de la próxima actuación,",
+          "cuando": "presiona el botón \"Registrar actuación\",",
+          "entonces": "el sistema registra la actuación en la trazabilidad, actualiza el estado del proceso en la tabla y muestra el mensaje \"Actuación registrada\" con el estado y la próxima actuación estimada."
+        },
+        {
+          "nombre": "Rango de la fecha de la actuación",
+          "dado": "que se abre el formulario de una nueva actuación,",
+          "cuando": "el administrador diligencia la fecha de la actuación,",
+          "entonces": "el sistema solo acepta fechas entre el día de la recepción del proceso (o de la última actuación registrada, la más reciente) y la fecha de hoy; no se permiten fechas anteriores ni futuras."
+        },
+        {
+          "nombre": "Próxima actuación posterior",
+          "dado": "que la fecha estimada de la próxima actuación es igual o anterior a la fecha de la actuación,",
+          "cuando": "presiona el botón \"Registrar actuación\",",
+          "entonces": "el sistema muestra el mensaje \"Revise las fechas: La próxima actuación debe ser posterior a la fecha de la actuación\" y no registra la actuación."
+        },
+        {
+          "nombre": "Próxima actuación fuera de la medida",
+          "dado": "que la fecha estimada de la próxima actuación es posterior a la fecha de fin de la medida,",
+          "cuando": "se diligencia el formulario,",
+          "entonces": "el sistema muestra el aviso de que la próxima actuación queda después del fin de la medida con sus fechas, y sugiere devolver el proceso al despacho origen si no alcanza a finalizarlo."
+        }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Finalizar un proceso",
+      "como": "Administrador del Despacho de Descongestión",
+      "quiero": "finalizar un proceso en trámite indicando la forma de terminación",
+      "para": "cerrarlo dentro de la vigencia de la medida e informarlo al despacho origen",
+      "descripcion": [
+        "**Descripción:** el botón \"Finalizar\" de un proceso en trámite abre el modal de actuación en modo finalización al seleccionar el estado \"TERMINADO (finalizar proceso)\": se exige la forma de terminación, se oculta la fecha de próxima actuación y se avisa que el proceso quedará cerrado y que se notificará solo al administrador del despacho origen.",
+        "- Entrada: forma de terminación (lista obligatoria: Sentencia ejecutoriada, Conciliación aprobada, Transacción, Desistimiento, Desistimiento tácito, Pago total de la obligación u Otra forma de terminación), fecha de la actuación (obligatoria) y observación de la terminación (opcional, máximo 500 caracteres)."
+      ],
+      "precondiciones": [
+        "- El proceso debe estar recibido en la medida y en trámite (no finalizado ni devuelto)."
+      ],
+      "criterios": [
+        {
+          "nombre": "Modo finalización",
+          "dado": "que se selecciona el estado \"TERMINADO (finalizar proceso)\",",
+          "cuando": "el modal cambia a modo finalización,",
+          "entonces": "la forma de terminación pasa a ser obligatoria, se oculta la fecha de la próxima actuación y se muestra el aviso \"Al finalizar, el proceso quedará cerrado y no se podrán registrar nuevas actuaciones\", indicando que la notificación irá solo al administrador del despacho origen."
+        },
+        {
+          "nombre": "Forma de terminación sugerida",
+          "dado": "que el proceso tiene actuaciones registradas,",
+          "cuando": "se abre la finalización,",
+          "entonces": "se sugiere la forma de terminación según el último estado (\"Sentencia\" o \"Liquidación de costas, entrega de títulos, levantamiento de medidas cautelares u oficios\" sugiere \"Sentencia ejecutoriada\"; \"Aprueba conciliación\" sugiere \"Conciliación aprobada\"), se sugiere \"Sentencia ejecutoriada\"; para \"Auto que decreta terminación\" se solicita indicar la causa de la terminación; el administrador puede cambiar la sugerencia."
+        },
+        {
+          "nombre": "Confirmación y cierre",
+          "dado": "que el administrador presiona el botón \"Finalizar proceso\",",
+          "cuando": "el sistema pide confirmación con el código del proceso, la forma de terminación y la fecha,",
+          "entonces": "al confirmar, el proceso queda con el estado \"TERMINADO – [forma de terminación]\", la finalización se registra en su trazabilidad y el proceso deja de admitir nuevas actuaciones (sus botones de gestión desaparecen)."
+        },
+        {
+          "nombre": "Notificación al despacho origen",
+          "dado": "que se confirma la finalización del proceso,",
+          "cuando": "el proceso queda cerrado,",
+          "entonces": "se notifica únicamente al administrador del despacho origen de la medida con los datos del proceso y el historial de sus actuaciones (sin correo a demandantes ni demandados) y el sistema muestra el mensaje \"Proceso finalizado\" indicando el administrador notificado."
+        }
+      ]
+    },
+    {
+      "codigo": "HU05",
+      "nombre": "Devolver un proceso al despacho origen",
+      "como": "Administrador del Despacho de Descongestión",
+      "quiero": "devolver al despacho origen un proceso que no corresponde o que no alcanzo a finalizar",
+      "para": "que el despacho origen recupere la gestión del proceso y quede informado del motivo",
+      "descripcion": [
+        "**Descripción:** el botón \"Devolver al origen\" de un proceso en trámite abre el modal \"Devolver proceso al despacho origen\" con el resumen del proceso, la selección del motivo y la observación para el despacho origen; se indica el despacho que recibirá el proceso y su administrador (destinatario de la notificación).",
+        "- Entrada: motivo de la devolución (selección obligatoria de las opciones del catálogo) y observación para el despacho origen (texto, obligatorio, máximo 500 caracteres).",
+        "- Salida: el proceso queda devuelto, sale de la gestión del despacho destino y se registra en su trazabilidad como \"Devuelto al despacho origen – [motivo]\"."
+      ],
+      "precondiciones": [
+        "- El proceso debe estar recibido en la medida y en trámite (no finalizado ni devuelto)."
+      ],
+      "criterios": [
+        {
+          "nombre": "Motivo obligatorio",
+          "dado": "que se abre el modal de devolución,",
+          "cuando": "el administrador selecciona el motivo,",
+          "entonces": "debe elegir obligatoriamente entre las opciones del catálogo: \"Error de traslado\" (el proceso no corresponde a este despacho por competencia, especialidad o datos incorrectos) o \"Finalizó la medida de descongestión\" (la medida del proceso terminó y no alcanzó a finalizarse en este despacho)."
+        },
+        {
+          "nombre": "Observación obligatoria",
+          "dado": "que el administrador omite la observación para el despacho origen,",
+          "cuando": "presiona el botón \"Devolver al despacho origen\",",
+          "entonces": "el sistema no permite continuar porque el campo es obligatorio (máximo 500 caracteres) y solicita explicar brevemente el motivo de la devolución."
+        },
+        {
+          "nombre": "Confirmación y devolución",
+          "dado": "que el administrador diligencia motivo y observación,",
+          "cuando": "presiona el botón \"Devolver al despacho origen\" y confirma el diálogo \"¿Devolver el proceso?\",",
+          "entonces": "el proceso queda con el estado \"Devuelto al despacho origen – [motivo]\" con la fecha de la devolución, se registra en su trazabilidad, sale de la gestión del despacho destino y deja de admitir nuevas actuaciones."
+        },
+        {
+          "nombre": "Notificación al despacho origen",
+          "dado": "que se confirma la devolución del proceso,",
+          "cuando": "el proceso regresa al despacho origen,",
+          "entonces": "se notifica únicamente al administrador del despacho origen con el motivo y su descripción, la observación, el estado procesal al momento de devolver, la última actuación y el historial de actuaciones registradas en el despacho destino, y el sistema muestra el mensaje \"Proceso devuelto\" indicando el administrador notificado."
+        }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/recepcion_procesos_despacho_descongestion_full.png", "titulo": "Pantalla de Recepción y Seguimiento de Procesos del despacho destino", "ancho_in": 3 },
+    { "archivo": "hu/capturas/recepcion_procesos_despacho_descongestion_info-despacho.png", "titulo": "Identificación del despacho destino y Consejo Seccional que supervisa", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Administrador del Despacho de Descongestión (despacho destino):** Administrador del Despacho, único autorizado en la medida; recibe los procesos enviados por el despacho origen, consulta su detalle y trazabilidad, registra las actuaciones con la próxima actuación estimada, y finaliza o devuelve los procesos. Uso diario durante la vigencia de la medida.",
+    "- **Administrador del Despacho Origen:** envía los procesos al despacho de descongestión dentro de la medida y recibe las notificaciones de finalización y devolución de sus procesos. No gestiona procesos en esta pantalla."
+  ],
+  "frecuencia": "diario",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Despacho de descongestión (despacho destino de la medida).",
+    "- Despachos origen de la medida.",
+    "- Consejo Seccional que supervisa la medida."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- ¿Qué debe ocurrir con los procesos en trámite cuando finaliza la vigencia de la medida? El prototipo sugiere devolverlos al despacho origen, pero no define si es obligatorio ni si es automático.",
+    "- ¿La notificación al administrador del despacho origen se envía automáticamente desde el sistema o se arma manualmente? El prototipo abre una ventana de correo ya diligenciada.",
+    "- ¿Los catálogos de estados procesales, formas de terminación y motivos de devolución son únicos para todos los despachos o configurables por despacho?",
+    "- ¿El umbral de 7 días para marcar la próxima actuación como \"por vencer\" es fijo o parametrizable?",
+    "- ¿El Consejo Seccional que supervisa la medida debe recibir reportes del avance de los procesos?",
+    "- Falta por definir: líder funcional, gerente interno, equipo funcional, equipo de desarrollo, cantidad de usuarios y prioridad."
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "14/10/2026", "descripcion": "Versión inicial" }
+}

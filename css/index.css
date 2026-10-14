@@ -309,6 +309,13 @@ body.index-body {
     margin-top: 0.5rem;
 }
 
+/* Enlace a la historia de usuario de la portada y el flujo, bajo el grafo */
+.grafo-hu {
+    display: flex;
+    justify-content: center;
+    margin-top: 0.9rem;
+}
+
 /* ---------------- TARJETAS DE ROL ---------------- */
 .role-grid {
     display: grid;
@@ -473,17 +480,40 @@ body.index-body {
     transform: translateX(4px);
 }
 
+/* Botón de la historia de usuario de cada módulo: protagonista, con el color de su actor */
 .role-link {
-    text-align: center;
-    font-size: 0.83rem;
-    color: var(--primary-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    font-size: 0.87rem;
+    font-weight: 700;
+    color: var(--col, var(--primary-green));
+    background: color-mix(in srgb, var(--col, var(--primary-green)) 9%, #ffffff);
+    border: 2px solid var(--col, var(--primary-green));
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
     text-decoration: none;
-    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(15, 23, 42, 0.1);
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.role-link:hover {
-    text-decoration: underline;
+.role-link:hover,
+.role-link:focus-visible {
+    background: var(--col, var(--primary-green));
+    color: #ffffff;
+    outline: none;
+    box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--col, var(--primary-green)) 55%, transparent);
 }
+
+/* El color del actor ya viene heredado en --col: solo se ajusta el espaciado */
+.camino .role-link { margin-top: 0.7rem; }
+.role-card .role-link { margin-top: 0.7rem; }
+
+/* Colores por actor en las tarjetas de los pasos 2 a 4 (los mismos del grafo) */
+.role-card-origen .role-link { --col: #0369a1; }
+.role-card-destino .role-link { --col: #b45309; }
+.role-card-consejo .role-link { --col: #7c3aed; }
 
 /* Variante pública (Ciudadano) */
 .role-card-public::before { background: #3b82f6; }
@@ -757,7 +787,7 @@ body.index-body {
 
 @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
-    .role-card, .role-btn, .role-btn span { transition: none; }
+    .role-card, .role-btn, .role-btn span, .role-link { transition: none; }
     .arista, .grafo-panel.cambio { animation: none; }
     .g-token { display: none; }
 }

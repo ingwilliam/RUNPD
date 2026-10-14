@@ -1,0 +1,272 @@
+{
+  "_ayuda": "Historia de usuario de supervision_medidas_de_descongestion_c.html (Supervisión y verificación de medidas de descongestión, Administrador del Consejo Seccional). Las claves que empiezan por _ se ignoran.",
+
+  "archivo": "supervision_medidas_de_descongestion_c",
+
+  "identificacion": {
+    "nombre_unidad": "Por definir",
+    "fecha_solicitud": "14/10/2026",
+    "nombre_proyecto": "RUNPD",
+    "requerimiento_aplicacion": "Supervisión y verificación de medidas de descongestión (Consejo Seccional)",
+    "lider_funcional": "Por definir",
+    "equipo_lider_funcional": "Por definir",
+    "gerente_interno": "Por definir",
+    "lider_desarrollo": "Por definir",
+    "requerimiento_asociado": "Por definir",
+    "prioridad": "Alta",
+    "modulo_hito": "Medidas de descongestión / Consejo Seccional"
+  },
+
+  "descripcion_necesidad": [
+    "Nuevo desarrollo. Se requiere una pantalla para que el Administrador del Consejo Seccional supervise y verifique el cumplimiento de las medidas de descongestión adoptadas, desde su materialización hasta la finalización de los procesos.",
+    "La pantalla ofrece reportes por medida (estado de cumplimiento, avance por ruta despacho origen ➔ destino y trazabilidad de la medida), reportes por proceso (estado y trazabilidad completa) y alertas de procesos sin actuación o con actuación vencida."
+  ],
+
+  "objetivo": [
+    "**Postcondición:** el Administrador del Consejo Seccional consulta los reportes por medida y por proceso, con sus alertas, y verifica el cumplimiento de las medidas materializadas desde la materialización hasta la finalización de los procesos.",
+    "- Propósito: consolidar en una sola pantalla la supervisión y verificación del cumplimiento de las medidas adoptadas.",
+    "- Beneficios: identifica oportunamente los procesos sin actuación o con actuación vencida y las medidas que requieren atención, y entrega reportes descargables para el seguimiento."
+  ],
+
+  "justificacion": [
+    "El Consejo Seccional materializa las medidas de descongestión y debe verificar su cumplimiento: que los despachos origen registren y envíen los procesos autorizados y que los despachos destino los gestionen hasta su finalización o devolución al origen. Para ello requiere reportes por medida con el avance por ruta despacho origen ➔ destino y reportes por proceso con su estado y trazabilidad completa, además de alertas de los procesos sin actuación o con la actuación vencida. La funcionalidad hace parte del módulo de medidas de descongestión del RUNPD."
+  ],
+
+  "alcance": [
+    "**Incluye:**",
+    "- Indicadores generales de la supervisión: medidas materializadas, procesos registrados frente a autorizados, procesos en el despacho destino, finalizados, devueltos al origen, con alerta y medidas con observaciones.",
+    "- Reporte por medida: tabla de cumplimiento, verificación del cumplimiento, avance por ruta despacho origen ➔ destino y trazabilidad de la medida.",
+    "- Reporte por proceso: filtros de búsqueda, medida, despacho y estado; estado procesal y estado en la medida; último movimiento y trazabilidad completa del proceso.",
+    "- Alertas de procesos recibidos sin actuación o con la próxima actuación vencida.",
+    "- Descarga de los reportes en Excel e impresión de la pantalla (botón 'Imprimir').",
+    "**No incluye:**",
+    "- Registro o modificación de medidas, procesos, envíos, actuaciones, finalizaciones o devoluciones (pantalla de solo consulta; se realizan en otras pantallas del RUNPD).",
+    "- Validación y creación de los despachos origen y destino (Administrador Central - UDAE).",
+    "- Envío de notificaciones automáticas a los administradores de los despachos; la pantalla solo presenta la información.",
+    "- Autenticación y gestión de usuarios."
+  ],
+
+  "epica": {
+    "codigo": "EP05",
+    "nombre": "Supervisión y verificación de medidas (Consejo Seccional)",
+    "descripcion": [
+      "Agrupa las funcionalidades del Administrador del Consejo Seccional para supervisar y verificar el cumplimiento de las medidas de descongestión materializadas, desde la materialización hasta la finalización de los procesos: reportes por medida con el avance por ruta origen ➔ destino, reportes por proceso con su estado y trazabilidad completa, y alertas de procesos sin actuación o con actuación vencida."
+    ]
+  },
+
+  "historias": [
+    {
+      "codigo": "HU01",
+      "nombre": "Consultar el reporte de cumplimiento por medida",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "consultar el reporte de cumplimiento de las medidas materializadas",
+      "para": "supervisar el estado de cada medida y su nivel de cumplimiento",
+      "descripcion": [
+        "**Descripción:** la pantalla presenta los indicadores generales de la supervisión y la pestaña 'Reporte por medida' con la tabla de las medidas materializadas por el Consejo Seccional. Cada fila muestra la vigencia, el registro de procesos frente a los autorizados, los procesos en el destino, la finalización, las alertas y el nivel de cumplimiento (Cumple, En curso, Con observaciones o Requiere atención).",
+        "- Indicadores: medidas materializadas, procesos registrados / autorizados, en el despacho destino, finalizados, devueltos al origen, procesos con alerta y medidas con observaciones.",
+        "- Entrada: ninguna; la consulta abre con todas las medidas.",
+        "- Salida: indicadores, tabla de medidas, verificación del cumplimiento de la medida (botón 'Ver reporte') y descarga del reporte en Excel."
+      ],
+      "precondiciones": [
+        "- El Administrador del Consejo Seccional está en la pantalla 'Supervisión y verificación de medidas' (Registro Único Nacional de Procesos de Descongestión).",
+        "- Existe al menos una medida materializada por el Consejo Seccional."
+      ],
+      "criterios": [
+        {
+          "nombre": "Indicadores generales",
+          "dado": "que el administrador ingresa a la pantalla de supervisión,",
+          "cuando": "la pantalla se carga,",
+          "entonces": "el sistema muestra los indicadores: medidas materializadas, procesos registrados frente a autorizados, procesos en el despacho destino, finalizados, devueltos al origen, procesos con alerta y medidas con observaciones."
+        },
+        {
+          "nombre": "Tabla del reporte por medida",
+          "dado": "que el administrador consulta la pestaña 'Reporte por medida',",
+          "cuando": "el sistema presenta la tabla de medidas,",
+          "entonces": "cada medida muestra su vigencia, los procesos registrados frente a los autorizados, los procesos en el destino, la finalización, las alertas y el nivel de cumplimiento (Cumple, En curso, Con observaciones o Requiere atención)."
+        },
+        {
+          "nombre": "Verificación del cumplimiento de la medida",
+          "dado": "que el administrador presiona 'Ver reporte' en una medida,",
+          "cuando": "se abre el reporte de la medida,",
+          "entonces": "el sistema muestra la verificación del cumplimiento con su nivel general y el detalle de: administradores registrados, registro de procesos, envío al despacho destino, gestión en el despacho destino, finalización de procesos y vigencia de la medida."
+        },
+        {
+          "nombre": "Descarga del reporte por medida",
+          "dado": "que el administrador presiona 'Descargar reporte (Excel)' de la pestaña 'Reporte por medida',",
+          "cuando": "el sistema genera el archivo,",
+          "entonces": "descarga el reporte con las medidas, sus cifras de registro y finalización, las alertas, el nivel de cumplimiento y las observaciones."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_indicadores.png", "titulo": "Indicadores generales de la supervisión de las medidas", "ancho_in": 6 },
+        { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_reporte-medidas.png", "titulo": "Reporte por medida: cumplimiento de cada medida materializada", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU02",
+      "nombre": "Verificar el avance por ruta y la trazabilidad de la medida",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "verificar el avance de la medida por ruta despacho origen ➔ destino y su trazabilidad completa",
+      "para": "comprobar que la medida se ejecuta como fue materializada hasta la finalización de sus procesos",
+      "descripcion": [
+        "**Descripción:** el reporte de la medida (botón 'Ver reporte') muestra las cifras de la medida (autorizados, registrados, sin enviar, en destino, finalizados y devueltos), el avance por ruta con los administradores autorizados de cada despacho y la línea de tiempo de la trazabilidad de la medida con los hitos de sus procesos, ordenada por fecha.",
+        "- Entrada: la medida seleccionada en la tabla del reporte por medida.",
+        "- Salida: cifras, avance por ruta, trazabilidad de la medida y botones 'Descargar procesos de la medida' y 'Ver en el reporte por proceso'; el reporte se cierra con el botón 'Cerrar', la '✕' o la tecla Escape."
+      ],
+      "precondiciones": [
+        "- La medida está materializada y aparece en la tabla del reporte por medida."
+      ],
+      "criterios": [
+        {
+          "nombre": "Avance por ruta origen ➔ destino",
+          "dado": "que el administrador abre el reporte de una medida,",
+          "cuando": "consulta el avance por ruta,",
+          "entonces": "el sistema muestra, por cada ruta despacho origen ➔ destino, los procesos autorizados, registrados, en destino, finalizados, devueltos y las alertas, junto con el administrador autorizado de cada despacho (o la marca 'Administrador pendiente')."
+        },
+        {
+          "nombre": "Trazabilidad de la medida",
+          "dado": "que el reporte de una medida está abierto,",
+          "cuando": "el administrador consulta la trazabilidad,",
+          "entonces": "el sistema muestra la línea de tiempo con los eventos de la medida (acuerdo y/o resolución del Consejo Superior, despachos garantizados por la UDAE, materialización y notificación) y los hitos de sus procesos (registro, envío, finalización y devolución al origen), ordenados por fecha."
+        },
+        {
+          "nombre": "Paso al reporte por proceso",
+          "dado": "que el reporte de una medida está abierto,",
+          "cuando": "el administrador presiona 'Ver en el reporte por proceso',",
+          "entonces": "el sistema cierra el reporte, cambia a la pestaña 'Reporte por proceso' y aplica el filtro de la medida."
+        },
+        {
+          "nombre": "Descarga de los procesos de la medida",
+          "dado": "que el reporte de una medida está abierto,",
+          "cuando": "el administrador presiona 'Descargar procesos de la medida',",
+          "entonces": "el sistema descarga un archivo Excel con el radicado, las partes, los despachos origen y destino con sus administradores, el estado procesal, el estado en la medida, la alerta y las fechas de registro, envío y último movimiento."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_reporte-medidas.png", "titulo": "Tabla del reporte por medida: el botón 'Ver reporte' abre el avance por ruta y la trazabilidad de la medida", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU03",
+      "nombre": "Consultar el reporte por proceso y su trazabilidad",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "consultar el estado y la trazabilidad completa de los procesos de las medidas",
+      "para": "verificar cada proceso desde su registro hasta su finalización o devolución al origen",
+      "descripcion": [
+        "**Descripción:** la pestaña 'Reporte por proceso' lista los procesos de las medidas con su radicado y partes, la medida, la ruta despacho origen ➔ destino, el estado procesal, el estado en la medida (Registrado · pendiente de envío, Recibido · sin actuación, En trámite, Finalizado o Devuelto al despacho origen) y el último movimiento. La tabla se ordena mostrando primero los procesos con alerta.",
+        "- Entrada: texto de búsqueda (radicado, partes o despacho) y filtros de medida, despacho y estado del proceso (incluidos 'En el despacho destino' y '⚠️ Con alerta'); el botón '✕ Limpiar' restablece los filtros.",
+        "- Salida: tabla de procesos con el conteo 'Mostrando X de Y proceso(s)', trazabilidad del proceso (botón 'Trazabilidad') y descarga del reporte en Excel."
+      ],
+      "precondiciones": [
+        "- Existen procesos registrados en las medidas del consejo seccional."
+      ],
+      "criterios": [
+        {
+          "nombre": "Filtros y conteo",
+          "dado": "que el administrador ingresa un texto de búsqueda o selecciona un filtro de medida, despacho o estado del proceso,",
+          "cuando": "el sistema procesa la consulta,",
+          "entonces": "la tabla muestra únicamente los procesos que cumplen los filtros, con el texto 'Mostrando X de Y proceso(s)'."
+        },
+        {
+          "nombre": "Sin resultados y limpiar",
+          "dado": "que ningún proceso cumple los filtros o la búsqueda ingresada,",
+          "cuando": "la tabla se actualiza,",
+          "entonces": "el sistema muestra el mensaje 'No hay procesos con los filtros seleccionados.' y el botón '✕ Limpiar' restablece los filtros y vuelve a mostrar todos los procesos."
+        },
+        {
+          "nombre": "Trazabilidad del proceso",
+          "dado": "que el administrador presiona 'Trazabilidad' en un proceso,",
+          "cuando": "se abre el reporte del proceso,",
+          "entonces": "el sistema muestra los despachos origen y destino con sus administradores, el estado procesal, el estado en la medida con su alerta, las etapas del proceso (Medida, Registro, Envío al destino, Gestión y Finalización) y la línea de tiempo de sus movimientos."
+        },
+        {
+          "nombre": "Descarga del reporte por proceso",
+          "dado": "que el administrador presiona 'Descargar reporte (Excel)' de la pestaña 'Reporte por proceso',",
+          "cuando": "el sistema genera el archivo,",
+          "entonces": "descarga los procesos con sus despachos y administradores, estados, alertas y fechas, respetando los filtros aplicados."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_reporte-procesos.png", "titulo": "Reporte por proceso: filtros, estado en la medida y último movimiento", "ancho_in": 6 }
+      ]
+    },
+    {
+      "codigo": "HU04",
+      "nombre": "Identificar alertas de procesos sin actuación o con actuación vencida",
+      "como": "Administrador del Consejo Seccional",
+      "quiero": "identificar los procesos recibidos sin actuación o con la próxima actuación vencida",
+      "para": "exigir la gestión oportuna de los procesos de la medida en los despachos destino",
+      "descripcion": [
+        "**Descripción:** el sistema calcula las alertas a partir del último movimiento de cada proceso: un proceso recibido en el despacho destino sin actuación por más de 5 días genera la alerta 'Sin actuación hace X días', y un proceso en trámite cuya fecha de próxima actuación ya pasó genera 'Próxima actuación vencida (fecha)'.",
+        "- Las alertas se presentan en el reporte por proceso (columna 'Estado en la medida'), en el reporte por medida (columna Alertas y verificación 'Gestión en el despacho destino') y en el indicador general 'Procesos con alerta'.",
+        "- Umbral del prototipo: 5 días sin actuación."
+      ],
+      "precondiciones": [
+        "- Existen procesos recibidos en los despachos destino de las medidas."
+      ],
+      "criterios": [
+        {
+          "nombre": "Proceso sin actuación",
+          "dado": "que un proceso fue recibido en el despacho destino y no registra actuación,",
+          "cuando": "han pasado más de 5 días desde su envío,",
+          "entonces": "el sistema muestra la alerta 'Sin actuación hace X días' en la fila del proceso del reporte por proceso."
+        },
+        {
+          "nombre": "Próxima actuación vencida",
+          "dado": "que la última actuación de un proceso en trámite tiene fecha de próxima actuación,",
+          "cuando": "esa fecha ya pasó,",
+          "entonces": "el sistema muestra la alerta 'Próxima actuación vencida (dd/mm/aaaa)' en la fila del proceso."
+        },
+        {
+          "nombre": "Alertas en el reporte por medida",
+          "dado": "que una medida tiene procesos con alerta,",
+          "cuando": "el administrador consulta el reporte por medida,",
+          "entonces": "la columna Alertas muestra el número de procesos con alerta y la verificación 'Gestión en el despacho destino' indica la cantidad de procesos sin actuación o con la próxima actuación vencida."
+        },
+        {
+          "nombre": "Filtro de procesos con alerta",
+          "dado": "que el administrador presiona el indicador 'Procesos con alerta' o selecciona el estado '⚠️ Con alerta' en el filtro del reporte por proceso,",
+          "cuando": "el sistema aplica el filtro,",
+          "entonces": "el reporte muestra únicamente los procesos con alerta, ordenados primero en la tabla."
+        }
+      ],
+      "capturas": [
+        { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_reporte-procesos.png", "titulo": "Reporte por proceso: alertas de procesos sin actuación o con actuación vencida", "ancho_in": 6 }
+      ]
+    }
+  ],
+
+  "requerimientos_no_funcionales": [
+    "Se anexa la lista de chequeo GTI-TIC-FM-029 Criterios no funcionales de los sistemas de información."
+  ],
+
+  "capturas_generales": [
+    { "archivo": "hu/capturas/supervision_medidas_de_descongestion_c_full.png", "titulo": "Pantalla completa de la supervisión y verificación de medidas de descongestión", "ancho_in": 3 }
+  ],
+
+  "usuarios_cantidad": "Por definir",
+  "usuarios_identificacion": [
+    "- **Administrador del Consejo Seccional:** usuario autenticado del Consejo Seccional (CALDAS en el prototipo); supervisa y verifica el cumplimiento de las medidas materializadas mediante los reportes por medida y por proceso y sus alertas. Uso diario."
+  ],
+  "frecuencia": "diario",
+  "acceso": { "web": "Sí", "externo": "No", "escritorio_interno": "No" },
+  "areas_involucradas": [
+    "- Consejo Superior de la Judicatura.",
+    "- Consejos Seccionales.",
+    "- Unidad de Desarrollo y Análisis Estadístico (UDAE).",
+    "- Despachos judiciales.",
+    "- Oficina de TI."
+  ],
+  "observaciones": [
+    "**Preguntas abiertas:**",
+    "- ¿El umbral de la alerta por procesos sin actuación debe ser mayor a 5 días (valor del prototipo) y parametrizable por consejo seccional o por medida? Por definir.",
+    "- ¿La medida que vence en 60 días o menos (umbral del prototipo) se marca como atención en la verificación del cumplimiento? Por definir.",
+    "- ¿La descarga de los reportes debe ser en formato Excel nativo o CSV con separador ';' (comportamiento del prototipo)? Por definir.",
+    "- ¿Las alertas deben generar notificaciones automáticas a los administradores de los despachos involucrados? El prototipo solo las presenta en pantalla. Por definir.",
+    "- ¿Quiénes son el líder funcional, el gerente interno y los equipos funcional y de desarrollo de esta historia? Por definir."
+  ],
+
+  "solicitante": { "nombre": "", "cargo": "" },
+  "lider_funcional_firma": { "nombre": "", "cargo": "" },
+  "version": { "version": "1.0", "fecha": "14/10/2026", "descripcion": "Versión inicial" }
+}
