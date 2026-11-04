@@ -121,7 +121,7 @@ function infoVigencia(m) {
 // Barra de avance trasladados / planeados
 function barraAvance(trasladados, planeados) {
     const pct = planeados ? Math.min(100, Math.round((trasladados / planeados) * 100)) : 0;
-    const color = pct >= 100 ? "var(--primary-green)" : pct > 0 ? "#0ea5e9" : "#cbd5e1";
+    const color = pct >= 100 ? "var(--primary)" : pct > 0 ? "#0ea5e9" : "#cbd5e1";
     return `
         <div style="height: 8px; background: #edf2f7; border-radius: 999px; overflow: hidden; margin-top: 0.3rem;">
             <div style="width: ${pct}%; height: 100%; background: ${color};"></div>
@@ -169,7 +169,7 @@ function renderizarIndicadores() {
     const trasladados = lista.reduce((t, m) => t + totalTrasladado(m), 0);
 
     const tarjetas = [
-        { clave: "todos",      icono: "📜", valor: lista.length,         texto: "Medidas registradas",            color: "var(--primary-green)" },
+        { clave: "todos",      icono: "📜", valor: lista.length,         texto: "Medidas registradas",            color: "var(--primary)" },
         { clave: "sin_admin",  icono: "👤", valor: lista.filter(m => { const c = conteoAdmins(m); return c.registrados < c.total; }).length, texto: "Con administradores pendientes", color: "#dc2626" },
         { clave: "vigente",    icono: "✅", valor: cuenta("vigente"),    texto: "Vigentes",                       color: "#16a34a" },
         { clave: "por_vencer", icono: "⏰", valor: cuenta("por_vencer"), texto: "Por vencer (≤ 60 días)",         color: "#f59e0b" },
@@ -181,7 +181,7 @@ function renderizarIndicadores() {
         const activo = t.clave && t.clave !== "todos" && filtroKpi === t.clave;
         const clic = t.clave ? `onclick="aplicarFiltroKpi('${t.clave}')" title="Clic para filtrar" style="cursor: pointer;` : `style="cursor: default;`;
         return `
-            <button type="button" ${clic} text-align: left; background: ${activo ? "#f0fdf4" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary-green)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; box-shadow: ${activo ? "0 0 0 3px #e6f4ea" : "0 1px 3px rgba(0,0,0,0.05)"};">
+            <button type="button" ${clic} text-align: left; background: ${activo ? "#f2f5fa" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; box-shadow: ${activo ? "0 0 0 3px #e8edf5" : "0 1px 3px rgba(0,0,0,0.05)"};">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
                     <span style="font-size: 1.3rem;">${t.icono}</span>
@@ -238,7 +238,7 @@ function renderizarTabla() {
 
     if (!lista.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            No hay medidas con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
+            No hay medidas con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
 
@@ -249,7 +249,7 @@ function renderizarTabla() {
         return `
             <tr>
                 <td style="min-width: 220px;">
-                    <a href="#" onclick="verMedida(${m.id}); return false;" style="font-weight: 700; color: var(--primary-green); font-size: 0.88rem;">${esc(textoAcuerdo(m))}</a>
+                    <a href="#" onclick="verMedida(${m.id}); return false;" style="font-weight: 700; color: var(--primary); font-size: 0.88rem;">${esc(textoAcuerdo(m))}</a>
                     <div style="font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem;">📎 ${esc(m.acuerdo.archivo || "Sin adjunto")}</div>
                     <div style="font-size: 0.72rem; margin-top: 0.2rem;">${textoNotificacion(m)}</div>
                     ${m.descripcion ? `<div style="font-size: 0.75rem; color: var(--text-main); margin-top: 0.25rem;">${esc(m.descripcion)}</div>` : ""}
@@ -309,14 +309,14 @@ function verMedida(id) {
     document.getElementById("detalle-contenido").innerHTML = `
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-bottom: 1rem;">
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
-                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">📜 Acuerdo del Consejo Superior de la Judicatura</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem;">📜 Acuerdo del Consejo Superior de la Judicatura</div>
                 <div><strong>Número:</strong> ${esc(m.acuerdo.numero)}</div>
                 <div><strong>Año de expedición:</strong> ${m.acuerdo.anio}</div>
                 <div><strong>Adjunto:</strong> <a href="#" onclick="return false;" style="color: #0284c7;">📎 ${esc(m.acuerdo.archivo || "Sin adjunto")}</a></div>
                 ${m.descripcion ? `<div style="margin-top: 0.3rem; color: var(--text-muted);">${esc(m.descripcion)}</div>` : ""}
             </div>
             <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.8rem 1rem; font-size: 0.83rem;">
-                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.4rem;">🏛️ Resolución de creación de cargos</div>
+                <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.4rem;">🏛️ Resolución de creación de cargos</div>
                 ${m.resolucion ? `
                     <div><strong>Número:</strong> ${esc(m.resolucion.numero)}</div>
                     <div><strong>Año de expedición:</strong> ${m.resolucion.anio}</div>
@@ -325,7 +325,7 @@ function verMedida(id) {
             </div>
         </div>
 
-        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem;">🔀 Plan de distribución de procesos</div>
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">🔀 Plan de distribución de procesos</div>
         <div class="data-table-container" style="margin-bottom: 1rem;">
             <table class="data-table">
                 <thead><tr><th>#</th><th>Despacho origen</th><th></th><th>Despacho destino</th><th>Procesos autorizados</th><th>Avance</th></tr></thead>
@@ -334,7 +334,7 @@ function verMedida(id) {
                         <tr>
                             <td style="font-size: 0.8rem; color: var(--text-muted);">${i + 1}</td>
                             <td style="font-size: 0.8rem;">${esc(nombreDespacho(r.origenId))}</td>
-                            <td style="color: var(--primary-green); font-weight: 700;">➔</td>
+                            <td style="color: var(--primary); font-weight: 700;">➔</td>
                             <td style="font-size: 0.8rem;">${esc(nombreDespacho(r.destinoId))}</td>
                             <td style="font-size: 0.9rem; font-weight: 700; text-align: center;">${r.procesos}</td>
                             <td style="min-width: 150px;">${barraAvance(Number(r.trasladados || 0), Number(r.procesos))}</td>
@@ -353,7 +353,7 @@ function verMedida(id) {
         </div>
         <div style="margin-top: 0.85rem; font-size: 0.85rem;"><strong>Total de la medida:</strong> ${planeados} proceso(s) autorizados · ${totalTrasladado(m)} trasladados.</div>
 
-        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary-green); margin: 1.25rem 0 0.5rem;">👤 Administradores de los despachos en esta medida</div>
+        <div style="font-size: 0.85rem; font-weight: 700; color: var(--primary); margin: 1.25rem 0 0.5rem;">👤 Administradores de los despachos en esta medida</div>
         <div class="data-table-container">
             <table class="data-table">
                 <thead><tr><th>Despacho</th><th>Rol</th><th>Administrador</th><th>Correo institucional</th><th>Celular</th></tr></thead>
@@ -505,7 +505,7 @@ function renderizarDistribuciones() {
             <div style="display: grid; grid-template-columns: 0.3fr 2fr 0.3fr 2fr 1fr 0.6fr; gap: 0.6rem; align-items: center; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.5rem 0.6rem; margin-bottom: 0.45rem;">
                 <span style="font-weight: 700; color: var(--text-muted); font-size: 0.85rem;">${i + 1}</span>
                 <select class="form-control" required onchange="actualizarDistribucion(${i}, 'origenId', this.value)">${opcionesDespacho("Permanente", r.origenId)}</select>
-                <span style="color: var(--primary-green); font-weight: 700; text-align: center;">➔</span>
+                <span style="color: var(--primary); font-weight: 700; text-align: center;">➔</span>
                 <div>
                     <select class="form-control" required onchange="actualizarDistribucion(${i}, 'destinoId', this.value)">${opcionesDespacho("Descongestión", r.destinoId)}</select>
                 </div>
@@ -547,10 +547,10 @@ function renderizarResumenDistribucion() {
     validas.forEach(r => porDestino[r.destinoId] = (porDestino[r.destinoId] || 0) + Number(r.procesos));
 
     document.getElementById("resumen-distribucion").innerHTML = `
-        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #14532d;">
+        <div style="background: #f2f5fa; border: 1px solid #c9d6e8; border-radius: 6px; padding: 0.6rem 0.85rem; font-size: 0.82rem; color: #1e3a6b;">
             <strong>Total del plan: ${total} proceso(s)</strong> en ${borrador.distribuciones.length} distribución(es)
             ${Object.keys(porDestino).length ? `<div style="margin-top: 0.35rem; display: flex; flex-wrap: wrap; gap: 0.35rem;">
-                ${Object.entries(porDestino).map(([id, n]) => chip(`${esc(nombreDespacho(id))}: ${n}`, "#ffffff", "#166534")).join("")}
+                ${Object.entries(porDestino).map(([id, n]) => chip(`${esc(nombreDespacho(id))}: ${n}`, "#ffffff", "#1e3a6b")).join("")}
             </div>` : ""}
         </div>`;
 }

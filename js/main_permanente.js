@@ -125,7 +125,7 @@ function renderizarIndicadores() {
 
     const tarjetas = [
         { clave: "Pendiente",     icono: "⏳", valor: cuenta("Pendiente"), texto: "Pendientes de validación", color: "#f59e0b" },
-        { clave: "Aprobado",      icono: "✅", valor: cuenta("Aprobado"),  texto: "Aprobadas",                color: "var(--primary-green)" },
+        { clave: "Aprobado",      icono: "✅", valor: cuenta("Aprobado"),  texto: "Aprobadas",                color: "var(--primary)" },
         { clave: "Rechazado",     icono: "✖",  valor: cuenta("Rechazado"), texto: "Rechazadas",               color: "#dc2626" },
         { clave: "sin_notificar", icono: "✉️", valor: sinNotificar,        texto: "Respuestas sin notificar", color: "#1d4ed8" },
         { clave: "todos",         icono: "📥", valor: lista.length,        texto: "Postulaciones recibidas",  color: "#64748b" }
@@ -135,7 +135,7 @@ function renderizarIndicadores() {
         const activo = filtroKpi === t.clave && t.clave !== "todos";
         return `
             <button type="button" onclick="aplicarFiltroKpi('${t.clave}')" title="Clic para filtrar"
-                style="text-align: left; background: ${activo ? "#f0fdf4" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary-green)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e6f4ea" : "0 1px 3px rgba(0,0,0,0.05)"};">
+                style="text-align: left; background: ${activo ? "#f2f5fa" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e8edf5" : "0 1px 3px rgba(0,0,0,0.05)"};">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
                     <span style="font-size: 1.3rem;">${t.icono}</span>
@@ -219,7 +219,7 @@ function renderizarTablaPermanentes() {
 
     if (!lista.length) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            No hay postulaciones con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
+            No hay postulaciones con los filtros seleccionados. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
 
@@ -240,14 +240,14 @@ function renderizarTablaPermanentes() {
         return `
             <tr style="${pendiente ? "" : "background: #fcfcfd;"}">
                 <td style="white-space: nowrap;">
-                    <span style="font-family: monospace; font-weight: 700; color: var(--primary-green);">${esc(s.radicado)}</span><br>
+                    <span style="font-family: monospace; font-weight: 700; color: var(--primary);">${esc(s.radicado)}</span><br>
                     <span style="font-size: 0.75rem; color: var(--text-muted);">${formatoFecha(s.fechaSolicitud)}</span>
                     ${pendiente ? `<br><span style="font-size: 0.72rem; color: ${espera > 7 ? "#dc2626" : "#b45309"}; font-weight: 600;">En espera: ${espera} día(s)</span>` : ""}
                 </td>
                 <td style="min-width: 220px;">
                     <div style="font-size: 0.85rem; font-weight: 600;">${esc(s.nombreDespacho)}</div>
                     <div style="margin-top: 0.25rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                        <span style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(s.codigoDespacho)}</span>
+                        <span style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(s.codigoDespacho)}</span>
                         ${chip("Permanente", "#edf2f7", "#475569")}
                     </div>
                 </td>
@@ -285,13 +285,13 @@ function verDetalleSolicitud(id) {
         `<div style="${completo ? "grid-column: 1 / -1;" : ""}"><div style="font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.3px;">${etiqueta}</div><div style="font-weight: 600; color: var(--text-main); font-size: 0.85rem;">${esc(valor || "—")}</div></div>`;
     const bloque = (titulo, contenido) => `
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 0.85rem 1rem; margin-bottom: 0.75rem;">
-            <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.6rem;">${titulo}</div>
+            <div style="font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.6rem;">${titulo}</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem 1rem;">${contenido}</div>
         </div>`;
 
     document.getElementById("detalle-titulo").textContent = pendiente ? "🔍 Revisión de la postulación" : "📋 Detalle de la postulación";
     document.getElementById("detalle-subtitulo").innerHTML =
-        `Radicado <strong style="font-family: monospace; color: var(--primary-green);">${esc(s.radicado)}</strong> · Recibida el ${formatoFecha(s.fechaSolicitud)} · ${chip(est.texto, est.fondo, est.color)}`;
+        `Radicado <strong style="font-family: monospace; color: var(--primary);">${esc(s.radicado)}</strong> · Recibida el ${formatoFecha(s.fechaSolicitud)} · ${chip(est.texto, est.fondo, est.color)}`;
 
     document.getElementById("detalle-contenido").innerHTML = `
         <div style="display: grid; grid-template-columns: 1.4fr 1fr; gap: 1rem;">
@@ -424,7 +424,7 @@ function abrirModalRechazo(id) {
     solicitudActualId = s.id;
 
     document.getElementById("rechazo-resumen").innerHTML =
-        `<strong style="font-family: monospace; color: var(--primary-green);">${esc(s.radicado)}</strong> · ${esc(s.nombreDespacho)}<br>
+        `<strong style="font-family: monospace; color: var(--primary);">${esc(s.radicado)}</strong> · ${esc(s.nombreDespacho)}<br>
          <span style="color: var(--text-muted);">Solicitante: ${esc(nombreAdministrador(s))} (${esc(s.adminCorreo)})</span>`;
 
     // Sugerir como motivo las alertas encontradas en la verificación automática

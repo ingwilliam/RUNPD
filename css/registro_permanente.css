@@ -23,7 +23,7 @@ body.rp-body {
     min-height: 78px;
     padding: 0.5rem 2rem;
     color: #ffffff;
-    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    background: linear-gradient(90deg, var(--primary-hover) 0%, var(--primary) 100%);
     border-bottom: 4px solid #ffc107;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
@@ -98,7 +98,7 @@ body.rp-body {
 .rp-aside-titulo {
     font-size: 0.78rem;
     font-weight: 700;
-    color: var(--primary-green);
+    color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 1rem;
@@ -138,9 +138,9 @@ body.rp-body {
 }
 
 .rp-pasos li.activo > span {
-    background: var(--primary-green);
+    background: var(--primary);
     color: #ffffff;
-    box-shadow: 0 0 0 4px #e6f4ea;
+    box-shadow: 0 0 0 4px #e8edf5;
 }
 
 .rp-pasos strong { display: block; font-size: 0.85rem; color: var(--text-main); }
@@ -156,7 +156,7 @@ body.rp-body {
 .rp-progreso-barra > div {
     height: 100%;
     width: 0;
-    background: var(--primary-green);
+    background: var(--primary);
     border-radius: 999px;
     transition: width 0.3s ease;
 }
@@ -164,7 +164,7 @@ body.rp-body {
 .rp-progreso-texto { font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; }
 
 /* ---------------- FORMULARIO ---------------- */
-.rp-form-card { padding: 2rem 2.25rem; border-top: 4px solid var(--primary-green); }
+.rp-form-card { padding: 2rem 2.25rem; border-top: 4px solid var(--primary); }
 
 .rp-form-head { margin-bottom: 1.75rem; }
 .rp-form-head h1 { font-size: 1.5rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.4rem; }
@@ -178,7 +178,7 @@ body.rp-body {
     gap: 0.6rem;
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--primary-green);
+    color: var(--primary);
     border-bottom: 2px solid var(--border-color);
     padding-bottom: 0.5rem;
     margin: 0.5rem 0 1.25rem;
@@ -188,7 +188,7 @@ body.rp-body {
     width: 1.6rem;
     height: 1.6rem;
     border-radius: 50%;
-    background: var(--primary-green);
+    background: var(--primary);
     color: #ffffff;
     font-size: 0.8rem;
     font-weight: 700;
@@ -215,7 +215,7 @@ body.rp-body {
     margin-top: 0.35rem;
 }
 
-.rp-ayuda.ok { color: var(--primary-green); font-weight: 600; }
+.rp-ayuda.ok { color: var(--primary); font-weight: 600; }
 .rp-ayuda.alerta { color: #b45309; font-weight: 600; }
 .rp-ayuda.error { color: #dc2626; font-weight: 600; }
 
@@ -233,7 +233,7 @@ body.rp-body {
     cursor: pointer;
 }
 
-.rp-check input { width: 18px; height: 18px; margin-top: 0.15rem; accent-color: var(--primary-green); flex-shrink: 0; }
+.rp-check input { width: 18px; height: 18px; margin-top: 0.15rem; accent-color: var(--primary); flex-shrink: 0; }
 
 .rp-acciones {
     display: flex;
@@ -258,7 +258,7 @@ body.rp-body {
     margin-bottom: 0.75rem;
 }
 
-.rp-resumen-titulo { font-size: 0.8rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem; }
+.rp-resumen-titulo { font-size: 0.8rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem; }
 
 .rp-resumen-grid {
     display: grid;
@@ -276,7 +276,7 @@ body.rp-body {
     grid-column: 2;
     padding: 2.5rem 2rem;
     text-align: center;
-    border-top: 4px solid var(--primary-green);
+    border-top: 4px solid var(--primary);
 }
 
 .rp-exito-icono { font-size: 3rem; margin-bottom: 0.5rem; }
@@ -288,8 +288,8 @@ body.rp-body {
     font-family: ui-monospace, Consolas, monospace;
     font-size: 1.4rem;
     font-weight: 700;
-    color: var(--primary-green);
-    background: #e6f4ea;
+    color: var(--primary);
+    background: #e8edf5;
     padding: 0.4rem 1rem;
     border-radius: 8px;
     margin: 0.5rem 0 1rem;

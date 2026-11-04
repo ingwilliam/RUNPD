@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Asignación de Procesos por Traslado de Descongestión — PEYGI</title>
+    <title>Asignación de Procesos por Traslado de Descongestión — RUNPD</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
@@ -50,7 +50,7 @@
 
         const paso = (numero, texto) => `
             <tr>
-                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">${numero}</span></td>
+                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #1e3a6b; color: #ffffff; font-weight: 700; font-size: 12px;">${numero}</span></td>
                 <td style="padding: 3px 0 12px 0;">${texto}</td>
             </tr>`;
 
@@ -64,7 +64,7 @@
                 <tr>
                     <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">${i + 1}</td>
                     <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0;">
-                        <div style="font-family: monospace; font-weight: 700; color: #166534; font-size: 12px;">${esc(p.codigo)}</div>
+                        <div style="font-family: monospace; font-weight: 700; color: #1e3a6b; font-size: 12px;">${esc(p.codigo)}</div>
                         <div style="font-size: 11px; color: #64748b; margin-top: 3px;">Últ. actuación: ${fecha(p.fechaActuacion)}</div>
                     </td>
                     <td style="padding: 10px; vertical-align: top; border-bottom: 1px solid #e2e8f0; color: #334155; font-size: 12px;">
@@ -93,7 +93,7 @@
                                                 <img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;">
                                             </td>
                                             <td align="right" style="vertical-align: middle;">
-                                                <img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;">
+                                                <img src="img/RUNPD.svg" alt="Logo UDAE / RUNPD" width="120" style="display: block; max-height: 50px; object-fit: contain;">
                                             </td>
                                         </tr>
                                     </table>
@@ -124,16 +124,16 @@
                                         Se le informa que el <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">Consejo Seccional de ${esc(consejo)}</strong>,
                                         en ejercicio de sus funciones de distribución y descongestión, le ha asignado <strong>${procesos.length} proceso(s)</strong>
                                         provenientes del despacho permanente <strong style="color: #0f172a;">${esc(datos.nombreDespacho || "—")}</strong>
-                                        (Código: <span style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(datos.codigoDespacho || "—")}</span>).
+                                        (Código: <span style="font-family: monospace; font-weight: 700; color: #1e3a6b; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(datos.codigoDespacho || "—")}</span>).
                                     </p>
 
                                     <!-- RESUMEN -->
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 25px;">
                                         <tr>
                                             <td width="50%" style="padding-right: 6px;">
-                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;">
+                                                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #f2f5fa; border: 1px solid #c9d6e8; border-radius: 6px;">
                                                     <tr><td align="center" style="padding: 14px;">
-                                                        <div style="font-size: 26px; font-weight: 800; color: #166534; line-height: 1;">${procesos.length}</div>
+                                                        <div style="font-size: 26px; font-weight: 800; color: #1e3a6b; line-height: 1;">${procesos.length}</div>
                                                         <div style="font-size: 12px; color: #475569; margin-top: 4px;">Proceso(s) asignado(s)</div>
                                                     </td></tr>
                                                 </table>
@@ -173,7 +173,7 @@
                                         🚀 Próximos Pasos
                                     </h3>
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%" style="font-size: 13px; color: #334155; margin-bottom: 20px;">
-                                        ${paso(1, "<strong>Ingrese a PEYGI</strong> y consulte los procesos recibidos en <em>Recepción y Seguimiento de Procesos</em>.")}
+                                        ${paso(1, "<strong>Ingrese a RUNPD</strong> y consulte los procesos recibidos en <em>Recepción y Seguimiento de Procesos</em>.")}
                                         ${paso(2, "<strong>Registre la primera actuación</strong> de cada proceso y la fecha estimada de la próxima.")}
                                         ${paso(3, `Si algún proceso <strong>no corresponde a su despacho</strong>, devuélvalo al Consejo Seccional de ${esc(consejo)} indicando <em>error de traslado</em>.`)}
                                     </table>
@@ -182,7 +182,7 @@
                                     <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                         <tr>
                                             <td align="center" style="padding: 5px 0 15px 0;">
-                                                <a href="index_admin_d.html" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema PEYGI</a>
+                                                <a href="index_admin_d.html" target="_blank" style="background-color: #1e3a6b; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema RUNPD</a>
                                             </td>
                                         </tr>
                                     </table>
@@ -193,7 +193,7 @@
                             <!-- PIE DE PÁGINA -->
                             <tr>
                                 <td align="center" style="background-color: #f8fafc; padding: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #64748b;">
-                                    <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Sistema PEYGI</p>
+                                    <p style="margin: 0 0 5px 0;">Unidad de Desarrollo y Análisis Estadístico (UDAE) — Sistema RUNPD</p>
                                     <p style="margin: 0;">Este es un mensaje automático de notificación institucional generado por el Consejo Seccional de ${esc(consejo)}.</p>
                                 </td>
                             </tr>

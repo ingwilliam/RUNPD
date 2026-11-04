@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 140" role="img" aria-labelledby="runpd-title">
+  <title id="runpd-title">RUNPD - Registro Único Nacional de Procesos de Descongestión</title>
+  <!-- Símbolo: tres arcos concéntricos que representan el flujo ordenado de procesos -->
+  <g fill="none" stroke-width="10" stroke-linecap="round">
+    <path d="M18 60 A42 42 0 0 1 102 60" stroke="#1e3a6b"/>
+    <path d="M30 60 A30 30 0 0 1 90 60" stroke="#1e3a6b"/>
+    <path d="M42 60 A18 18 0 0 1 78 60" stroke="#ffcf61"/>
+  </g>
+  <circle cx="60" cy="60" r="6" fill="#1e3a6b"/>
+  <!-- Sigla: fuente del sistema, sin dependencias externas -->
+  <text x="60" y="120" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="22" font-weight="700" letter-spacing="2" fill="#1e3a6b">RUNPD</text>
+</svg>

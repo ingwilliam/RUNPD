@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Medida de Descongestión — PEYGI</title>
+    <title>Registro de Medida de Descongestión — RUNPD</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body style="margin: 0; padding: 0; background-color: #f4f6f8; font-family: 'Inter', Arial, sans-serif; color: #334155;">
@@ -43,7 +43,7 @@
             </tr>`;
         const paso = (n, texto) => `
             <tr>
-                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #166534; color: #ffffff; font-weight: 700; font-size: 12px;">${n}</span></td>
+                <td width="34" style="vertical-align: top; padding: 0 0 12px 0;"><span style="display: inline-block; width: 24px; height: 24px; line-height: 24px; text-align: center; border-radius: 50%; background-color: #1e3a6b; color: #ffffff; font-weight: 700; font-size: 12px;">${n}</span></td>
                 <td style="padding: 3px 0 12px 0;">${texto}</td>
             </tr>`;
 
@@ -62,15 +62,15 @@
             ].map(f => `
                 <tr>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px; font-weight: 600; white-space: nowrap;">${f.accion}</td>
-                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 18px; font-weight: 800; color: #166534; text-align: center;">${f.procesos}</td>
+                    <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 18px; font-weight: 800; color: #1e3a6b; text-align: center;">${f.procesos}</td>
                     <td style="padding: 10px; border-bottom: 1px solid #e2e8f0; font-size: 12px;">proceso(s) ${f.prep} <strong>${esc(f.otro)}</strong></td>
                 </tr>`).join("");
 
             const pasos = esDescongestion
-                ? paso(1, "<strong>Ingrese a PEYGI</strong> y verifique la información de la medida.") +
+                ? paso(1, "<strong>Ingrese a RUNPD</strong> y verifique la información de la medida.") +
                   paso(2, `El <strong>Consejo Seccional de ${esc(datos.consejoSeccional)}</strong> le asignará los procesos dentro de las cantidades autorizadas.`) +
                   paso(3, "Consulte los procesos recibidos en <em>Recepción y Seguimiento de Procesos</em> y registre sus actuaciones.")
-                : paso(1, "<strong>Ingrese a PEYGI</strong> y verifique la información de la medida.") +
+                : paso(1, "<strong>Ingrese a RUNPD</strong> y verifique la información de la medida.") +
                   paso(2, `<strong>Registre los procesos</strong> que se trasladarán (hasta ${totalEnvia} según esta medida).`) +
                   paso(3, `<strong>Envíelos al Consejo Seccional de ${esc(datos.consejoSeccional)}</strong> para su distribución.`);
 
@@ -85,7 +85,7 @@
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                     <tr>
                                         <td align="left" style="vertical-align: middle;"><img src="img/layout_set_logo.jpeg" alt="Logo Institucional" width="120" style="display: block; max-height: 50px; object-fit: contain;"></td>
-                                        <td align="right" style="vertical-align: middle;"><img src="img/Logo_PEYGI_sin_fondo.png" alt="Logo UDAE / PEYGI" width="120" style="display: block; max-height: 50px; object-fit: contain;"></td>
+                                        <td align="right" style="vertical-align: middle;"><img src="img/RUNPD.svg" alt="Logo UDAE / RUNPD" width="120" style="display: block; max-height: 50px; object-fit: contain;"></td>
                                     </tr>
                                 </table>
                             </td>
@@ -118,8 +118,8 @@
                                 </h1>
                                 <p style="font-size: 14px; line-height: 1.6; color: #475569; margin-bottom: 25px;">
                                     Cordial saludo, señor(a) Juez y equipo de trabajo del <strong style="color: #0f172a;">${esc(d.nombre)}</strong>
-                                    (Código: <span style="font-family: monospace; font-weight: 700; color: #166534; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(d.codigo)}</span>).
-                                    La Unidad de Desarrollo y Análisis Estadístico (UDAE) le informa que se registró en el sistema <strong>PEYGI (RUNPD)</strong> la medida de descongestión
+                                    (Código: <span style="font-family: monospace; font-weight: 700; color: #1e3a6b; background-color: #f1f5f9; padding: 2px 5px; border-radius: 3px; border: 1px solid #cbd5e1;">${esc(d.codigo)}</span>).
+                                    La Unidad de Desarrollo y Análisis Estadístico (UDAE) le informa que se registró en el sistema <strong>RUNPD</strong> la medida de descongestión
                                     adoptada mediante el <strong style="background-color: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px; border: 1px solid #bbf7d0;">${acuerdo}</strong>, en la cual su despacho participa.
                                 </p>
 
@@ -155,7 +155,7 @@
                                 <!-- BOTÓN -->
                                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                     <tr><td align="center" style="padding: 5px 0 15px 0;">
-                                        <a href="${esDescongestion ? "index_admin_d.html" : "index_admin_p.html"}" target="_blank" style="background-color: #166534; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema PEYGI</a>
+                                        <a href="${esDescongestion ? "index_admin_d.html" : "index_admin_p.html"}" target="_blank" style="background-color: #1e3a6b; color: #ffffff; padding: 12px 25px; border-radius: 6px; text-decoration: none; font-size: 14px; font-weight: 600; display: inline-block;">Ingresar al Sistema RUNPD</a>
                                     </td></tr>
                                 </table>
                             </td>

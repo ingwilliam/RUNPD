@@ -211,7 +211,7 @@ function renderizarInfoDespacho() {
                 <div style="width: 2.8rem; height: 2.8rem; border-radius: 10px; background: #ffedd5; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🗂️</div>
                 <div>
                     <div style="font-weight: 700; color: var(--text-main); font-size: 0.95rem;">${esc(d.nombre)}</div>
-                    <div style="font-size: 0.8rem; color: var(--text-muted);">Código <span style="font-family: monospace; font-weight: 700; color: var(--primary-green);">${esc(d.codigo)}</span> · Consejo Seccional de ${esc(d.consejoSeccional)}</div>
+                    <div style="font-size: 0.8rem; color: var(--text-muted);">Código <span style="font-family: monospace; font-weight: 700; color: var(--primary);">${esc(d.codigo)}</span> · Consejo Seccional de ${esc(d.consejoSeccional)}</div>
                 </div>
             </div>
             <div style="background: #ede9fe; color: #6d28d9; padding: 0.45rem 0.85rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">📊 Supervisa: Consejo Seccional de ${esc(d.consejoSeccional)}</div>
@@ -250,7 +250,7 @@ function infoVigenciaMedida(m) {
     if (restantes < 0) return { texto: `Finalizó hace ${-restantes} día(s)`, fondo: "#fee2e2", color: "#991b1b", barra: "#dc2626", mensaje: "Devuelva al despacho origen los procesos que no alcanzó a terminar." };
     if (restantes <= 30) return { texto: `${restantes} días para finalizar`, fondo: "#fee2e2", color: "#991b1b", barra: "#dc2626", mensaje: "Por terminar: priorice los procesos." };
     if (restantes <= 60) return { texto: `${restantes} días para finalizar`, fondo: "#fef3c7", color: "#92400e", barra: "#f59e0b", mensaje: "Planee el cierre de los procesos." };
-    return { texto: `${restantes} días para finalizar`, fondo: "#dcfce7", color: "#166534", barra: "var(--primary-green)", mensaje: "Medida vigente." };
+    return { texto: `${restantes} días para finalizar`, fondo: "#dcfce7", color: "#166534", barra: "#16a34a", mensaje: "Medida vigente." };
 }
 
 function renderizarResumenMedida() {
@@ -294,7 +294,7 @@ function renderizarResumenMedida() {
                     ${cifra(autorizadosMedida(m), "Autorizados", "var(--text-main)")}
                     ${cifra(lista.length, "Recibidos", "#0369a1")}
                     ${cifra(cuenta("tramite"), "En trámite", "#b45309")}
-                    ${cifra(cuenta("finalizado"), "Finalizados", "var(--primary-green)")}
+                    ${cifra(cuenta("finalizado"), "Finalizados", "#166534")}
                     ${cifra(cuenta("devuelto"), "Devueltos", "#991b1b")}
                 </div>
             </div>
@@ -304,7 +304,7 @@ function renderizarResumenMedida() {
                     ${m.origenes.map(o => tarjeta("Despacho origen · envía los procesos", "#0369a1", "#f0f9ff", o.nombre, o.administrador,
                         `${procesosDeMedida(m).filter(p => p.despachoOrigen === o.nombre).length} de ${o.procesos} recibidos · recibe sus notificaciones`)).join("")}
                 </div>
-                <div style="display: flex; align-items: center; color: var(--primary-green); font-weight: 800; font-size: 1.1rem;">➔</div>
+                <div style="display: flex; align-items: center; color: var(--primary); font-weight: 800; font-size: 1.1rem;">➔</div>
                 ${tarjeta("Despacho destino · usted", "#b45309", "#fff7ed", dbRecepcion.despachoActual.nombre, m.administradorDestino, "Único autorizado para gestionar los procesos")}
             </div>
 
@@ -364,7 +364,7 @@ function renderizarAvisoPendientes() {
 function renderizarIndicadores() {
     const c = contar();
     const tarjetas = [
-        { clave: "tramite",       icono: "📥", valor: c.tramite,       texto: "En trámite",            color: "var(--primary-green)" },
+        { clave: "tramite",       icono: "📥", valor: c.tramite,       texto: "En trámite",            color: "var(--primary)" },
         { clave: "sin_actuacion", icono: "🆕", valor: c.sin_actuacion, texto: "Sin actuación registrada", color: "#ea580c" },
         { clave: "atencion",      icono: "⏰", valor: c.atencion,      texto: "Vencidas o por vencer",  color: "#dc2626" },
         { clave: "finalizado",    icono: "🏁", valor: c.finalizado,    texto: "Finalizados",            color: "#166534" },
@@ -375,7 +375,7 @@ function renderizarIndicadores() {
         const activo = filtroActivo === t.clave;
         return `
             <button type="button" onclick="aplicarFiltro('${t.clave}')" title="Clic para filtrar"
-                style="text-align: left; background: ${activo ? "#f0fdf4" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary-green)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e6f4ea" : "0 1px 3px rgba(0,0,0,0.05)"};">
+                style="text-align: left; background: ${activo ? "#f2f5fa" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e8edf5" : "0 1px 3px rgba(0,0,0,0.05)"};">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
                     <span style="font-size: 1.3rem;">${t.icono}</span>
@@ -423,7 +423,7 @@ function renderizarTabla() {
         .sort((a, b) => alertaProceso(a).prioridad - alertaProceso(b).prioridad);
 
     document.getElementById("texto-filtro").innerHTML = `Mostrando <strong>${lista.length}</strong> de ${nombresFiltro[filtroActivo]}` +
-        (filtroActivo !== "todos" ? ` · <a href="#" onclick="aplicarFiltro('${filtroActivo}'); return false;" style="color: var(--primary-green); font-weight: 600;">Ver todos</a>` : "");
+        (filtroActivo !== "todos" ? ` · <a href="#" onclick="aplicarFiltro('${filtroActivo}'); return false;" style="color: var(--primary); font-weight: 600;">Ver todos</a>` : "");
 
     if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
@@ -446,10 +446,10 @@ function renderizarTabla() {
             : `<button class="btn-action edit" onclick="verDetalle(${p.id})">👁️ Ver detalle</button>`;
 
         return `
-            <tr style="${nuevo ? "background: #f0fdf4;" : ""}">
+            <tr style="${nuevo ? "background: #f2f5fa;" : ""}">
                 <td>
-                    <a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle y trazabilidad" style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(p.codigo)}</a>
-                    ${nuevo ? `<br>${chip("🆕 NUEVO", "#dcfce7", "#166534")}` : ""}
+                    <a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle y trazabilidad" style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(p.codigo)}</a>
+                    ${nuevo ? `<br>${chip("🆕 NUEVO", "#e8edf5", "#1e3a6b")}` : ""}
                 </td>
                 <td style="font-size: 0.8rem; min-width: 190px;">
                     <div><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Dte.</span> ${esc(nombresPartes(p.demandantes))}</div>
@@ -501,7 +501,7 @@ function resumenProceso(p) {
     const u = ultimaActuacion(p);
     return `
         <div style="display: flex; justify-content: space-between; gap: 0.5rem; flex-wrap: wrap;">
-            <strong style="font-family: monospace; color: #166534;">Cod: ${esc(p.codigo)}</strong>
+            <strong style="font-family: monospace; color: #1e3a6b;">Cod: ${esc(p.codigo)}</strong>
             <span style="color: var(--text-muted);">${esc(textoAcuerdo(obtenerMedida(p.medidaId)))} · Recibido el ${formatoFecha(p.fechaRecepcion)} de ${esc(p.despachoOrigen)}</span>
         </div>
         <div style="color: #475569; margin-top: 0.25rem;">${esc(nombresPartes(p.demandantes))} <em>c/</em> ${esc(nombresPartes(p.demandados))}</div>
@@ -585,7 +585,7 @@ function sugerirFormaTerminacion() {
 
     if (sugerida) {
         if (!forma.value) forma.value = sugerida;
-        ayuda.style.color = "var(--primary-green)";
+        ayuda.style.color = "var(--primary)";
         ayuda.textContent = `✔ Sugerida según el último estado ("${estado}"). Puede cambiarla.`;
     } else if (estado === "Auto que decreta terminación") {
         ayuda.style.color = "#b45309";
@@ -809,7 +809,7 @@ function verDetalle(id) {
     document.getElementById("contenido-detalle-proceso").innerHTML = `
         <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border: 1px solid #e2e8f0;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                <span style="font-family: monospace; color: #166534; font-weight: 700;">${esc(p.codigo)}</span>
+                <span style="font-family: monospace; color: #1e3a6b; font-weight: 700;">${esc(p.codigo)}</span>
                 ${chip(alerta.texto, alerta.fondo, alerta.color)}
             </div>
             <p style="margin: 0 0 0.3rem 0;"><strong>Estado procesal actual:</strong> ${esc(estadoProcesalActual(p))}</p>
@@ -823,7 +823,7 @@ function verDetalle(id) {
             ${p.link ? `<p style="margin: 0.5rem 0 0 0;"><a href="${esc(p.link)}" target="_blank" rel="noopener" style="color: #0284c7; text-decoration: underline; font-weight: 600;">🔗 Ver expediente en línea (Rama Judicial)</a></p>` : ""}
         </div>
 
-        <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary-green); margin: 1rem 0 0.5rem;">🕒 Trazabilidad en este despacho</div>
+        <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary); margin: 1rem 0 0.5rem;">🕒 Trazabilidad en este despacho</div>
         <div style="border-left: 3px solid #cbd5e1; margin-left: 0.6rem; padding-left: 1rem;">
             ${eventos.map(ev => `
                 <div style="position: relative; margin-bottom: 0.75rem;">

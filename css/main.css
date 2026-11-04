@@ -1,6 +1,6 @@
 :root {
-    --primary-green: #359946;
-    --primary-green-hover: #2e843c;
+    --primary: #1e3a6b;
+    --primary-hover: #16294a;
     --input-bg: #edf2f7;
     --text-main: #2d3748;
     --text-muted: #718096;
@@ -29,7 +29,7 @@ body {
     max-width: 90%;
     background: #ffffff;
     border: 1px solid var(--border-color);
-    border-left: 5px solid var(--primary-green);
+    border-left: 5px solid var(--primary);
     padding: 0.85rem 1.25rem;
     margin-bottom: 1rem;
     border-radius: 4px;
@@ -46,8 +46,8 @@ body {
 }
 
 .role-badge {
-    background-color: #e6f4ea;
-    color: var(--primary-green);
+    background-color: #e8edf5;
+    color: var(--primary);
     padding: 0.3rem 0.65rem;
     font-size: 0.75rem;
     font-weight: 700;
@@ -80,10 +80,10 @@ body {
     border: 1px solid var(--border-color);
 }
 
-/* Panel Izquierdo (Verde) */
+/* Panel Izquierdo (Azul) */
 .login-banner {
     flex: 1;
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
     padding: 3rem 2.5rem;
     display: flex;
@@ -161,7 +161,7 @@ body {
 
 .form-control:focus {
     background-color: #fff;
-    border-color: var(--primary-green);
+    border-color: var(--primary);
 }
 
 .toggle-password {
@@ -187,7 +187,7 @@ body {
 }
 
 .form-footer a span {
-    color: var(--primary-green);
+    color: var(--primary);
     font-weight: 600;
 }
 
@@ -197,7 +197,7 @@ body {
 
 .btn-entrar {
     width: 100%;
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
     border: none;
     padding: 0.75rem;
@@ -209,7 +209,7 @@ body {
 }
 
 .btn-entrar:hover {
-    background-color: var(--primary-green-hover);
+    background-color: var(--primary-hover);
 }
 
 /* ==========================================
@@ -227,7 +227,7 @@ body {
 }
 
 header.app-header {
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
     height: 50px;
     display: flex;
@@ -297,8 +297,8 @@ aside.app-sidebar {
 
 .sidebar-icon.active,
 .sidebar-icon:hover {
-    background-color: #e6f4ea;
-    color: var(--primary-green);
+    background-color: #e8edf5;
+    color: var(--primary);
 }
 
 main.app-main {
@@ -352,7 +352,7 @@ main.app-main {
 .module-card:hover {
     transform: translateY(-3px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.05);
-    border-color: var(--primary-green);
+    border-color: var(--primary);
 }
 
 .module-img-container {
@@ -431,12 +431,12 @@ main.app-main {
 }
 
 .btn-primary {
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
 }
 
 .btn-primary:hover {
-    background-color: var(--primary-green-hover);
+    background-color: var(--primary-hover);
 }
 
 .btn-secondary {
@@ -460,7 +460,7 @@ main.app-main {
 
 .badge-success {
     background-color: #e6f4ea;
-    color: var(--primary-green);
+    color: #166534;
 }
 
 .badge-muted {
@@ -480,7 +480,7 @@ main.app-main {
 }
 
 .btn-primary-action {
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
     border: none;
     padding: 0.6rem 1.2rem;
@@ -495,7 +495,7 @@ main.app-main {
 }
 
 .btn-primary-action:hover {
-    background-color: var(--primary-green-hover);
+    background-color: var(--primary-hover);
 }
 
 .data-table-container {
@@ -542,7 +542,7 @@ table.data-table tr:hover {
 
 .badge-status.active {
     background-color: #e6f4ea;
-    color: var(--primary-green);
+    color: #166534;
 }
 
 .badge-status.inactive {
@@ -671,7 +671,7 @@ select.form-control {
 .admin-section-title {
     font-size: 1rem;
     font-weight: 600;
-    color: #16a34a;
+    color: #1e3a6b;
     margin-bottom: 1.25rem;
     border-bottom: 2px solid #e2e8f0;
     padding-bottom: 0.5rem;
@@ -708,7 +708,7 @@ select.form-control {
 .admin-btn-submit {
     flex: 1;
     padding: 0.85rem;
-    background-color: #16a34a;
+    background-color: #1e3a6b;
     color: white;
     border: none;
     border-radius: 6px;
@@ -718,5 +718,5 @@ select.form-control {
 }
 
 .admin-btn-submit:hover {
-    background-color: #15803d;
+    background-color: #16294a;
 }

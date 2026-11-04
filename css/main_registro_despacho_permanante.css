@@ -4,8 +4,8 @@
    ========================================================================== */
 
 :root {
-    --primary-green: #16a34a;
-    --primary-green-hover: #15803d;
+    --primary: #1e3a6b;
+    --primary-hover: #16294a;
     --input-bg: #f8fafc;
     --text-main: #1e293b;
     --text-muted: #64748b;
@@ -43,7 +43,7 @@
 .admin-section-title {
     font-size: 1rem;
     font-weight: 600;
-    color: var(--primary-green);
+    color: var(--primary);
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--border-color);
     display: flex;
@@ -94,8 +94,8 @@
 
 .admin-form-grid .form-control:focus {
     background-color: #ffffff;
-    border-color: var(--primary-green);
-    box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 107, 0.15);
 }
 
 .admin-form-grid select.form-control {
@@ -135,7 +135,7 @@
 }
 
 .admin-btn-submit {
-    background-color: var(--primary-green);
+    background-color: var(--primary);
     color: white;
     border: none;
     padding: 0.7rem 1.5rem;
@@ -147,11 +147,11 @@
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    box-shadow: 0 4px 6px rgba(22, 163, 74, 0.2);
+    box-shadow: 0 4px 6px rgba(30, 58, 107, 0.2);
 }
 
 .admin-btn-submit:hover {
-    background-color: var(--primary-green-hover);
+    background-color: var(--primary-hover);
 }
 
 .admin-btn-submit:active {

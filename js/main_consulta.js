@@ -34,7 +34,7 @@ const TIPOS_EVENTO = {
     aprobacion:         { icono: "✔",  fondo: "#dcfce7", color: "#166534", titulo: "Distribución aprobada (visto bueno)",   rol: "Consejo Seccional" },
     actuacion:          { icono: "✏️", fondo: "#ffedd5", color: "#9a3412", titulo: "Actuación registrada",                  rol: "Despacho destino" },
     devolucion_origen:  { icono: "↩",  fondo: "#fee2e2", color: "#991b1b", titulo: "Devuelto al despacho origen",           rol: "Despacho destino" },
-    finalizacion:       { icono: "🏁", fondo: "#359946", color: "#ffffff", titulo: "Proceso terminado",                     rol: "Despacho destino" }
+    finalizacion:       { icono: "🏁", fondo: "#1e3a6b", color: "#ffffff", titulo: "Proceso terminado",                     rol: "Despacho destino" }
 };
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -297,7 +297,7 @@ function estadoActual(p) {
                               descripcion: "El despacho destino con medida de descongestión está adelantando el proceso." },
         devolucion_origen:  { texto: "Devuelto al despacho origen", fondo: "#fee2e2", color: "#991b1b", donde: p.despachoOrigen,
                               descripcion: `El despacho destino devolvió el proceso al despacho origen (${ultimo.motivo || "sin motivo"}).` },
-        finalizacion:       { texto: "Terminado", fondo: "#359946", color: "#ffffff", donde: p.despachoDestino,
+        finalizacion:       { texto: "Terminado", fondo: "#1e3a6b", color: "#ffffff", donde: p.despachoDestino,
                               descripcion: `Proceso terminado por ${ultimo.formaTerminacion || "decisión del despacho"}.` }
     };
     const e = estados[ultimo.tipo];

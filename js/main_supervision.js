@@ -26,7 +26,7 @@ const EVENTOS = {
     registro:          { icono: "📝", titulo: "Registrado por el despacho origen",          fondo: "#e0f2fe", color: "#0369a1" },
     envio:             { icono: "📤", titulo: "Enviado al despacho destino",                fondo: "#dbeafe", color: "#1d4ed8" },
     actuacion:         { icono: "✏️", titulo: "Actuación registrada",                       fondo: "#ffedd5", color: "#9a3412" },
-    finalizacion:      { icono: "🏁", titulo: "Proceso finalizado",                         fondo: "#359946", color: "#ffffff" },
+    finalizacion:      { icono: "🏁", titulo: "Proceso finalizado",                         fondo: "#1e3a6b", color: "#ffffff" },
     devolucion_origen: { icono: "↩",  titulo: "Devuelto al despacho origen",                fondo: "#fee2e2", color: "#991b1b" }
 };
 
@@ -239,7 +239,7 @@ function renderizarMedidas() {
         return `
             <tr>
                 <td style="min-width: 190px;">
-                    <a href="#" onclick="verMedida(${m.id}); return false;" style="font-weight: 700; color: var(--primary-green);">${esc(textoAcuerdo(m))}</a>
+                    <a href="#" onclick="verMedida(${m.id}); return false;" style="font-weight: 700; color: var(--primary);">${esc(textoAcuerdo(m))}</a>
                     <div style="font-size: 0.72rem; color: var(--text-muted);">${esc(m.especialidad)} · ${m.rutas.length} ruta(s)</div>
                 </td>
                 <td style="font-size: 0.78rem; white-space: nowrap;">${formatoFecha(m.fechaInicio)} – ${formatoFecha(m.fechaFin)}<br>${chip(r.v.texto, r.v.fondo, r.v.color)}</td>
@@ -325,7 +325,7 @@ function renderizarProcesos() {
         return `
             <tr>
                 <td style="min-width: 210px;">
-                    <a href="#" onclick="verProceso('${p.codigo}'); return false;" style="font-family: monospace; font-weight: 700; color: var(--primary-green);">${esc(p.codigo)}</a>
+                    <a href="#" onclick="verProceso('${p.codigo}'); return false;" style="font-family: monospace; font-weight: 700; color: var(--primary);">${esc(p.codigo)}</a>
                     <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.15rem;">${esc(p.partes)}</div>
                 </td>
                 <td>${chip(`📜 ${esc(m.acuerdo.numero)}`, "#ede9fe", "#6d28d9")}</td>
@@ -353,7 +353,7 @@ function lineaTiempo(items) {
                 <div style="position: relative; margin-bottom: 0.85rem;">
                     <span style="position: absolute; left: -2.15rem; top: 0; width: 1.8rem; height: 1.8rem; border-radius: 50%; background: ${t.fondo}; color: ${t.color}; display: flex; align-items: center; justify-content: center; font-size: 0.85rem; border: 2px solid #ffffff; box-shadow: 0 0 0 1px #e2e8f0;">${t.icono}</span>
                     <div style="display: flex; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
-                        <strong style="font-size: 0.85rem; color: var(--text-main);">${t.titulo}${it.radicado ? ` · <span style="font-family: monospace; color: var(--primary-green);">${esc(it.radicado)}</span>` : ""}</strong>
+                        <strong style="font-size: 0.85rem; color: var(--text-main);">${t.titulo}${it.radicado ? ` · <span style="font-family: monospace; color: var(--primary);">${esc(it.radicado)}</span>` : ""}</strong>
                         <span style="font-size: 0.75rem; color: var(--text-muted); white-space: nowrap;">${formatoFecha(it.fecha)}</span>
                     </div>
                     <div style="font-size: 0.75rem; color: var(--text-muted);">${esc(it.actor)}</div>
@@ -496,7 +496,7 @@ function verProceso(codigo) {
     ];
     const estilo = { hecha: ["#16a34a", "#16a34a", "✓"], actual: ["#ffffff", "#7c3aed", "●"], alerta: ["#fee2e2", "#991b1b", "!"], pendiente: ["#ffffff", "#cbd5e1", ""] };
 
-    document.getElementById("proceso-titulo").innerHTML = `🕒 Trazabilidad del proceso <span style="font-family: monospace; color: var(--primary-green);">${esc(p.codigo)}</span>`;
+    document.getElementById("proceso-titulo").innerHTML = `🕒 Trazabilidad del proceso <span style="font-family: monospace; color: var(--primary);">${esc(p.codigo)}</span>`;
     document.getElementById("proceso-subtitulo").innerHTML = `${esc(p.partes)} · ${esc(textoAcuerdo(m))}`;
 
     const items = [

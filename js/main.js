@@ -129,7 +129,7 @@ function renderizarIndicadores() {
     const lista = dbDatos.despachos;
     const activos = lista.filter(esActivo).length;
     const tarjetas = [
-        { clave: "todos",         icono: "🏛️", valor: lista.length,                                          texto: "Despachos registrados",    color: "var(--primary-green)" },
+        { clave: "todos",         icono: "🏛️", valor: lista.length,                                          texto: "Despachos registrados",    color: "var(--primary)" },
         { clave: "activos",       icono: "✅", valor: activos,                                               texto: "Activos",                  color: "#166534" },
         { clave: "inactivos",     icono: "🚫", valor: lista.length - activos,                                texto: "Inactivos",                color: "#64748b" },
         { clave: "permanentes",   icono: "🏢", valor: lista.filter(d => d.tipo === "Permanente").length,     texto: "Permanentes",              color: "#475569" },
@@ -140,7 +140,7 @@ function renderizarIndicadores() {
         const activo = filtroKpi === t.clave && t.clave !== "todos";
         return `
             <button type="button" onclick="aplicarFiltroKpi('${t.clave}')" title="Clic para filtrar"
-                style="text-align: left; background: ${activo ? "#f0fdf4" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary-green)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e6f4ea" : "0 1px 3px rgba(0,0,0,0.05)"};">
+                style="text-align: left; background: ${activo ? "#f2f5fa" : "#ffffff"}; border: 1px solid ${activo ? "var(--primary)" : "#e2e8f0"}; border-top: 4px solid ${t.color}; border-radius: 8px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: ${activo ? "0 0 0 3px #e8edf5" : "0 1px 3px rgba(0,0,0,0.05)"};">
                 <div style="display: flex; justify-content: space-between; align-items: center;">
                     <span style="font-size: 1.6rem; font-weight: 800; color: var(--text-main);">${t.valor}</span>
                     <span style="font-size: 1.3rem;">${t.icono}</span>
@@ -191,7 +191,7 @@ function renderizarTabla() {
 
     if (lista.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
-            No hay despachos que coincidan con los filtros. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary-green); font-weight: 600;">Limpiar filtros</a></td></tr>`;
+            No hay despachos que coincidan con los filtros. <a href="#" onclick="limpiarFiltros(); return false;" style="color: var(--primary); font-weight: 600;">Limpiar filtros</a></td></tr>`;
         return;
     }
 
@@ -204,7 +204,7 @@ function renderizarTabla() {
                 <td style="min-width: 230px;">
                     <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-main);">${esc(item.nombreDespacho)}</div>
                     <div style="margin-top: 0.25rem; display: flex; align-items: center; gap: 0.4rem; flex-wrap: wrap;">
-                        <span style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(item.codigoDespacho)}</span>
+                        <span style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(item.codigoDespacho)}</span>
                         ${item.tipo ? chip(esc(item.tipo), esDescongestion ? "#e0f2fe" : "#edf2f7", esDescongestion ? "#0369a1" : "#475569") : ""}
                     </div>
                 </td>

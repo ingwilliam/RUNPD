@@ -112,7 +112,7 @@ function renderizarIndicadores() {
     const tarjetas = [
         { icono: "📥", valor: pendientes.length, texto: "Envíos por aprobar", color: "#f59e0b" },
         { icono: "⏳", valor: pendientes.reduce((t, e) => t + e.procesos.length, 0), texto: "Procesos por aprobar", color: "#b45309" },
-        { icono: "✔", valor: aprobadas.reduce((t, e) => t + e.procesos.length, 0), texto: "Procesos aprobados", color: "var(--primary-green)" },
+        { icono: "✔", valor: aprobadas.reduce((t, e) => t + e.procesos.length, 0), texto: "Procesos aprobados", color: "var(--primary)" },
         { icono: "↩", valor: dbTraslados.envios.filter(e => e.estado === "devuelta").length, texto: "Envíos devueltos", color: "#b45309" },
         { icono: "📜", valor: dbTraslados.medidas.length, texto: "Medidas del Consejo", color: "#0369a1" }
     ];
@@ -165,7 +165,7 @@ function renderizarTabla() {
             <tr>
                 <td style="min-width: 210px;">
                     <div style="font-size: 0.85rem; font-weight: 600;">${esc(e.nombreDespacho)}</div>
-                    <span style="font-size: 0.75rem; color: var(--text-muted);">Código: <span style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(e.codigoDespacho)}</span> · ${esc(e.especialidad)}</span>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">Código: <span style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(e.codigoDespacho)}</span> · ${esc(e.especialidad)}</span>
                 </td>
                 <td>${chip(`📜 ${esc(m.acuerdo.numero)} de ${m.acuerdo.anio}`, "#e0f2fe", "#0369a1")}</td>
                 <td style="font-size: 0.8rem; min-width: 200px;">
@@ -225,18 +225,18 @@ function abrirAprobacion(id) {
                     <div style="font-size: 0.7rem; color: var(--text-muted);">DESPACHO DE ORIGEN (PERMANENTE)</div>
                     <div style="font-size: 0.83rem; font-weight: 700;">${esc(e.nombreDespacho)}</div>
                 </div>
-                <div style="text-align: center; color: var(--primary-green); font-weight: 800;">
+                <div style="text-align: center; color: var(--primary); font-weight: 800;">
                     <div style="font-size: 1.3rem;">➔</div>
                     <div style="font-size: 0.75rem;">${n} proceso(s)</div>
                 </div>
-                <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px; padding: 0.6rem 0.75rem;">
+                <div style="background: #f2f5fa; border: 1px solid #c9d6e8; border-radius: 6px; padding: 0.6rem 0.75rem;">
                     <div style="font-size: 0.7rem; color: var(--text-muted);">DESPACHO DE DESTINO (DESCONGESTIÓN)</div>
                     <div style="font-size: 0.83rem; font-weight: 700;">${esc(destino ? destino.nombre : "—")}</div>
                 </div>
             </div>
             ${ruta ? `
             <div style="height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; display: flex; margin-top: 0.8rem;">
-                <div style="width: ${pctAntes}%; background: var(--primary-green);"></div>
+                <div style="width: ${pctAntes}%; background: var(--primary);"></div>
                 <div style="width: ${pctEnvio}%; background: ${supera ? "#dc2626" : "#7dd3fc"};"></div>
             </div>
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
@@ -255,8 +255,8 @@ function abrirAprobacion(id) {
     document.getElementById("aprobacion-procesos").innerHTML = e.procesos.map((p, i) => `
         <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.55rem 0.7rem; margin-bottom: 0.4rem; font-size: 0.78rem;">
             <div style="display: flex; justify-content: space-between; gap: 0.5rem; align-items: center;">
-                <strong style="font-family: monospace; color: #166534;">${i + 1}. ${esc(p.codigo)}</strong>
-                <button type="button" onclick="verDetalleProceso(${p.id})" style="background: none; border: none; color: var(--primary-green); font-weight: 600; cursor: pointer; padding: 0; font-size: 0.75rem; text-decoration: underline;">🔍 Ver detalle</button>
+                <strong style="font-family: monospace; color: #1e3a6b;">${i + 1}. ${esc(p.codigo)}</strong>
+                <button type="button" onclick="verDetalleProceso(${p.id})" style="background: none; border: none; color: var(--primary); font-weight: 600; cursor: pointer; padding: 0; font-size: 0.75rem; text-decoration: underline;">🔍 Ver detalle</button>
             </div>
             <div style="color: #475569; margin-top: 0.2rem;">${esc(nombresPartes(p.demandantes))} <em>c/</em> ${esc(nombresPartes(p.demandados))}</div>
             <div style="margin-top: 0.2rem;"><strong>Estado:</strong> ${esc(p.estadoProceso)} · <strong>Última actuación:</strong> ${formatoFecha(p.fechaActuacion)}</div>
@@ -422,7 +422,7 @@ function verDetalleProceso(procId) {
 
     document.getElementById("contenido-detalle-proceso").innerHTML = `
         <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border: 1px solid #e2e8f0;">
-            <p style="margin: 0 0 0.4rem 0;"><strong>Código:</strong> <span style="font-family: monospace; color: #166534; font-weight: 700;">${esc(p.codigo)}</span></p>
+            <p style="margin: 0 0 0.4rem 0;"><strong>Código:</strong> <span style="font-family: monospace; color: #1e3a6b; font-weight: 700;">${esc(p.codigo)}</span></p>
             <p style="margin: 0 0 0.4rem 0;"><strong>Estado del proceso:</strong> ${esc(p.estadoProceso)}</p>
             <p style="margin: 0 0 0.4rem 0;"><strong>Última actuación:</strong> ${formatoFecha(p.fechaActuacion)}</p>
             <hr style="border: 0; border-top: 1px solid #cbd5e1; margin: 0.6rem 0;">

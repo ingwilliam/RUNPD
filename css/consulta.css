@@ -23,7 +23,7 @@ body.cq-body {
     min-height: 78px;
     padding: 0.5rem 2rem;
     color: #ffffff;
-    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    background: linear-gradient(90deg, var(--primary-hover) 0%, var(--primary) 100%);
     border-bottom: 4px solid #ffc107;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
@@ -81,7 +81,7 @@ body.cq-body {
 .cq-search {
     background: #ffffff;
     border: 1px solid var(--border-color);
-    border-top: 4px solid var(--primary-green);
+    border-top: 4px solid var(--primary);
     border-radius: 12px;
     padding: 2rem;
     text-align: center;
@@ -131,7 +131,7 @@ body.cq-body {
     color: var(--text-muted);
 }
 
-.cq-counter.completo { color: var(--primary-green); }
+.cq-counter.completo { color: var(--primary); }
 
 .cq-btn {
     padding: 0.9rem 1.6rem;
@@ -172,13 +172,13 @@ body.cq-body {
     cursor: pointer;
 }
 
-.cq-chip-ejemplo:hover { background: #e6f4ea; border-color: var(--primary-green); color: var(--primary-green); }
+.cq-chip-ejemplo:hover { background: #e8edf5; border-color: var(--primary); color: var(--primary); }
 
 /* Ejemplos con el escenario que muestran */
 .cq-ejemplos { flex-direction: column; }
 .cq-ejemplos > div { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.5rem; width: 100%; max-width: 880px; }
 .cq-chip-ejemplo { display: grid; grid-template-columns: auto 1fr; column-gap: 0.45rem; align-items: center; text-align: left; border-radius: 8px; padding: 0.45rem 0.6rem; }
-.cq-chip-num { grid-row: span 2; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--primary-green); color: #ffffff; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
+.cq-chip-num { grid-row: span 2; width: 1.4rem; height: 1.4rem; border-radius: 50%; background: var(--primary); color: #ffffff; font-family: 'Inter', sans-serif; font-weight: 700; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; }
 .cq-chip-codigo { font-size: 0.72rem; }
 .cq-chip-ejemplo small { font-family: 'Inter', sans-serif; font-size: 0.72rem; font-weight: 600; color: var(--text-muted); }
 
@@ -213,7 +213,7 @@ body.cq-body {
 .cq-simulada input {
     width: 22px;
     height: 22px;
-    accent-color: var(--primary-green);
+    accent-color: var(--primary);
     cursor: pointer;
     flex-shrink: 0;
 }
@@ -259,7 +259,7 @@ body.cq-body {
 .cq-card-titulo {
     font-size: 0.8rem;
     font-weight: 700;
-    color: var(--primary-green);
+    color: var(--primary);
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 1rem;
@@ -278,7 +278,7 @@ body.cq-body {
 }
 
 .cq-radicado-label { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; text-transform: uppercase; }
-.cq-radicado { font-family: ui-monospace, Consolas, monospace; font-size: 1.35rem; font-weight: 700; color: var(--primary-green); letter-spacing: 0.5px; }
+.cq-radicado { font-family: ui-monospace, Consolas, monospace; font-size: 1.35rem; font-weight: 700; color: var(--primary); letter-spacing: 0.5px; }
 .cq-partes { font-size: 0.95rem; color: var(--text-main); margin-top: 0.3rem; }
 .cq-partes em { color: var(--text-muted); }
 
@@ -334,7 +334,7 @@ body.cq-body {
 
 .cq-etapa:first-child::before { display: none; }
 .cq-etapa.hecha::before,
-.cq-etapa.actual::before { background: var(--primary-green); }
+.cq-etapa.actual::before { background: var(--primary); }
 
 .cq-etapa-circulo {
     position: relative;
@@ -352,8 +352,8 @@ body.cq-body {
     color: var(--text-muted);
 }
 
-.cq-etapa.hecha .cq-etapa-circulo { background: var(--primary-green); border-color: var(--primary-green); color: #ffffff; }
-.cq-etapa.actual .cq-etapa-circulo { border-color: var(--primary-green); box-shadow: 0 0 0 5px #e6f4ea; }
+.cq-etapa.hecha .cq-etapa-circulo { background: var(--primary); border-color: var(--primary); color: #ffffff; }
+.cq-etapa.actual .cq-etapa-circulo { border-color: var(--primary); box-shadow: 0 0 0 5px #e8edf5; }
 .cq-etapa.alerta .cq-etapa-circulo { border-color: #f59e0b; box-shadow: 0 0 0 5px #fef3c7; }
 
 .cq-etapa-nombre { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
@@ -378,7 +378,7 @@ body.cq-body {
     padding: 0.7rem 0.85rem;
 }
 
-.cq-ruta-nodo.actual { background: #f0fdf4; border-color: #86efac; box-shadow: 0 0 0 3px #e6f4ea; }
+.cq-ruta-nodo.actual { background: #f2f5fa; border-color: #a9bcd8; box-shadow: 0 0 0 3px #e8edf5; }
 .cq-ruta-nodo.devuelto { background: #fffbeb; border-color: #fcd34d; }
 .cq-ruta-nodo.devuelto .cq-ruta-nombre { text-decoration: line-through; color: var(--text-muted); }
 .cq-ruta-nodo.pendiente { background: #ffffff; border-style: dashed; opacity: 0.7; }
@@ -390,7 +390,7 @@ body.cq-body {
 .cq-ruta-flecha {
     display: flex;
     align-items: center;
-    color: var(--primary-green);
+    color: var(--primary);
     font-size: 1.2rem;
     font-weight: 700;
 }
@@ -416,7 +416,7 @@ body.cq-body {
     cursor: pointer;
 }
 
-.cq-orden:hover { border-color: var(--primary-green); color: var(--primary-green); }
+.cq-orden:hover { border-color: var(--primary); color: var(--primary); }
 
 .cq-timeline {
     list-style: none;

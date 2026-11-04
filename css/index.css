@@ -20,9 +20,9 @@ body.index-body {
 
 /* ---------------- BARRA SUPERIOR (solo en la portada) ---------------- */
 .index-body header.app-header {
-    height: 78px;
+    height: 88px;
     padding: 0 2rem;
-    background: linear-gradient(90deg, var(--primary-green-hover) 0%, var(--primary-green) 100%);
+    background: linear-gradient(90deg, var(--primary-hover) 0%, var(--primary) 100%);
     border-bottom: 4px solid #ffc107;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
     justify-content: center;
@@ -33,7 +33,7 @@ body.index-body {
 }
 
 .brand-logo {
-    height: 52px;
+    height: 56px;
     width: auto;
     background: #ffffff;
     padding: 0.35rem 0.6rem;
@@ -49,16 +49,22 @@ body.index-body {
     border-left: 1px solid rgba(255, 255, 255, 0.4);
 }
 
-.brand-text strong {
-    font-size: 1.35rem;
+.brand-text .brand-title {
+    margin: 0;
+    font-size: 1.5rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    line-height: 1.15;
+    letter-spacing: -0.2px;
+    color: #ffffff;
 }
 
 .brand-text span {
-    font-size: 0.85rem;
-    font-weight: 400;
-    opacity: 0.92;
+    margin-top: 0.15rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    line-height: 1;
+    opacity: 0.9;
 }
 
 /* ---------------- CONTENEDOR ---------------- */
@@ -79,15 +85,6 @@ body.index-body {
 .index-intro {
     text-align: center;
     margin: 0 auto 1.5rem;
-}
-
-.index-title {
-    font-size: 1.85rem;
-    font-weight: 700;
-    color: var(--text-main);
-    line-height: 1.2;
-    letter-spacing: -0.5px;
-    margin-bottom: 0.4rem;
 }
 
 .index-subtitle {
@@ -112,8 +109,8 @@ body.index-body {
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: var(--primary-green);
-    background: #e6f4ea;
+    color: var(--primary);
+    background: #e8edf5;
     padding: 0.3rem 0.75rem;
     border-radius: 999px;
     margin-bottom: 0.85rem;
@@ -250,7 +247,7 @@ body.index-body {
 
 /* Panel con la explicación del paso */
 .grafo-panel {
-    --col: var(--primary-green);
+    --col: var(--primary);
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -345,7 +342,7 @@ body.index-body {
     left: 0;
     width: 100%;
     height: 4px;
-    background: var(--primary-green);
+    background: var(--primary);
     transition: height 0.2s ease;
 }
 
@@ -361,8 +358,8 @@ body.index-body {
 
 /* Resaltado al llegar desde una etapa del flujo */
 .role-card:target {
-    border-color: var(--primary-green);
-    box-shadow: 0 0 0 4px #e6f4ea, 0 12px 20px -3px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+    box-shadow: 0 0 0 4px #e8edf5, 0 12px 20px -3px rgba(0, 0, 0, 0.1);
 }
 
 .role-card-top {
@@ -376,7 +373,7 @@ body.index-body {
     width: 3.25rem;
     height: 3.25rem;
     border-radius: 12px;
-    background: #e6f4ea;
+    background: #e8edf5;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -388,9 +385,9 @@ body.index-body {
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.4px;
-    color: var(--primary-green);
-    background: #f0f9f2;
-    border: 1px solid #cfe9d5;
+    color: var(--primary);
+    background: #f0f4fa;
+    border: 1px solid #d6e0ee;
     padding: 0.25rem 0.55rem;
     border-radius: 999px;
     white-space: nowrap;
@@ -435,8 +432,8 @@ body.index-body {
     width: 1.1rem;
     height: 1.1rem;
     border-radius: 50%;
-    background: #e6f4ea;
-    color: var(--primary-green);
+    background: #e8edf5;
+    color: var(--primary);
     font-size: 0.7rem;
     font-weight: 700;
     display: flex;
@@ -455,25 +452,30 @@ body.index-body {
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: #f1f5f9;
-    color: var(--text-main);
+    background: var(--role-color, var(--primary));
+    color: #ffffff;
     padding: 0.75rem 1rem;
     border-radius: 6px;
     text-decoration: none;
     font-weight: 600;
     font-size: 0.9rem;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    box-shadow: 0 2px 4px rgba(15, 23, 42, 0.12);
+    transition: background-color 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .role-btn span {
     transition: transform 0.2s ease;
 }
 
-.role-card:hover .role-btn,
+.role-btn:hover {
+    background: var(--role-color-hover, var(--primary-hover));
+    box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--role-color, var(--primary)) 45%, transparent);
+}
+
 .role-btn:focus-visible {
-    background: var(--primary-green);
-    color: #ffffff;
+    background: var(--role-color-hover, var(--primary-hover));
     outline: none;
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--role-color, var(--primary)) 25%, transparent);
 }
 
 .role-card:hover .role-btn span {
@@ -488,9 +490,9 @@ body.index-body {
     gap: 0.45rem;
     font-size: 0.87rem;
     font-weight: 700;
-    color: var(--col, var(--primary-green));
-    background: color-mix(in srgb, var(--col, var(--primary-green)) 9%, #ffffff);
-    border: 2px solid var(--col, var(--primary-green));
+    color: var(--col, var(--primary));
+    background: color-mix(in srgb, var(--col, var(--primary)) 9%, #ffffff);
+    border: 2px solid var(--col, var(--primary));
     border-radius: 6px;
     padding: 0.6rem 1rem;
     text-decoration: none;
@@ -500,10 +502,10 @@ body.index-body {
 
 .role-link:hover,
 .role-link:focus-visible {
-    background: var(--col, var(--primary-green));
+    background: var(--col, var(--primary));
     color: #ffffff;
     outline: none;
-    box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--col, var(--primary-green)) 55%, transparent);
+    box-shadow: 0 4px 10px -2px color-mix(in srgb, var(--col, var(--primary)) 55%, transparent);
 }
 
 /* El color del actor ya viene heredado en --col: solo se ajusta el espaciado */
@@ -511,17 +513,16 @@ body.index-body {
 .role-card .role-link { margin-top: 0.7rem; }
 
 /* Colores por actor en las tarjetas de los pasos 2 a 4 (los mismos del grafo) */
-.role-card-origen .role-link { --col: #0369a1; }
-.role-card-destino .role-link { --col: #b45309; }
-.role-card-consejo .role-link { --col: #7c3aed; }
+.role-card-origen { --role-color: #0369a1; --role-color-hover: #02527e; --col: #0369a1; }
+.role-card-destino { --role-color: #b45309; --role-color-hover: #8f4207; --col: #b45309; }
+.role-card-consejo { --role-color: #7c3aed; --role-color-hover: #6423c4; --col: #7c3aed; }
 
 /* Variante pública (Ciudadano) */
+.role-card-public { --role-color: #3b82f6; --role-color-hover: #2563eb; --col: #3b82f6; }
 .role-card-public::before { background: #3b82f6; }
 .role-card-public .role-icon { background: #dbeafe; }
 .role-card-public .role-step { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
 .role-card-public .role-features li::before { background: #dbeafe; color: #1d4ed8; }
-.role-card-public:hover .role-btn,
-.role-card-public .role-btn:focus-visible { background: #3b82f6; }
 .role-card-public:target { border-color: #3b82f6; box-shadow: 0 0 0 4px #dbeafe, 0 12px 20px -3px rgba(0, 0, 0, 0.1); }
 
 /* ---------------- RECORRIDO DEL PROTOTIPO (por pasos) ---------------- */
@@ -554,7 +555,7 @@ body.index-body {
     scroll-margin-top: 1rem;
 }
 
-.paso1:target { box-shadow: 0 0 0 4px #e6f4ea, 0 12px 20px -3px rgba(0, 0, 0, 0.1); }
+.paso1:target { box-shadow: 0 0 0 4px #e8edf5, 0 12px 20px -3px rgba(0, 0, 0, 0.1); }
 
 .paso1-head {
     display: flex;
@@ -571,14 +572,14 @@ body.index-body {
     width: 2.3rem;
     height: 2.3rem;
     border-radius: 50%;
-    background: var(--primary-green);
+    background: var(--primary);
     color: #ffffff;
     font-weight: 800;
     font-size: 1.05rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 0 0 5px #e6f4ea;
+    box-shadow: 0 0 0 5px #e8edf5;
 }
 
 .caminos {
@@ -603,8 +604,8 @@ body.index-body {
 }
 
 .camino {
-    --col: var(--primary-green);
-    --fondo: #f0fdf4;
+    --col: var(--primary);
+    --fondo: #f2f5fa;
     display: flex;
     flex-direction: column;
     background: var(--fondo);
@@ -624,7 +625,7 @@ body.index-body {
 
 /* Paso 1 como secuencia: CSJ → UDAE → Consejo Seccional */
 .caminos.secuencia { grid-template-columns: 1fr auto 1fr auto 1fr; }
-.caminos.secuencia .caminos-o { color: var(--primary-green); font-size: 1.1rem; }
+.caminos.secuencia .caminos-o { color: var(--primary); font-size: 1.1rem; }
 
 .camino-nota {
     text-align: center;
@@ -731,17 +732,14 @@ body.index-body {
 .role-card-origen::before { background: #0369a1; }
 .role-card-origen .role-icon { background: #e0f2fe; }
 .role-card-origen .role-step { color: #0369a1; background: #f0f9ff; border-color: #bae6fd; }
-.role-card-origen:hover .role-btn { background: #0369a1; }
 
 .role-card-consejo::before { background: #7c3aed; }
 .role-card-consejo .role-icon { background: #ede9fe; }
 .role-card-consejo .role-step { color: #6d28d9; background: #f5f3ff; border-color: #ddd6fe; }
-.role-card-consejo:hover .role-btn { background: #7c3aed; }
 
 .role-card-destino::before { background: #b45309; }
 .role-card-destino .role-icon { background: #ffedd5; }
 .role-card-destino .role-step { color: #9a3412; background: #fff7ed; border-color: #fed7aa; }
-.role-card-destino:hover .role-btn { background: #b45309; }
 
 /* ---------------- PIE ---------------- */
 .index-footer {
@@ -773,12 +771,11 @@ body.index-body {
 }
 
 @media (max-width: 640px) {
-    .index-body header.app-header { height: 68px; padding: 0 1rem; }
+    .index-body header.app-header { height: auto; min-height: 68px; padding: 0.6rem 1rem; }
     .brand-logo { height: 40px; }
     .brand-text { padding-left: 0.75rem; }
-    .brand-text strong { font-size: 1.1rem; }
-    .brand-text span { font-size: 0.7rem; }
-    .index-title { font-size: 1.75rem; }
+    .brand-text .brand-title { font-size: 1.05rem; }
+    .brand-text span { font-size: 0.68rem; letter-spacing: 1.5px; }
     .grafo-panel { flex-wrap: wrap; }
     .gp-link { width: 100%; text-align: center; }
     .role-grid { grid-template-columns: 1fr; }

@@ -157,23 +157,23 @@ function renderizarInfoDespacho() {
 
     const bloque = (titulo, contenido) => `
         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.7rem 0.9rem;">
-            <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary-green); margin-bottom: 0.5rem;">${titulo}</div>
+            <div style="font-size: 0.78rem; font-weight: 700; color: var(--primary); margin-bottom: 0.5rem;">${titulo}</div>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem 0.75rem;">${contenido}</div>
         </div>`;
 
     contenedor.innerHTML = `
         <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.85rem;">
             <div style="display: flex; align-items: center; gap: 0.85rem;">
-                <div style="width: 2.8rem; height: 2.8rem; border-radius: 10px; background: #e6f4ea; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🏛️</div>
+                <div style="width: 2.8rem; height: 2.8rem; border-radius: 10px; background: #e8edf5; display: flex; align-items: center; justify-content: center; font-size: 1.4rem;">🏛️</div>
                 <div>
                     <div style="font-weight: 700; color: var(--text-main); font-size: 0.98rem;">${esc(nombreDelDespacho())}</div>
                     <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.1rem;">
-                        Código <span style="font-family: monospace; font-weight: 700; color: var(--primary-green);">${esc(d.codigoDespacho || "N/A")}</span>
-                        &nbsp;·&nbsp; <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.45rem; border-radius: 4px; font-weight: 600; font-size: 0.72rem;">${esc(d.estado || "Activo")}</span>
+                        Código <span style="font-family: monospace; font-weight: 700; color: var(--primary);">${esc(d.codigoDespacho || "N/A")}</span>
+                        &nbsp;·&nbsp; <span style="background: #e8edf5; color: var(--primary); padding: 0.1rem 0.45rem; border-radius: 4px; font-weight: 600; font-size: 0.72rem;">${esc(d.estado || "Activo")}</span>
                     </div>
                 </div>
             </div>
-            <div style="background: #e6f4ea; color: var(--primary-green); padding: 0.45rem 0.85rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
+            <div style="background: #e8edf5; color: var(--primary); padding: 0.45rem 0.85rem; border-radius: 6px; font-size: 0.8rem; font-weight: 600;">
                 📊 Supervisa: Consejo Seccional de ${esc(consejoDestino())}
             </div>
         </div>
@@ -252,17 +252,17 @@ function renderizarResumenMedida() {
                 <div style="display: flex; gap: 0.5rem; border-left: 1px solid #e2e8f0; padding-left: 0.75rem;">
                     ${cifra(cupo, "Autorizados en la medida", "var(--text-main)")}
                     ${cifra(registrados, "Registrados", "#0369a1")}
-                    ${cifra(enviados, "Enviados al destino", "var(--primary-green)")}
-                    ${cifra(faltan, "Por registrar", faltan ? "#b45309" : "var(--primary-green)")}
+                    ${cifra(enviados, "Enviados al destino", "var(--primary)")}
+                    ${cifra(faltan, "Por registrar", faltan ? "#b45309" : "var(--primary)")}
                 </div>
             </div>
             ${tarjetasAdministradores(m)}
             <div style="height: 8px; background: #e2e8f0; border-radius: 999px; overflow: hidden; margin-top: 0.8rem;">
-                <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? "var(--primary-green)" : "#0ea5e9"};"></div>
+                <div style="width: ${pct}%; height: 100%; background: ${pct >= 100 ? "var(--primary)" : "#0ea5e9"};"></div>
             </div>
             <div style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.3rem;">
                 ${registrados} de ${cupo} procesos registrados${pendientes ? ` · <strong style="color: #b45309;">${pendientes} pendiente(s) de enviar al despacho destino</strong>` : ""}
-                ${v.clave === "vencida" ? ` · <strong style="color: #991b1b;">La medida venció: no admite nuevos registros.</strong>` : (faltan ? "" : ` · <strong style="color: var(--primary-green);">Ya registró todos los procesos autorizados.</strong>`)}
+                ${v.clave === "vencida" ? ` · <strong style="color: #991b1b;">La medida venció: no admite nuevos registros.</strong>` : (faltan ? "" : ` · <strong style="color: var(--primary);">Ya registró todos los procesos autorizados.</strong>`)}
             </div>
         </div>`;
 
@@ -289,7 +289,7 @@ function tarjetasAdministradores(m) {
     return `
         <div style="display: flex; align-items: stretch; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.8rem;">
             ${tarjeta("Despacho origen · usted", "#0369a1", "#f0f9ff", nombreDelDespacho(), m.administradorOrigen, "Autorizado para registrar y enviar")}
-            <div style="display: flex; align-items: center; color: var(--primary-green); font-weight: 800; font-size: 1.1rem;">➔</div>
+            <div style="display: flex; align-items: center; color: var(--primary); font-weight: 800; font-size: 1.1rem;">➔</div>
             ${m.destinos.map(d => tarjeta("Despacho destino · recibe el envío", "#b45309", "#fff7ed", d.nombre, d.administrador, "Único autorizado para gestionar los procesos")).join("")}
         </div>`;
 }
@@ -325,7 +325,7 @@ function renderizarTabla() {
         const dias = diasDesde(p.fechaActuacion);
         return `
         <tr>
-            <td><a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle" style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(p.codigo)}</a></td>
+            <td><a href="#" onclick="verDetalle(${p.id}); return false;" title="Ver detalle" style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(p.codigo)}</a></td>
             <td style="font-size: 0.8rem; min-width: 200px;">
                 <div><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Dte.</span> ${listarPartes(p.demandantes)}</div>
                 <div style="margin-top: 0.2rem;"><span style="color: var(--text-muted); font-weight: 600; font-size: 0.72rem;">Ddo.</span> ${listarPartes(p.demandados)}</div>
@@ -335,7 +335,7 @@ function renderizarTabla() {
                 ${formatoFecha(p.fechaActuacion)}<br>
                 <span style="font-size: 0.72rem; color: ${dias > 180 ? "#dc2626" : "var(--text-muted)"}; font-weight: ${dias > 180 ? 600 : 400};">hace ${dias} día(s)</span>
             </td>
-            <td>${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener" style="color: var(--primary-green); font-weight: 500;">🔗 Abrir</a>` : '<span style="color: var(--text-muted);">—</span>'}</td>
+            <td>${p.link ? `<a href="${esc(p.link)}" target="_blank" rel="noopener" style="color: var(--primary); font-weight: 500;">🔗 Abrir</a>` : '<span style="color: var(--text-muted);">—</span>'}</td>
             <td><span class="${est.clase}">${est.label}</span>${p.fechaEnvio ? `<br><small style="color: var(--text-muted);">${formatoFecha(p.fechaEnvio)}</small>` : ""}</td>
             <td>
                 ${editable ? `
@@ -363,7 +363,7 @@ function verDetalle(id) {
     document.getElementById("contenido-detalle").innerHTML = `
         <div style="background: #f8fafc; padding: 1rem; border-radius: 6px; border: 1px solid #e2e8f0;">
             <div style="display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
-                <span style="font-family: monospace; color: #166534; font-weight: 700;">${esc(p.codigo)}</span>
+                <span style="font-family: monospace; color: #1e3a6b; font-weight: 700;">${esc(p.codigo)}</span>
                 <span class="${est.clase}">${est.label}</span>
             </div>
             <p style="margin: 0 0 0.3rem 0;"><strong>Medida de descongestión:</strong> ${esc(textoAcuerdo(obtenerMedida(p.medidaId)))}</p>
@@ -405,7 +405,7 @@ function contarDigitos(input) {
     input.value = input.value.replace(/\D/g, "").slice(0, 23);
     const contador = document.getElementById("codigo-contador");
     contador.textContent = `${input.value.length}/23`;
-    contador.style.color = input.value.length === 23 ? "var(--primary-green)" : "var(--text-muted)";
+    contador.style.color = input.value.length === 23 ? "var(--primary)" : "var(--text-muted)";
     contador.style.fontWeight = input.value.length === 23 ? "700" : "400";
 }
 
@@ -612,7 +612,7 @@ function abrirEnvio() {
     document.getElementById("cuerpo-envio").innerHTML = pendientes.map(p => `
         <tr>
             <td><input type="checkbox" class="check-envio" value="${p.id}" checked onchange="actualizarContadorEnvio()"></td>
-            <td><span style="font-family: monospace; font-weight: 600; color: var(--primary-green);">${esc(p.codigo)}</span></td>
+            <td><span style="font-family: monospace; font-weight: 600; color: var(--primary);">${esc(p.codigo)}</span></td>
             <td style="font-size: 0.8rem;">${esc(nombreParte(p.demandantes[0]))} <small style="color: var(--text-muted);">vs</small> ${esc(nombreParte(p.demandados[0]))}</td>
             <td style="font-size: 0.8rem;">${esc(p.estadoProceso)}</td>
         </tr>`).join("");

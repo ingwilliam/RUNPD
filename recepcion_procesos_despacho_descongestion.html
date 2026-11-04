@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recepción y Seguimiento de Procesos - Despacho Destino - PEYGI</title>
+    <title>Recepción y Seguimiento de Procesos - Despacho Destino - RUNPD</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/main.css">
 </head>
@@ -13,12 +13,12 @@
     <header class="app-header">
         <div class="navbar-brand">
             <button class="menu-toggle">☰</button>
-            <span>Sistema de Planeación Estratégica y Gestión Institucional - PEYGI</span>
+            <span>Sistema de Registro Único Nacional de Procesos de Descongestión - RUNPD</span>
         </div>
 
         <div class="navbar-right-section" style="display: flex; align-items: center; gap: 1rem;">
             <div class="role-badge-visual" style="background: #ffffff; color: var(--text-main); padding: 0.35rem 0.85rem; border-radius: 4px; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); border-left: 4px solid #ffc107;">
-                <span style="background: #e6f4ea; color: var(--primary-green); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
+                <span style="background: #e8edf5; color: var(--primary); padding: 0.1rem 0.4rem; border-radius: 3px; font-weight: 700; font-size: 0.65rem; text-transform: uppercase;">Rol</span>
                 <span style="font-weight: 600;">Despacho Destino</span>
             </div>
             <div class="navbar-user"><span>👤 ▾</span></div>
@@ -37,9 +37,9 @@
             <!-- Breadcrumbs -->
             <nav aria-label="breadcrumb" style="margin-bottom: 1rem; font-size: 0.85rem; color: var(--text-muted);">
                 <ol style="list-style: none; display: flex; align-items: center; gap: 0.5rem; margin: 0; padding: 0;">
-                    <li><a href="modulo_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Inicio</a></li>
+                    <li><a href="modulo_d.html" style="color: var(--primary); text-decoration: none; font-weight: 500;">Inicio</a></li>
                     <li style="color: #cbd5e1;">/</li>
-                    <li><a href="funcionalidades_despacho_d.html" style="color: var(--primary-green); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
+                    <li><a href="funcionalidades_despacho_d.html" style="color: var(--primary); text-decoration: none; font-weight: 500;">Registro Único Nacional de Procesos de Descongestión</a></li>
                     <li style="color: #cbd5e1;">/</li>
                     <li style="color: var(--text-main); font-weight: 600;" aria-current="page">Recepción y Seguimiento de Procesos</li>
                 </ol>
@@ -58,7 +58,7 @@
             <!-- PASO 1: SELECCIONAR LA MEDIDA -->
             <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 8px; padding: 1.1rem 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">1</span>
+                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">1</span>
                     Seleccione la medida de descongestión
                 </div>
                 <select id="selector-medida" class="form-control" style="max-width: 560px;" onchange="seleccionarMedida(this.value)"></select>
@@ -68,7 +68,7 @@
             <!-- PASO 2: PROCESOS DE LA MEDIDA -->
             <div id="paso-procesos" style="display: none;">
                 <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem;">
-                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary-green); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">2</span>
+                    <span style="width: 1.6rem; height: 1.6rem; border-radius: 50%; background: var(--primary); color: #fff; display: inline-flex; align-items: center; justify-content: center; font-size: 0.8rem;">2</span>
                     Gestione los procesos de la medida
                 </div>
 
@@ -168,7 +168,7 @@
             <div id="dev-resumen" style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 0.75rem; font-size: 0.8rem; margin-bottom: 1rem;"></div>
 
             <form id="form-devolver" onsubmit="guardarDevolucion(event)">
-                <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary-green); margin-bottom: 0.5rem;">¿Por qué devuelve el proceso?</div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: var(--primary); margin-bottom: 0.5rem;">¿Por qué devuelve el proceso?</div>
                 <div id="dev-motivos" style="display: grid; gap: 0.5rem; margin-bottom: 1rem;"></div>
 
                 <div class="form-group">
